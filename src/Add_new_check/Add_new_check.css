@@ -1,0 +1,44 @@
+.add-check {
+    margin-top: 15px !important;
+    margin-left: 80px !important;
+    background-color: rgba(0, 0, 0,0.1) ;
+}
+.add-check-label{
+    position:absolute;
+    font-weight:bolder;
+    margin-left:60px;
+    border-bottom:solid green 2px;
+}
+.input-label{
+    font-weight: 700;
+}
+.check-status input[type="checkbox"]:focus{
+    box-shadow: 0 0 0 rgb(255, 255, 255);
+}
+.bordered {
+    display: inline-block;
+    padding: 20px 200px 120px 120px;
+    /* Fallback dashed border
+       - the 4px width here is overwritten with the border-image-width (if set)
+       - the border-image-width can be omitted below if it is the same as the 4px here
+    */
+    border: dashed 4px #000;
+    
+    /* Individual border image properties */
+    border-image-source: url("../assets/add-check.png");
+    border-image-slice: 2;
+    border-image-repeat: round;
+    /* or use the shorthand border-image */
+    border-image: url("../assets/add-check.png") 2 round;
+  }
+
+  /*The border image of this one creates wider gaps*/
+  .largeGaps {
+    border-image-source: url("../assets/add-check.png");
+    margin: 0 20px;
+  }
+
+  .add-check:hover{
+      background-color: lightgreen;
+      cursor: pointer;
+  }

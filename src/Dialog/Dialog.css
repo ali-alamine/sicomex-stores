@@ -1,0 +1,15 @@
+.dialog-details .amount-details{
+    float: right;
+}
+.dialog-details .text-details{
+    /* width: 70%; */
+}
+svg.MuiSvgIcon-root.add-new-row {
+    width: 50px !important;
+    height: 50px !important;
+    margin-left: 15px;
+}
+.submit-details{
+    margin-left: 15px !important;
+    margin-top: 10px !important;
+}
