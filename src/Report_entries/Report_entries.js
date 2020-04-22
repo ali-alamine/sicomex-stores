@@ -10,9 +10,12 @@ import ModalTitle from "react-bootstrap/ModalTitle";
 import Select from 'react-select';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-
+import $ from 'jquery';
+import {useDatepicker, useMonth, useDay} from '@datepicker-react/hooks'
+import Datepicker from "./Datepicker";
 function Report_entries(){
 
+    const [rendere_comp,set_rendere_comp] = useState(false);
     const [all_stores,set_all_stores]= useState('');
     useEffect(()=>{
         get_all_stores();
@@ -70,17 +73,42 @@ function Report_entries(){
             }
         );
     }
-    const [selected_store_report,set_selected_store_report] = useState('');
-    const handle_select_store = (_selectedOption) => {
-        set_selected_store_report(_selectedOption)
-        entry_report_data.store_id=_selectedOption.store_id;
-    }
-    const submit_store_entry = () => {
-        console.log(entry_report_data);
-    }
     /* END -  STORE SECTION */
 
     /* START - ENTRIES REPORT DATA SECTION */
+    const [selected_store_report,set_selected_store_report] = useState('');
+
+    const handle_select_store = (_selectedOption) => {
+
+        set_selected_store_report(_selectedOption)
+        get_starting_amount(_selectedOption)
+        set_entry_report_data(prevState => ({
+            ...prevState,
+            store_id:_selectedOption.store_id
+        }));
+    }
+    const get_starting_amount= (selected_store) => {
+        axios.post('http://localhost:4000/starting_amount',selected_store).then(
+            response=>{
+                var responseData=response.data;
+                console.log('responseData')
+                console.log(responseData)
+                if(responseData === undefined || response.data.length == 0){
+                    set_entry_report_data(prevState => ({
+                        ...prevState,
+                        starting_amount: 0
+                     }));
+                }else{
+                    set_entry_report_data(prevState => ({
+                        ...prevState,
+                        starting_amount: responseData[0].start_amount
+                     }));
+                }
+            },error =>{
+                console.log('error')
+            }
+        );
+    }
     const [entry_report_data,set_entry_report_data] = useState({
         store_id:'',
         starting_amount:'',
@@ -90,7 +118,8 @@ function Report_entries(){
         cash_expense:'',
         cash_expense_details:[],
         bank_deposit:'',
-        amount_remains:''
+        amount_remains:'',
+        entry_report_date:''
     });
     const handle_entry_report = (e) => {
         let name = e.target.name;
@@ -117,7 +146,17 @@ function Report_entries(){
     const get_supply_total_amount = (total_supply_amount) => {
         set_supply_total_amount(total_supply_amount);
     }
+    const submit_store_entry = () => {
+        entry_report_data.cash_supply_details=cash_supply_details_arr;
+        entry_report_data.cash_supply=supply_total_amount;
 
+        entry_report_data.cash_expense_details=cash_expense_details_arr;
+        entry_report_data.cash_expense=expense_total_amount;
+
+        set_entry_report_data(entry_report_data)
+        console.log('entry_report_data');
+        console.log(entry_report_data);
+    }
     /* END - CASH  DETAILS */
     return (
     <div className='create-new-store'>
@@ -134,7 +173,7 @@ function Report_entries(){
                         />
                     </div>
                     <div className='entry'>
-                        <span>Starting Amount</span> <input disabled type='number' />
+                        <span>Starting Amount</span> <input value={entry_report_data.starting_amount} name='starting_amount' disabled type='number' />
                     </div>
                     <div className='entry'>
                         <span>Sales</span> <input onChange={handle_entry_report} name='sales' type='number'/>
@@ -154,10 +193,11 @@ function Report_entries(){
                         <span>Remain: </span> <input type='text' disabled />
                     </div>
                     <div className='entry'>
-                        <span>Date: </span> <input type='date'/>
+                        <span>Date: </span> <input name='entry_report_date' id='entry_report_date' type='date'/>
                     </div>
                     <div className='entry-submit'>
-                        <input onClick={cash_expense_details} type='submit' className='btn btn-success'/>
+                    <Datepicker />
+                        <input onClick={submit_store_entry} type='submit' className='btn btn-success'/>
                     </div>
 
                 </div>

@@ -18,7 +18,7 @@ exports.add_new_store_report = function(req,res){
     })
 };
 
-exports.get_store_startingAmount = function(req,res){
+exports.get_store_starting_amount = function(req,res){
     StoreReport.getStoreStartingAmount(req,function(err,report){
         if(err){
             res.send(err);

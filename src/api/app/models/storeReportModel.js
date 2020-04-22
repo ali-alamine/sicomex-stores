@@ -88,7 +88,6 @@ StoreReport.getStoreReportDetails =function(req,result){
 
 StoreReport.getStoreStartingAmount = function(req,result){
     var request=req.body;
-    // var date_casting
     var sqlQuery='SELECT store_report_id, date(report_date) as date, start_amount FROM `store_report` WHERE store_id = '+  request.store_id + ' order by store_report_id desc LIMIT 1';
 
     sql.query(sqlQuery,function(err,res){

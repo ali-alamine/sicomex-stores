@@ -31,8 +31,8 @@ module.exports = function(app){
     app.route('/getStoreBankAccount')
     .post(storeReq.get_store_bank_acc)
 
-    app.route('/startingAmount')
-    .post(storeReportReq.get_store_startingAmount)
+    app.route('/starting_amount')
+    .post(storeReportReq.get_store_starting_amount)
 
     app.route('/getStoreReport')
     .post(storeReportReq.get_report_by_store)

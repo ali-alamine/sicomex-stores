@@ -79,6 +79,7 @@
     float: right;
     margin-right: 20px;
     margin-top: -3px;
+    text-align: center;
 }
 
 .entry input:focus {
@@ -157,5 +158,4 @@
     background-color: rgb(169, 177, 180);
     text-shadow: 0px 0px 12px blue;
 }
-
 

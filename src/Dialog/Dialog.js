@@ -14,6 +14,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import AspectRatioIcon from '@material-ui/icons/AspectRatio';
 import './Dialog.css';
 import $ from 'jquery';
 const useStyles = makeStyles((theme) => ({
@@ -100,7 +101,7 @@ function FullScreenDialog(props) {
       }, [details_data])
     return (
       <div className='dialog-details'>
-        <span variant="outlined" color="primary" onClick={handleClickOpen}> <AddCircleOutlineIcon />
+        <span variant="outlined" color="primary" onClick={handleClickOpen}> <AspectRatioIcon />
         </span>
         <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
           <AppBar className={classes.appBar}>
