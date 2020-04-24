@@ -39,7 +39,7 @@ function FullScreenDialog(props) {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
     const handleClickOpen = () => {setOpen(true);};
-    const handleClose = () => {setOpen(false);};
+    const handleClose = () => {setOpen(false); props.calc()};
     useEffect(() => {
       setTimeout(function (){
         $('#text0').focus();
@@ -70,7 +70,11 @@ function FullScreenDialog(props) {
           if(!e.target.value) e.target.value=0;
           var sum = 0;
           $('.amount').each(function(){
-            sum += parseInt(this.value);
+            if(parseInt(this.value)){
+              sum += parseInt(this.value);
+          }else{
+              sum += 0;
+          }
           });
           set_total_amount(sum);
           props.get_supply_total_amount(sum);
@@ -81,7 +85,11 @@ function FullScreenDialog(props) {
         if(e.target.name=='amount'){
           var sum = 0;
           $('.amount').each(function(){
-            sum += parseInt(this.value);
+            if(parseInt(this.value)){
+                sum += parseInt(this.value);
+            }else{
+                sum += 0;
+            }
           });
           set_total_amount(sum);
           props.get_expense_total_amount(sum);
@@ -141,9 +149,9 @@ function FullScreenDialog(props) {
             <AddBoxIcon onClick={add_new_row} className='add-new-row btn btn-light'/>
             <Divider />
 
-            <Button className='submit-details' variant="contained" color="primary" onClick={submit_details}>
+            {/* <Button className='submit-details' variant="contained" color="primary" onClick={submit_details}>
               Submit
-            </Button>
+            </Button> */}
 
           </List>
         </Dialog>

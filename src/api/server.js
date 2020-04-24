@@ -2,21 +2,10 @@ const cors = require('cors');
 
 const express = require('express'),
   app = express(),
-  bodyParser = require('body-parser');
-  port = process.env.PORT || 4000;
 
-  app.use(cors())
-const mysql = require('mysql');
-// connection configurations
-const mc = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'sicomex-stores'
-});
- 
-// connect to database
-mc.connect();
+bodyParser = require('body-parser');
+port = process.env.PORT || 4000;
+app.use(cors())
 
 app.listen(port);
 

@@ -11,11 +11,17 @@ import Select from 'react-select';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import $ from 'jquery';
+import Moment from 'react-moment';
+import moment from 'moment';
 import {useDatepicker, useMonth, useDay} from '@datepicker-react/hooks'
-import Datepicker from "./Datepicker";
+import DatePicker from "react-datepicker";
+import { useForm } from "react-hook-form";
+import "react-datepicker/dist/react-datepicker.css";
+// import Datepicker from "./Datepicker";
 function Report_entries(){
 
-    const [rendere_comp,set_rendere_comp] = useState(false);
+    
+    const { handleSubmit, register, errors } = useForm();
     const [all_stores,set_all_stores]= useState('');
     useEffect(()=>{
         get_all_stores();
@@ -91,8 +97,6 @@ function Report_entries(){
         axios.post('http://localhost:4000/starting_amount',selected_store).then(
             response=>{
                 var responseData=response.data;
-                console.log('responseData')
-                console.log(responseData)
                 if(responseData === undefined || response.data.length == 0){
                     set_entry_report_data(prevState => ({
                         ...prevState,
@@ -101,9 +105,10 @@ function Report_entries(){
                 }else{
                     set_entry_report_data(prevState => ({
                         ...prevState,
-                        starting_amount: responseData[0].start_amount
+                        starting_amount: responseData[0].starting_amount
                      }));
                 }
+                calc_remain_amount();
             },error =>{
                 console.log('error')
             }
@@ -112,20 +117,45 @@ function Report_entries(){
     const [entry_report_data,set_entry_report_data] = useState({
         store_id:'',
         starting_amount:'',
-        sales:'',
-        cash_supply:'',
+        sales_amount:'',
+        cash_supply_amount:'',
         cash_supply_details:[],
-        cash_expense:'',
+        cash_expense_amount:'',
         cash_expense_details:[],
         bank_deposit:'',
-        amount_remains:'',
+        remain_amount:'',
         entry_report_date:''
     });
+    const calc_remain_amount = () => {
+        var sum_in_values = 0;
+        $('.entry-input-add').each(function(){
+            if(parseInt(this.value)){
+                sum_in_values += parseInt(this.value);
+            }else{
+                sum_in_values += 0;
+            }
+        });
+        var sum_out_values = 0;
+        $('.entry-input-sub').each(function(){
+            if(parseInt(this.value)){
+                sum_out_values += parseInt(this.value);
+            }else{
+                sum_out_values += 0;
+            }
+        });
+        var total = sum_in_values - sum_out_values
+        set_remain(total);
+    }
+    const [remain,set_remain] = useState(0);
+
     const handle_entry_report = (e) => {
         let name = e.target.name;
         let value =  e.target.value;
         entry_report_data[name]=value;
+        calc_remain_amount();
         set_entry_report_data(entry_report_data);
+        // set_entry_report_data({ ...entry_report_data, [name]: value });
+        console.log(entry_report_data)
     }
     /* END - ENTRIES REPORT DATA SECTION */
 
@@ -133,30 +163,75 @@ function Report_entries(){
     const [cash_supply_details_arr,set_cash_supply_details_arr]= useState([]);
     const cash_supply_details = (data) => {
         set_cash_supply_details_arr(data);
+        calc_remain_amount();
     }
     const [cash_expense_details_arr,set_cash_expense_details_arr]= useState([]);
     const cash_expense_details = (data) => {
         set_cash_expense_details_arr(data);
+
     }
-    const [expense_total_amount,set_expense_total_amount]= useState([]);
+    const [expense_total_amount,set_expense_total_amount]= useState(0);
     const get_expense_total_amount = (total_expense_amount) => {
         set_expense_total_amount(total_expense_amount);
     }
-    const [supply_total_amount,set_supply_total_amount]= useState([]);
+    const [supply_total_amount,set_supply_total_amount]= useState(0);
     const get_supply_total_amount = (total_supply_amount) => {
         set_supply_total_amount(total_supply_amount);
     }
     const submit_store_entry = () => {
         entry_report_data.cash_supply_details=cash_supply_details_arr;
-        entry_report_data.cash_supply=supply_total_amount;
-
+        entry_report_data.cash_supply_amount=supply_total_amount;
         entry_report_data.cash_expense_details=cash_expense_details_arr;
-        entry_report_data.cash_expense=expense_total_amount;
+        entry_report_data.cash_expense_amount=expense_total_amount;
+        entry_report_data.remain_amount=remain;
+        var temp_entry_date=moment(new Date(entry_date));
+        temp_entry_date=temp_entry_date.format("YYYY-MM-DD")
+        entry_report_data.entry_report_date=temp_entry_date;
+        
+        set_entry_report_data(entry_report_data);
 
-        set_entry_report_data(entry_report_data)
+
         console.log('entry_report_data');
         console.log(entry_report_data);
+
+        return axios.post('http://localhost:4000/add_new_store_entry',entry_report_data).then(
+            response=>{
+                set_entry_report_data({
+                    store_id:'',
+                    starting_amount:'',
+                    sales_amount:'',
+                    cash_supply_amount:'',
+                    cash_supply_details:[],
+                    cash_expense_amount:'',
+                    cash_expense_details:[],
+                    bank_deposit:'',
+                    remain_amount:'',
+                    entry_report_date:''
+                });
+                set_remain(0)
+                set_supply_total_amount(0);
+                set_expense_total_amount(0);
+                set_cash_expense_details_arr([]);
+                set_cash_supply_details_arr([]);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+            },
+            error =>{
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please Contact your software developer',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
+            }
+        );
     }
+
+    const [entry_date, set_entry_date] = useState(new Date());
     /* END - CASH  DETAILS */
     return (
     <div className='create-new-store'>
@@ -173,33 +248,32 @@ function Report_entries(){
                         />
                     </div>
                     <div className='entry'>
-                        <span>Starting Amount</span> <input value={entry_report_data.starting_amount} name='starting_amount' disabled type='number' />
+                        <span>Starting Amount</span> <input value={entry_report_data.starting_amount} name='starting_amount' type='number' className='entry-input-add' disabled/>
                     </div>
                     <div className='entry'>
-                        <span>Sales</span> <input onChange={handle_entry_report} name='sales' type='number'/>
+                        <span>Sales</span> <input value={entry_report_data.sales_amount} onChange={handle_entry_report} name='sales_amount' type='number' className='entry-input-add'/>
                     </div>
                     <div className='entry supply'>
-                        <span>Cash Supply</span> <input type='number' value={supply_total_amount} disabled/>
-                        <span className='add-details'><Dialog get_supply_total_amount={get_supply_total_amount} view='supply' action_name='Cash Supply' cash_supply_details={cash_supply_details}/></span>
+                        <span>Cash Supply</span> <input type='number' value={supply_total_amount} disabled className='entry-input-sub'/>
+                        <span className='add-details'><Dialog calc={calc_remain_amount} get_supply_total_amount={get_supply_total_amount} view='supply' action_name='Cash Supply' cash_supply_details={cash_supply_details}/></span>
                     </div>
                     <div className='entry cash'>
-                        <span>Cash Expenses</span> <input type='number' value={expense_total_amount} disabled/> 
-                        <span className='add-details'><Dialog get_expense_total_amount={get_expense_total_amount}  view='expense' action_name='Cash Expenses' cash_expense_details={cash_expense_details}/></span>
+                        <span>Cash Expenses</span> <input type='number' value={expense_total_amount} disabled className='entry-input-sub'/> 
+                        <span className='add-details'><Dialog calc={calc_remain_amount}  get_expense_total_amount={get_expense_total_amount}  view='expense' action_name='Cash Expenses' cash_expense_details={cash_expense_details}/></span>
                     </div>
                     <div className='entry'>
-                        <span>Bank Deposit</span> <input name='bank_deposit' onChange={handle_entry_report} type='number' />
+                        <span>Bank Deposit</span> <input value={entry_report_data.bank_deposit} name='bank_deposit' onChange={handle_entry_report} type='number' className='entry-input-add'/>
                     </div>
                     <div className='entry'>
-                        <span>Remain: </span> <input type='text' disabled />
+                        <span>Remain: </span> <input type='text' value={remain} disabled />
                     </div>
                     <div className='entry'>
-                        <span>Date: </span> <input name='entry_report_date' id='entry_report_date' type='date'/>
+                        <span>Date: </span> <div className='entry-date'> <DatePicker selected={entry_date} onChange={date => set_entry_date(date)} /> </div> 
+                        {/* <span>Date: </span>  <input type='date' /> */}
                     </div>
                     <div className='entry-submit'>
-                    <Datepicker />
                         <input onClick={submit_store_entry} type='submit' className='btn btn-success'/>
                     </div>
-
                 </div>
                 <div>
                     <Add_new_check />
@@ -229,12 +303,8 @@ function Report_entries(){
                 </ModalFooter>
             </Modal>
             {/* *****************  END - MODALS *********************************  */}
-
-        </div>
-        
+    </div>   
     )
-
-    
 }
 
 export default Report_entries
