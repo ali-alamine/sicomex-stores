@@ -30,15 +30,26 @@
     border-image-repeat: round;
     /* or use the shorthand border-image */
     border-image: url("../assets/add-check.png") 2 round;
-  }
+}
+/*The border image of this one creates wider gaps*/
+.largeGaps {
+border-image-source: url("../assets/add-check.png");
+margin: 0 20px;
+}
+.add-check:hover{
+    background-color: lightgreen;
+    cursor: pointer;
+}
+@media (min-width: 576px){
+    .exp-modal .modal-dialog {
+        max-width: 780px !important;
+        margin: 1.75rem auto;
+    }
+}
 
-  /*The border image of this one creates wider gaps*/
-  .largeGaps {
-    border-image-source: url("../assets/add-check.png");
-    margin: 0 20px;
-  }
-
-  .add-check:hover{
-      background-color: lightgreen;
-      cursor: pointer;
-  }
+#check-description {
+    white-space: pre-line;
+}
+.react-datepicker-wrapper{
+    display: block !important;
+}

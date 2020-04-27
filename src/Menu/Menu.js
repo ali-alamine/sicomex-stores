@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router,Switch,Route,Link,Redirect  } from "react-router-dom";
 import Report_entries from '../Report_entries/Report_entries'
+import Supplier from '../Supplier/Supplier'
 import './Menu.css';
 function Menu(){
 
@@ -45,9 +46,9 @@ function Menu(){
                         </div>
                         </div>
                 </nav>
-                <Route path='/'>
+                {/* <Route path='/'>
                     <Redirect to="/Home" />
-                </Route>
+                </Route> */}
                     <Switch>
                         <Route path="/Home">
                             <Report_entries />
@@ -59,7 +60,7 @@ function Menu(){
                             <Menu />
                         </Route>
                         <Route path="/Supplier">
-                            {/* <Supplier /> */}
+                            <Supplier />
                         </Route>
                         <Route path="/Check">
                             {/* <Check /> */}

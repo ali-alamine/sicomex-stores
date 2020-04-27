@@ -12,7 +12,6 @@
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
-    "jquery": "^3.5.0",
     "jquery-datepicker": "^1.12.3",
     "moment-timezone": "^0.5.28",
     "popper.js": "^1.16.1",
@@ -21,6 +20,7 @@
     "react-datepicker": "^2.14.1",
     "react-dom": "^16.13.1",
     "react-hook-form": "^5.5.3",
+    "react-jquery-datatables": "^1.0.0",
     "react-modal": "^3.11.2",
     "react-moment": "^0.9.7",
     "react-router": "^5.1.2",
@@ -49,5 +49,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "datatables.net": "^1.10.20",
+    "jquery": "^3.5.0"
   }
 }

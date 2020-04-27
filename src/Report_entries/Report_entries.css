@@ -161,3 +161,9 @@
 .entry-date{
     float: right;
 }
+
+@media (max-width: 600px){
+    .add-check {
+        margin-left: -60px !important;
+    }
+}

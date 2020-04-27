@@ -17,6 +17,7 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import AspectRatioIcon from '@material-ui/icons/AspectRatio';
 import './Dialog.css';
 import $ from 'jquery';
+
 const useStyles = makeStyles((theme) => ({
   appBar: {
     position: 'relative',
@@ -30,26 +31,28 @@ const useStyles = makeStyles((theme) => ({
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-var detailsProps = [
-  {'text':'text1','amount':'100'},
-  {'text':'text2','amount':'200'}
-]
 function FullScreenDialog(props) {
 
     const classes = useStyles();
     const [open, setOpen] = useState(false);
     const handleClickOpen = () => {setOpen(true);};
     const handleClose = () => {setOpen(false); props.calc()};
+
     useEffect(() => {
       setTimeout(function (){
         $('#text0').focus();
       },500)
-     
     },[open])
+
+    const clear_view = () => {
+      set_details_data([{'text':'','amount':0}]);
+    }
+
     /* START - ADD NEW ROW */
     const [details_data,set_details_data]=useState([
       {'text':'','amount':0}
     ])
+
     const add_new_row = () => {
       set_details_data([...details_data,{'text':'','amount':0}]);
       var index=details_data.length;
@@ -59,6 +62,7 @@ function FullScreenDialog(props) {
         $(textId).focus();
       },100)
     }
+
     const details_handler = (e, index) => {
       const items = [...details_data];
       items[index][e.target.name] = e.target.value;
@@ -95,18 +99,26 @@ function FullScreenDialog(props) {
           props.get_expense_total_amount(sum);
         }
       }
-   }
-    const submit_details = () =>{
-      console.log(details_data)
+      console.log(details_data);
     }
     /* END - ADD NEW ROW */
 
     const [total_amount,set_total_amount]=React.useState(0);
-      useEffect(() => {
-        if(details_data) {
-            set_details_data(details_data);
-        }
-      }, [details_data])
+
+    const refresh = () => {
+      
+      set_details_data([{'text':'','amount':0}]);
+    }
+    useEffect(() => {
+      if(details_data) {
+          set_details_data(details_data);
+      }
+    }, [details_data])
+
+    useEffect(() => {
+      refresh(); //children function of interest
+    }, [props.refresh]);
+
     return (
       <div className='dialog-details'>
         <span variant="outlined" color="primary" onClick={handleClickOpen}> <AspectRatioIcon />
@@ -149,9 +161,9 @@ function FullScreenDialog(props) {
             <AddBoxIcon onClick={add_new_row} className='add-new-row btn btn-light'/>
             <Divider />
 
-            {/* <Button className='submit-details' variant="contained" color="primary" onClick={submit_details}>
-              Submit
-            </Button> */}
+            <Button className='submit-details' variant="contained" color="primary" onClick={clear_view}>
+              Clear
+            </Button>
 
           </List>
         </Dialog>

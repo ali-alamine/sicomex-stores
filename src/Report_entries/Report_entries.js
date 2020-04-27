@@ -11,18 +11,12 @@ import Select from 'react-select';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import $ from 'jquery';
-import Moment from 'react-moment';
 import moment from 'moment';
-import {useDatepicker, useMonth, useDay} from '@datepicker-react/hooks'
 import DatePicker from "react-datepicker";
-import { useForm } from "react-hook-form";
 import "react-datepicker/dist/react-datepicker.css";
-// import Datepicker from "./Datepicker";
-function Report_entries(){
 
-    
-    const { handleSubmit, register, errors } = useForm();
-    const [all_stores,set_all_stores]= useState('');
+function Report_entries(){
+    const [all_stores,set_all_stores]= useState([]);
     useEffect(()=>{
         get_all_stores();
     },[]);
@@ -58,35 +52,49 @@ function Report_entries(){
         set_new_store_data(new_store_data);
     }
     const add_new_store = () => {
-        return axios.post('http://localhost:4000/store',new_store_data).then(
-            response=>{
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    showConfirmButton: false,
-                    timer: 1000
-                });
-                get_all_stores();
-                close_store_modal();
-            },
-            error =>{
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Please Contact your software developer',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                })
-            }
-        );
+        if(new_store_data.new_store_name != ''){
+            return axios.post('http://localhost:4000/store',new_store_data).then(
+                response=>{
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                    set_new_store_data({
+                        new_store_name:'',
+                        new_store_init_amount:''
+                    })
+                    get_all_stores();
+                    close_store_modal();
+                },
+                error =>{
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Please Contact your software developer',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    })
+                }
+            );
+        }else{
+            Swal.fire({
+                title: 'Required fields',
+                text: 'Please make sure to fill all fields',
+                icon: 'info',
+                confirmButtonText: 'OK'
+            })
+        }
+  
     }
     /* END -  STORE SECTION */
 
     /* START - ENTRIES REPORT DATA SECTION */
-    const [selected_store_report,set_selected_store_report] = useState('');
+    const [selected_store_entry,set_selected_store_entry] = useState('');
 
     const handle_select_store = (_selectedOption) => {
 
-        set_selected_store_report(_selectedOption)
+        set_selected_store_entry(_selectedOption)
         get_starting_amount(_selectedOption)
         set_entry_report_data(prevState => ({
             ...prevState,
@@ -179,58 +187,70 @@ function Report_entries(){
         set_supply_total_amount(total_supply_amount);
     }
     const submit_store_entry = () => {
-        entry_report_data.cash_supply_details=cash_supply_details_arr;
-        entry_report_data.cash_supply_amount=supply_total_amount;
-        entry_report_data.cash_expense_details=cash_expense_details_arr;
-        entry_report_data.cash_expense_amount=expense_total_amount;
-        entry_report_data.remain_amount=remain;
-        var temp_entry_date=moment(new Date(entry_date));
-        temp_entry_date=temp_entry_date.format("YYYY-MM-DD")
-        entry_report_data.entry_report_date=temp_entry_date;
-        
-        set_entry_report_data(entry_report_data);
+        if(entry_report_data.sales_amount != '' && entry_report_data.bank_deposit != '' && entry_report_data.store_id != ''){
+            entry_report_data.cash_supply_details=cash_supply_details_arr;
+            entry_report_data.cash_supply_amount=supply_total_amount;
+            entry_report_data.cash_expense_details=cash_expense_details_arr;
+            entry_report_data.cash_expense_amount=expense_total_amount;
+            entry_report_data.remain_amount=remain;
+            var temp_entry_date=moment(new Date(entry_date));
+            temp_entry_date=temp_entry_date.format("YYYY-MM-DD")
+            entry_report_data.entry_report_date=temp_entry_date;
+            
+            set_entry_report_data(entry_report_data);
 
 
-        console.log('entry_report_data');
-        console.log(entry_report_data);
+            console.log('entry_report_data');
+            console.log(entry_report_data);
 
-        return axios.post('http://localhost:4000/add_new_store_entry',entry_report_data).then(
-            response=>{
-                set_entry_report_data({
-                    store_id:'',
-                    starting_amount:'',
-                    sales_amount:'',
-                    cash_supply_amount:'',
-                    cash_supply_details:[],
-                    cash_expense_amount:'',
-                    cash_expense_details:[],
-                    bank_deposit:'',
-                    remain_amount:'',
-                    entry_report_date:''
-                });
-                set_remain(0)
-                set_supply_total_amount(0);
-                set_expense_total_amount(0);
-                set_cash_expense_details_arr([]);
-                set_cash_supply_details_arr([]);
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    showConfirmButton: false,
-                    timer: 1000
-                });
-            },
-            error =>{
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Please Contact your software developer',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                })
-            }
-        );
+            return axios.post('http://localhost:4000/add_new_store_entry',entry_report_data).then(
+                response=>{
+                    set_entry_report_data({
+                        store_id:'',
+                        starting_amount:'',
+                        sales_amount:'',
+                        cash_supply_amount:'',
+                        cash_supply_details:[],
+                        cash_expense_amount:'',
+                        cash_expense_details:[],
+                        bank_deposit:'',
+                        remain_amount:'',
+                        entry_report_date:''
+                    });
+                    set_remain(0);
+                    set_selected_store_entry({'value':'','label':'','store_id':''})
+                    set_supply_total_amount(0);
+                    set_expense_total_amount(0);
+                    set_cash_expense_details_arr([]);
+                    set_cash_supply_details_arr([]);
+                    doRefreshDialog(!refreshDialog)
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                },
+                error =>{
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Please Contact your software developer',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    })
+                }
+            );
+        }else{
+            Swal.fire({
+                title: 'Required fields',
+                text: 'Please make sure to fill all fields',
+                icon: 'info',
+                confirmButtonText: 'OK'
+            })
+        }
     }
 
+    const [refreshDialog, doRefreshDialog] = useState(false);
     const [entry_date, set_entry_date] = useState(new Date());
     /* END - CASH  DETAILS */
     return (
@@ -241,7 +261,7 @@ function Report_entries(){
                     <div className='entry-select'>    
                         <Select
                             placeholder='Select Store'
-                            value={selected_store_report}
+                            value={selected_store_entry}
                             onChange={handle_select_store}
                             options={all_stores}
                             name='store_data'
@@ -255,11 +275,11 @@ function Report_entries(){
                     </div>
                     <div className='entry supply'>
                         <span>Cash Supply</span> <input type='number' value={supply_total_amount} disabled className='entry-input-sub'/>
-                        <span className='add-details'><Dialog calc={calc_remain_amount} get_supply_total_amount={get_supply_total_amount} view='supply' action_name='Cash Supply' cash_supply_details={cash_supply_details}/></span>
+                        <span className='add-details'><Dialog refresh={refreshDialog} calc={calc_remain_amount} get_supply_total_amount={get_supply_total_amount} view='supply' action_name='Cash Supply' cash_supply_details={cash_supply_details}/></span>
                     </div>
                     <div className='entry cash'>
                         <span>Cash Expenses</span> <input type='number' value={expense_total_amount} disabled className='entry-input-sub'/> 
-                        <span className='add-details'><Dialog calc={calc_remain_amount}  get_expense_total_amount={get_expense_total_amount}  view='expense' action_name='Cash Expenses' cash_expense_details={cash_expense_details}/></span>
+                        <span className='add-details'><Dialog refresh={refreshDialog} calc={calc_remain_amount}  get_expense_total_amount={get_expense_total_amount}  view='expense' action_name='Cash Expenses' cash_expense_details={cash_expense_details}/></span>
                     </div>
                     <div className='entry'>
                         <span>Bank Deposit</span> <input value={entry_report_data.bank_deposit} name='bank_deposit' onChange={handle_entry_report} type='number' className='entry-input-add'/>
@@ -268,7 +288,7 @@ function Report_entries(){
                         <span>Remain: </span> <input type='text' value={remain} disabled />
                     </div>
                     <div className='entry'>
-                        <span>Date: </span> <div className='entry-date'> <DatePicker selected={entry_date} onChange={date => set_entry_date(date)} /> </div> 
+                        <span>Date: </span> <div className='entry-date'> <DatePicker dateFormat="dd/MM/yyyy" selected={entry_date} onChange={date => set_entry_date(date)} /> </div> 
                         {/* <span>Date: </span>  <input type='date' /> */}
                     </div>
                     <div className='entry-submit'>
@@ -276,7 +296,7 @@ function Report_entries(){
                     </div>
                 </div>
                 <div>
-                    <Add_new_check />
+                    <Add_new_check all_stores={all_stores}/>
                 </div>
             </div>
 
@@ -298,8 +318,8 @@ function Report_entries(){
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <button onClick={add_new_store} type="submit" className="btn btn-success">Soumettre</button>
-                    <button onClick={close_store_modal} type="button" className="btn btn-danger">Annuler</button>
+                    <button onClick={add_new_store} className="btn btn-success">Soumettre</button>
+                    <button onClick={close_store_modal} className="btn btn-danger">Annuler</button>
                 </ModalFooter>
             </Modal>
             {/* *****************  END - MODALS *********************************  */}
