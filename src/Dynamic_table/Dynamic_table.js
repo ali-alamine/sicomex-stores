@@ -35,7 +35,7 @@ const TableBody = (props) => {
 
     function buildRow(row, headers) {
       return (
-                <tr key={row.id} className="" id="navbarDropdownMenuLink"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <tr key={row.id} className=" " id="navbarDropdownMenuLink"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 { headers.map((value, index) => {
                     return <td key={index}>{row[value]}</td>
                 })}
