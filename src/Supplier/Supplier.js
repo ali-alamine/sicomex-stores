@@ -2,10 +2,8 @@ import React, { useEffect,useState } from 'react';
 import './Supplier.css';
 import Modal from "react-bootstrap/Modal";
 import Common_filter from'../Common_filter/Common_filter';
-import Dynamic_table from'../Dynamic_table/Dynamic_table';
-import Context_menu from'../Context_menu/Context_menu';
-
-import supplier_schema from'../Dynamic_table/supplier_schema.json';
+import { columns, data } from "./Supplier_columns";
+import Popup from "../Context_menu/Popup";
 import ModalBody from "react-bootstrap/ModalBody";
 import ModalHeader from "react-bootstrap/ModalHeader";
 import ModalFooter from "react-bootstrap/ModalFooter";
@@ -17,14 +15,19 @@ import $ from 'jquery';
 import moment from 'moment';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+// import { DataTable } from 'antd-data-table'
+import "antd/dist/antd.css";
+import { Table } from "antd";
 function Supplier(){
 
     useEffect(()=>{
         setTimeout(() => {
             get_suppliers();
-        }, 500)
+        }, 600) 
         
     },[]);
+
+
 
     const [is_open_sup_modal,set_is_open_sup_modal] = useState(false);
     const open_sup_modal = () => {set_is_open_sup_modal(true);}
@@ -41,6 +44,7 @@ function Supplier(){
         axios.get('http://localhost:4000/supplier').then(
             response => {
                 set_supplier_list(response.data);
+                console.log(response.data)
             },error =>{
                 console.log(error);
             }
@@ -75,6 +79,35 @@ function Supplier(){
         
         console.log(new_sup_data)
     }
+    const [popup_menu, set_popup_menu] = useState({
+        popup: {
+          visible: false,
+          x: 0,
+          y: 0
+        }
+      });
+      const onRow = record => ({
+          
+        onContextMenu: event => {
+          event.preventDefault();
+          if (!popup_menu.visible) {
+              document.addEventListener(`click`, function onClickOutside() {
+                // set_popup_menu({ popup: { visible: false } });
+                // document.getElementById('popupMenu').style.marginLeft='-1000px';
+              document.removeEventListener(`click`, onClickOutside);
+            });
+          }
+          set_popup_menu({
+            popup: {
+              record,
+              visible: true,
+              x: event.clientX,
+              y: event.clientY
+            }
+          });
+        }
+        
+      });
     return(
         <div>
             <div>
@@ -83,12 +116,9 @@ function Supplier(){
             <div>
                 <input type='submit' onClick={open_sup_modal} value='Add Supplier' className='btn btn-primary add-supp-btn' />
             </div>
-            <div className="container p-2">
-                <div className="row">
-                    <div className="col">
-                    <Dynamic_table headers={Object.keys(supplier_schema)} rows={supplier_list} table_for={'sup'}/>
-                    </div>
-                </div>
+            <div >
+                <Table columns={columns} dataSource={supplier_list} onRow={onRow} />
+                <Popup {...popup_menu.popup} />
             </div>
 
             {/* *****************  START - MODALS *********************************  */}

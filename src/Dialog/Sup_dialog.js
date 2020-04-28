@@ -29,20 +29,19 @@ const useStyles = makeStyles((theme) => ({
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-function Sup_dialog(props) {
 
+function Sup_dialog(props) {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
-    const handleClickOpen = () => {setOpen(true);};
+    const handleClickOpen = () => {setOpen(true)};
     const handleClose = () => {setOpen(false);};
 
-    useEffect(() => {
-      props.open_dialog(handleClickOpen);
-    },[])
+    useEffect(()=>{
+    },[]);
 
     return (
-      <div className='dialog-details' onClick={handleClickOpen}>
-        {/* <span variant="outlined" color="primary" onClick={handleClickOpen}> <AspectRatioIcon /> </span> */}
+      <div className='dialog-details'>
+        <span className='open-dialog' variant="outlined" color="primary" onClick={handleClickOpen}> Open </span>
         <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
           <AppBar className={classes.appBar}>
             <Toolbar>

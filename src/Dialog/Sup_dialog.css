@@ -1,0 +1,4 @@
+.dialog-details .open-dialog:hover{
+    color: blue !important;
+    border-bottom: solid blue 2px !important;;
+}
