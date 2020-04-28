@@ -23,3 +23,21 @@ exports.get_suppliers = function(req,res){
         }
     });
 }
+exports.pin_supplier = function(req,res){
+    Supplier.pinSupplier(req.body,function(err,store){
+        if(err){
+            res.send(err);
+        }else{
+            res.send(store)
+        }
+    });
+}
+exports.un_pin_supplier = function(req,res){
+    Supplier.unPinSupplier(req.body,function(err,store){
+        if(err){
+            res.send(err);
+        }else{
+            res.send(store)
+        }
+    });
+}

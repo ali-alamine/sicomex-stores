@@ -23,14 +23,15 @@ function Supplier(){
     useEffect(()=>{
         setTimeout(() => {
             get_suppliers();
-        }, 600) 
+        }, 300) 
         
     },[]);
 
 
 
     const [is_open_sup_modal,set_is_open_sup_modal] = useState(false);
-    const open_sup_modal = () => {set_is_open_sup_modal(true);}
+    const open_sup_modal = () => {set_is_open_sup_modal(true); 
+        set_popup_menu({ popup: { visible: false } });}
     const close_sup_modal = () => {set_is_open_sup_modal(false);}
     const [new_sup_data,set_new_sup_data] = useState({
         supplier_name:'',
@@ -85,31 +86,35 @@ function Supplier(){
           x: 0,
           y: 0
         }
-      });
-      const onRow = record => ({
-          
+    });
+
+    const [selected_row,set_selected_row] = useState({
+        rowId:''
+    })
+    var  setRowClassName = (record) => {
+        return record.supplier_id === selected_row.rowId ? 'selected-row' : record.sup_order=='1' ? 'important-row' :'';
+    }
+    const onRow = record => ({
+        onClick: () => {
+            set_popup_menu({ popup: { visible: false } });
+            set_selected_row({rowId:record.supplier_id});
+        },
         onContextMenu: event => {
-          event.preventDefault();
-          if (!popup_menu.visible) {
-              document.addEventListener(`click`, function onClickOutside() {
-                // set_popup_menu({ popup: { visible: false } });
-                // document.getElementById('popupMenu').style.marginLeft='-1000px';
-              document.removeEventListener(`click`, onClickOutside);
+            event.preventDefault();
+            set_selected_row({rowId:record.supplier_id});
+            set_popup_menu({
+                popup: {
+                    record,
+                    visible: true,
+                    x: event.clientX,
+                    y: event.clientY
+                }
             });
-          }
-          set_popup_menu({
-            popup: {
-              record,
-              visible: true,
-              x: event.clientX,
-              y: event.clientY
-            }
-          });
         }
-        
-      });
+    });
+
     return(
-        <div>
+        <div className='supplier-view'>
             <div>
                 <Common_filter />
             </div>
@@ -117,8 +122,12 @@ function Supplier(){
                 <input type='submit' onClick={open_sup_modal} value='Add Supplier' className='btn btn-primary add-supp-btn' />
             </div>
             <div >
-                <Table columns={columns} dataSource={supplier_list} onRow={onRow} />
-                <Popup {...popup_menu.popup} />
+                <Table bordered
+                columns={columns}
+                dataSource={supplier_list}
+                onRow={onRow}
+                rowClassName={setRowClassName}/>
+                <Popup {...popup_menu.popup}  />
             </div>
 
             {/* *****************  START - MODALS *********************************  */}

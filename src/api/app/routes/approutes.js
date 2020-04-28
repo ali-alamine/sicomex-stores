@@ -15,6 +15,11 @@ module.exports = function(app){
     app.route('/supplier')
     .get(supplier_controller.get_suppliers)
 
+    app.route('/pin_supplier')
+    .post(supplier_controller.pin_supplier)
+    app.route('/un_pin_supplier')
+    .post(supplier_controller.un_pin_supplier)
+
     app.route('/starting_amount')
     .post(store_entry_controller.get_store_starting_amount)
 

@@ -89,9 +89,9 @@ function Add_new_check(props){
 
     }
     return (
-        <div className='col-md-8' onClick={open_exp_check}>
+        <div className='col-md-8' >
             <div className='bank-check'>
-                <div className='add-check bordered largeGaps'>
+                <div className='add-check bordered' onClick={open_exp_check}>
                 <span className='add-check-label'>Add New CHECK</span>
                     <svg width="170" height="170">
                     <circle cx="120" cy="120" r="40" stroke="green" strokeWidth="4" fill="white" />

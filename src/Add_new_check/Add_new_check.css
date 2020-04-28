@@ -40,6 +40,11 @@ margin: 0 20px;
     background-color: lightgreen;
     cursor: pointer;
 }
+input[type='text'], input[type='password'], input[type='number'], textarea {
+    -webkit-appearance: square-button !important;
+}
+
+
 @media (min-width: 576px){
     .exp-modal .modal-dialog {
         max-width: 780px !important;

@@ -1,9 +1,7 @@
 export const columns = [
-  { title: `ID`, dataIndex: `supplier_id`,defaultSortOrder: 'descend',
-  sorter: (a, b) => a.supplier_id - b.supplier_id, },
+  { title: `ID`, dataIndex: `supplier_id`},
   { title: `Name`, dataIndex: `supplier_name` },
-  { title: `amount`, dataIndex: `supplier_amount`,defaultSortOrder: 'descend',
-  sorter: (a, b) => a.supplier_amount - b.supplier_amount, },
+  { title: `Amount`, dataIndex: `supplier_amount`},
 
 ]
 

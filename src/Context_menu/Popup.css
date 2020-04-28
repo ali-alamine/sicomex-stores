@@ -20,11 +20,10 @@
 }
 
 .popup {
-  border: solid rgb(161, 160, 160) 1px;
   animation-name: fadeIn;
   animation-duration: 0.4s;
   background-clip: padding-box;
-  background-color: rgb(228, 224, 224);
+  background-color: #fff;
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   left: 0px;
@@ -40,25 +39,24 @@
 }
 
 .popup li {
-  
-  border: solid rgb(139, 138, 138) 1px;
-  width: auto;
+  border-bottom: solid rgb(209, 208, 208) 1px;
   clear: both;
   color: rgba(0, 0, 0, 0.65);
   cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
-  line-height: 22px;
+  font-size: 20px;
+  font-weight: normal;
+  line-height: 30px;
   margin: 0;
-  padding: 5px 12px;
+  padding: 0px 15px;
   transition: all .3s;
   white-space: nowrap;
   -webkit-transition: all .3s;
 }
 
 .popup li:hover {
-  background-color: #c3c8ca;
-  font-size: 15px;
+  background-color: #e6f7ff;
+  
+  font-size: 21px;
 }
 
 .popup li > i {

@@ -1,3 +1,41 @@
 .add-supp-btn{
     margin-top: 10px;
 }
+.supplier-view{
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+.selected-row{
+    background-color: lightgray;
+    color:black !important;
+}
+.ant-table-tbody>.selected-row:hover>td{
+    background-color: lightgray !important;
+    color:black !important;
+}
+.ant-table-thead tr th{
+    text-align: center !important;
+    font-weight: bold;
+    color: white !important;
+    height: 10px !important;
+}
+.ant-table-tbody tr td{
+    text-align: center !important;
+    cursor: pointer;
+}
+.ant-table-wrapper{
+    margin-top: 20px;
+}
+thead[class*="ant-table-thead"] th{ 
+    background-color: rgb(88, 88, 88) !important;
+}
+.ant-table{
+    line-height:9px !important
+}
+.important-row{
+    background-color: lightblue;
+}

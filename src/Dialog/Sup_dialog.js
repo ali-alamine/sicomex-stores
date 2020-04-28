@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 import AspectRatioIcon from '@material-ui/icons/AspectRatio';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import './Sup_dialog.css';
 import $ from 'jquery';
 
@@ -41,7 +42,7 @@ function Sup_dialog(props) {
 
     return (
       <div className='dialog-details'>
-        <span className='open-dialog' variant="outlined" color="primary" onClick={handleClickOpen}> Open </span>
+        <span className='open-dialog' variant="outlined" color="primary" onClick={handleClickOpen}> <OpenInNewIcon /> Open </span>
         <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
           <AppBar className={classes.appBar}>
             <Toolbar>
