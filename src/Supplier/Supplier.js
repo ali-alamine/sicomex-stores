@@ -3,7 +3,7 @@ import './Supplier.css';
 import Modal from "react-bootstrap/Modal";
 import Common_filter from'../Common_filter/Common_filter';
 import { columns, data } from "./Supplier_columns";
-import Popup from "../Context_menu/Popup";
+import Popup from "../Context_menu/Supplier_popup";
 import ModalBody from "react-bootstrap/ModalBody";
 import ModalHeader from "react-bootstrap/ModalHeader";
 import ModalFooter from "react-bootstrap/ModalFooter";
@@ -15,31 +15,17 @@ import $ from 'jquery';
 import moment from 'moment';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-// import { DataTable } from 'antd-data-table'
 import "antd/dist/antd.css";
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 import { Table } from "antd";
+import 'react-notifications/lib/notifications.css';
 function Supplier(){
 
     useEffect(()=>{
-        setTimeout(() => {
-            get_suppliers();
-        }, 300) 
-        
+        get_suppliers();
     },[]);
-
-
-
-    const [is_open_sup_modal,set_is_open_sup_modal] = useState(false);
-    const open_sup_modal = () => {set_is_open_sup_modal(true); 
-        set_popup_menu({ popup: { visible: false } });}
-    const close_sup_modal = () => {set_is_open_sup_modal(false);}
-    const [new_sup_data,set_new_sup_data] = useState({
-        supplier_name:'',
-        supplier_amount:''
-    })
-    const handle_new_sup_data = (e) => {
-        set_new_sup_data({ ...new_sup_data, [e.target.name]: e.target.value });
-    }
+    
+    /* Get all suppliers */
     const [supplier_list,set_supplier_list] = useState(null);
     const get_suppliers= () => {
         axios.get('http://localhost:4000/supplier').then(
@@ -51,27 +37,82 @@ function Supplier(){
             }
         )
     };
-    const add_new_supplier = () => {
-        axios.post('http://localhost:4000/supplier',new_sup_data).then(
-            response => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    showConfirmButton: false,
-                    timer: 1000
-                });
-            },error =>{
-                console.log(error);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Please Contact your software developer',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                })
-            }
-        )
-    }
 
+    /* Slide Notification */
+    function createNotification(type){
+          switch (type) {
+            case 'info':
+              NotificationManager.info('Info message');
+              break;
+            case 'success':
+              NotificationManager.success('Success message', 'Title here');
+              break;
+            case 'warning':
+              NotificationManager.warning('Warning message', 'Close after 3000ms', 3000);
+              break;
+            case 'error':
+              NotificationManager.error('Error message', 'Click me!', 5000, () => {
+                alert('callback');
+              });
+              break;
+          }
+        
+    };
+    /* Open new Sup Modal */
+    const [is_open_sup_modal,set_is_open_sup_modal] = useState(false);
+    const open_sup_modal = () => {set_is_open_sup_modal(true); 
+    set_popup_menu({ popup: { visible: false } });}
+
+    /* Close new Sup Modal */
+    const close_sup_modal = () => {set_is_open_sup_modal(false);}
+
+    /* Handle new supplier data */
+    const [new_sup_data,set_new_sup_data] = useState({
+        supplier_name:'',
+        supplier_amount:''
+    })
+    const handle_new_sup_data = (e) => {
+        set_new_sup_data({ ...new_sup_data, [e.target.name]: e.target.value });
+    }
+    /* Add New supplier */
+    const add_new_supplier = () => {
+        if(new_sup_data.supplier_name != ''){
+
+            axios.post('http://localhost:4000/supplier',new_sup_data).then(
+                response => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                    close_sup_modal();
+                    get_suppliers();
+                    set_new_sup_data({
+                        supplier_name:'',
+                        supplier_amount:''
+                    })
+                },error =>{
+                    console.log(error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Please Contact your software developer',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    })
+                }
+            )
+        }else{
+            Swal.fire({
+                title: 'Supplier Name is not filled up!',
+                text: 'Please fill all required fields',
+                icon: 'info',
+                confirmButtonText: 'OK'
+            })
+        }
+    }
+    
+    /* Rest new Supplier Form */
     const reset_sup_state = () => {
         set_new_sup_data({
             supplier_name:'',
@@ -80,6 +121,71 @@ function Supplier(){
         
         console.log(new_sup_data)
     }
+
+    /*  Open Edit Sup Modal */
+    const [is_open_edit_sup_modal,set_is_open_edit_sup_modal] = useState(false);
+    const open_edit_sup_modal = (selected_supplier) => {
+        set_is_open_edit_sup_modal(true);
+        set_edit_sup_data({
+        edit_supplier_name:selected_supplier.supplier_name,
+        edit_supplier_amount:selected_supplier.supplier_amount,
+        supplier_id:selected_supplier.supplier_id
+    })
+    set_popup_menu({ popup: { visible: false } });}
+
+    /*  Close Edit Sup Modal */
+    const close_edit_sup_modal = () => {set_is_open_edit_sup_modal(false);}
+
+    
+    /* Handle Edit supplier data */
+    const [edit_sup_data,set_edit_sup_data] = useState({
+        edit_supplier_name:'',
+        edit_supplier_amount:'',
+        supplier_id:''
+    })
+    const handle_edit_sup_data = (e) => {
+        set_edit_sup_data({ ...edit_sup_data, [e.target.name]: e.target.value });
+    }
+
+    /* Submit Edit supplier data */
+    const update_supplier_data = () => {
+        console.log(edit_sup_data)
+        if(edit_sup_data.supplier_name != ''){
+            axios.post('http://localhost:4000/update_supplier',edit_sup_data).then(
+                response => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                    close_edit_sup_modal();
+                    get_suppliers();
+                    set_new_sup_data({
+                        supplier_name:'',
+                        supplier_amount:''
+                    })
+                },error =>{
+                    console.log(error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Please Contact your software developer',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    })
+                }
+            )
+        }else{
+            Swal.fire({
+                title: 'Supplier Name is not filled up!',
+                text: 'Please fill all required fields',
+                icon: 'info',
+                confirmButtonText: 'OK'
+            })
+        }
+    }
+
+    /* Popup Menu functionalities */
     const [popup_menu, set_popup_menu] = useState({
         popup: {
           visible: false,
@@ -87,12 +193,11 @@ function Supplier(){
           y: 0
         }
     });
-
     const [selected_row,set_selected_row] = useState({
         rowId:''
     })
     var  setRowClassName = (record) => {
-        return record.supplier_id === selected_row.rowId ? 'selected-row' : record.sup_order=='1' ? 'important-row' :'';
+        return record.supplier_id === selected_row.rowId && record.sup_order=='0'? 'selected-row' : record.supplier_id === selected_row.rowId && record.sup_order=='1' ? 'selected-important-row' :record.sup_order=='1' ? 'important-row':'';
     }
     const onRow = record => ({
         onClick: () => {
@@ -105,6 +210,10 @@ function Supplier(){
             set_popup_menu({
                 popup: {
                     record,
+                    pin_supplier,
+                    un_pin_supplier,
+                    delete_supplier,
+                    open_edit_sup_modal,
                     visible: true,
                     x: event.clientX,
                     y: event.clientY
@@ -113,13 +222,84 @@ function Supplier(){
         }
     });
 
+    /* Popup Menu Methods */
+    const delete_supplier = (supplier_data) =>{
+        Swal.fire({
+            title: 'Delete Supplier',
+            text: "Are you sure you want to delete image?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            set_popup_menu({ popup: { visible: false } });
+            if (result.value) {
+                axios.post('http://localhost:4000/delete_supplier',supplier_data).then(
+                    response => {
+                        Swal.fire({
+                            title: 'Deleted',
+                            text: 'Successfully Deleted',
+                            icon: 'success',
+                            showConfirmButton: false,
+                            timer: 1000
+                        })
+                        get_suppliers();
+                    },error =>{
+                        console.log(error);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Please Contact your software developer',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        })
+                    }
+                ) 
+            }  
+        })
+    }
+    const pin_supplier = (pin_supplier) => {
+        axios.post('http://localhost:4000/pin_supplier',pin_supplier).then(
+            response => {
+                createNotification('success');
+                get_suppliers();
+                set_popup_menu({ popup: { visible: false } });
+            },error =>{
+                console.log(error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please Contact your software developer',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
+            }
+        )
+    }
+    const un_pin_supplier = (pin_supplier) => {
+        axios.post('http://localhost:4000/un_pin_supplier',pin_supplier).then(
+            response => {
+                createNotification('success');
+                get_suppliers();
+                set_popup_menu({ popup: { visible: false } });
+            },error =>{
+                console.log(error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please Contact your software developer',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
+            }
+        )
+    }
+
     return(
         <div className='supplier-view'>
             <div>
                 <Common_filter />
             </div>
             <div>
-                <input type='submit' onClick={open_sup_modal} value='Add Supplier' className='btn btn-primary add-supp-btn' />
+                <input type='submit' onClick={open_sup_modal} value='New Supplier' className='btn btn-primary add-supp-btn' />
             </div>
             <div >
                 <Table bordered
@@ -152,7 +332,29 @@ function Supplier(){
                     <button onClick={close_sup_modal} className="btn btn-danger">Annuler</button>
                 </ModalFooter>
             </Modal>
+            <Modal show={is_open_edit_sup_modal} onHide={close_edit_sup_modal}>
+                <ModalHeader>
+                    <ModalTitle>Update Supplier</ModalTitle>
+                </ModalHeader>
+                <ModalBody>
+                    <div className='store-form'>
+                        <div className="form-group">
+                            <label className='input-label'>New Supplier Name</label>
+                            <input onChange={handle_edit_sup_data} value={edit_sup_data.edit_supplier_name} name='edit_supplier_name' type="text" className="form-control" placeholder="Name"/>
+                        </div>
+                        <div className="form-group">
+                            <label className='input-label'>Amount</label>
+                            <input onChange={handle_edit_sup_data} value={edit_sup_data.edit_supplier_amount} name='edit_supplier_amount' type="text" className="form-control" placeholder="Amount"/>
+                        </div>
+                    </div>
+                </ModalBody>
+                <ModalFooter>
+                    <button onClick={update_supplier_data} className="btn btn-success">Soumettre</button>
+                    <button onClick={close_edit_sup_modal} className="btn btn-danger">Annuler</button>
+                </ModalFooter>
+            </Modal>
             {/* *****************  END - MODALS *********************************  */}
+            <NotificationContainer/>
         </div>
     )
 }

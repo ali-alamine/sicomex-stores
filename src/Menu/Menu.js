@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router,Switch,Route,Link,Redirect  } from "react-router-dom";
 import Report_entries from '../Report_entries/Report_entries'
 import Supplier from '../Supplier/Supplier'
+import Invoice from '../Invoice/Invoice'
 import './Menu.css';
 function Menu(){
 
@@ -18,6 +19,9 @@ function Menu(){
                                 <Link className="nav-link" to="/Supplier">Supplier</Link>
                             </li>
                             <li className="nav-item">
+                                <a className="nav-link" href="/Invoice">Invoices</a>
+                            </li>
+                            <li className="nav-item">
                                 <Link className="nav-link" to="/Check">Checks</Link>
                             </li>
                             <li className="nav-item">
@@ -25,9 +29,6 @@ function Menu(){
                             </li>
                             <li className="nav-item">
                                 <a className="nav-link" href="/Report">Reports</a>
-                            </li>
-                            <li className="nav-item">
-                                <a className="nav-link" href="/Invoice">Invoices</a>
                             </li>
                             <li className="nav-item dropdown">
                                 <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -62,11 +63,11 @@ function Menu(){
                         <Route path="/Supplier">
                             <Supplier />
                         </Route>
+                        <Route path="/Invoice">
+                            <Invoice />
+                        </Route>
                         <Route path="/Check">
                             {/* <Check /> */}
-                        </Route>
-                        <Route path="/Invoice">
-                            {/* <Invoice /> */}
                         </Route>
                         <Route path="/Store Account">
                             {/* <Store_bank_account /> */}

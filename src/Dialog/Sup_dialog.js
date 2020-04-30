@@ -51,11 +51,11 @@ function Sup_dialog(props) {
               </IconButton>
 
               <Typography variant="h6" className={classes.title}>
-                {/* {props.action_name} */}
+                  
               </Typography>
 
               <Typography variant="h6" className={classes.title}>
-                {/* {total_amount.toLocaleString()} */}
+              <div className='supplier-header-data'>{props.supplier_data.supplier_name} - <span className='supplier-amount'>{props.supplier_data.supplier_amount.toLocaleString()}</span></div>
               </Typography>
 
             </Toolbar>

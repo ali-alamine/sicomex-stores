@@ -10,12 +10,21 @@
     user-select: none;
 }
 .selected-row{
-    background-color: lightgray;
-    color:black !important;
+    background-color: rgb(119, 119, 119);
+    color:white !important;
 }
 .ant-table-tbody>.selected-row:hover>td{
-    background-color: lightgray !important;
-    color:black !important;
+    background-color: rgb(119, 119, 119) !important;
+    color:white !important;
+}
+.selected-important-row{
+    background-color: rgb(109, 199, 230);
+    color:white !important;
+}
+
+.ant-table-tbody>.selected-important-row:hover>td{
+    background-color: rgb(109, 199, 230) !important;
+    color:white !important;
 }
 .ant-table-thead tr th{
     text-align: center !important;
@@ -26,6 +35,7 @@
 .ant-table-tbody tr td{
     text-align: center !important;
     cursor: pointer;
+    color: black;
 }
 .ant-table-wrapper{
     margin-top: 20px;
@@ -33,9 +43,22 @@
 thead[class*="ant-table-thead"] th{ 
     background-color: rgb(88, 88, 88) !important;
 }
+tbody[class*="ant-table-tbody"] td:hover{ 
+    color:black !important;
+}
 .ant-table{
     line-height:9px !important
 }
 .important-row{
     background-color: lightblue;
 }
+.ant-table-tbody>.important-row:hover>td{
+    background-color:rgb(137, 195, 214) !important;
+    color:white !important;
+}
+.ant-table-tbody>:hover>td{
+    background-color:rgb(224, 224, 224) !important;
+    color:black !important;
+}
+
+  

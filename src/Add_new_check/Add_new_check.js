@@ -15,7 +15,10 @@ function Add_new_check(props){
 
     var [is_open_exp_check,set_is_open_exp_check] = useState(false);
     const open_exp_check = () => {set_is_open_exp_check(true)};
-    const close_exp_check = () => {set_is_open_exp_check(false)};
+    const close_exp_check = () => {
+        set_is_open_exp_check(false);
+        reset_check_form();
+    };
     const [all_stores,set_all_stores] = useState([]);
     useEffect(()=>{
         set_all_stores(props.all_stores);
@@ -37,6 +40,7 @@ function Add_new_check(props){
         store_id:'',
         check_description:'',
         check_amount:'',
+        check_number:'',
         check_date:'',
         is_paid_exp_check:'',
         is_for_sup:false,
@@ -48,9 +52,22 @@ function Add_new_check(props){
         set_exp_new_check_data(exp_new_check_data);
 
     }
+    const reset_check_form = () => {
+        set_is_paid_exp_check(false);
+        set_selected_store({})
+        set_exp_new_check_data({
+            store_id:'',
+            check_description:'',
+            check_amount:'',
+            check_number:'',
+            check_date:'',
+            is_paid_exp_check:'',
+            is_for_sup:false,
+        })
+    }
     const [check_exp_date,set_check_exp_date] = useState(new Date());
     const submit_new_exp_check = () => {
-        if(exp_new_check_data.store_id != '' && exp_new_check_data.check_amount != '' && exp_new_check_data.check_amount != ' ' && exp_new_check_data.check_description != ''){
+        if(exp_new_check_data.store_id != '' && exp_new_check_data.check_amount != '' && exp_new_check_data.check_amount != ' ' && exp_new_check_data.check_description != '' && exp_new_check_data.check_number != ''){
             exp_new_check_data.is_paid_exp_check=is_paid_exp_check;
         
             var temp_check_date=moment(new Date(check_exp_date));
@@ -67,7 +84,7 @@ function Add_new_check(props){
                         showConfirmButton: false,
                         timer: 1000
                     });
-                    
+ 
                     close_exp_check();
                 },error =>{
                     Swal.fire({
@@ -116,6 +133,10 @@ function Add_new_check(props){
                                         onChange={handle_select_store}
                                         options={all_stores}
                                     />
+                                </div>
+                                <div className="form-group">
+                                    <label className='input-label'>Check Number</label>
+                                    <input name='check_number' onChange={handle_exp_check_data} type="numbrt" className="form-control" placeholder="Check Amount" />
                                 </div>
                                 <div className="form-group">
                                     <label className='input-label'>Details</label>

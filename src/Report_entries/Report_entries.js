@@ -249,7 +249,6 @@ function Report_entries(){
             })
         }
     }
-
     const [refreshDialog, doRefreshDialog] = useState(false);
     const [entry_date, set_entry_date] = useState(new Date());
     /* END - CASH  DETAILS */
@@ -301,7 +300,7 @@ function Report_entries(){
             </div>
 
             {/* *****************  START - MODALS *********************************  */}
-                <Modal show={is_open_new_store_modal} onHide={close_store_modal}>
+            <Modal show={is_open_new_store_modal} onHide={close_store_modal}>
                 <ModalHeader>
                     <ModalTitle>Create New Store</ModalTitle>
                 </ModalHeader>
