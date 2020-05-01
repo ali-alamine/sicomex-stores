@@ -136,7 +136,7 @@ function Add_new_check(props){
                                 </div>
                                 <div className="form-group">
                                     <label className='input-label'>Check Number</label>
-                                    <input name='check_number' onChange={handle_exp_check_data} type="numbrt" className="form-control" placeholder="Check Amount" />
+                                    <input name='check_number' onChange={handle_exp_check_data} type="number" className="form-control" placeholder="Check Number" />
                                 </div>
                                 <div className="form-group">
                                     <label className='input-label'>Details</label>

@@ -39,20 +39,20 @@ function Supplier(){
     };
 
     /* Slide Notification */
-    function createNotification(type){
+    function createNotification(type,message){
           switch (type) {
             case 'info':
-              NotificationManager.info('Info message');
+              NotificationManager.info('Info', message,1000);
               break;
             case 'success':
-              NotificationManager.success('Success message', 'Title here');
+              NotificationManager.success('Success', message, 1000);
               break;
             case 'warning':
-              NotificationManager.warning('Warning message', 'Close after 3000ms', 3000);
+              NotificationManager.warning('Warning', message, 1000);
               break;
             case 'error':
-              NotificationManager.error('Error message', 'Click me!', 5000, () => {
-                alert('callback');
+              NotificationManager.error('Error', message, 1000, () => {
+                alert('Please Contact your software developer!');
               });
               break;
           }
@@ -261,7 +261,7 @@ function Supplier(){
     const pin_supplier = (pin_supplier) => {
         axios.post('http://localhost:4000/pin_supplier',pin_supplier).then(
             response => {
-                createNotification('success');
+                createNotification('success','To the top of list');
                 get_suppliers();
                 set_popup_menu({ popup: { visible: false } });
             },error =>{
@@ -278,7 +278,7 @@ function Supplier(){
     const un_pin_supplier = (pin_supplier) => {
         axios.post('http://localhost:4000/un_pin_supplier',pin_supplier).then(
             response => {
-                createNotification('success');
+                createNotification('success','Removed');
                 get_suppliers();
                 set_popup_menu({ popup: { visible: false } });
             },error =>{

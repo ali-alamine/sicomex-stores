@@ -19,7 +19,7 @@ function Menu(){
                                 <Link className="nav-link" to="/Supplier">Supplier</Link>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link" href="/Invoice">Invoices</a>
+                                <Link className="nav-link" to="/Invoice">Invoices</Link>
                             </li>
                             <li className="nav-item">
                                 <Link className="nav-link" to="/Check">Checks</Link>
@@ -28,7 +28,7 @@ function Menu(){
                                 <Link className="nav-link" to="/Store Account">Bank Account</Link>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link" href="/Report">Reports</a>
+                                <Link className="nav-link" to="/Store Account">Reports</Link>
                             </li>
                             <li className="nav-item dropdown">
                                 <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
