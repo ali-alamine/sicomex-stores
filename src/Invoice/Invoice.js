@@ -106,34 +106,61 @@ function Invoice () {
 
     /* Submit Invoice */
     const add_new_invoice = () => {
-        var temp_invoice_date=moment(new Date(invoice_date));
-        temp_invoice_date=temp_invoice_date.format("dd/MM/yyyy, h:mm:ss a");
-        new_invoice_data.invoice_date=invoice_date;
-        axios.post('http://localhost:4000/invoice',new_invoice_data).then(
-            response => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Added',
-                    showConfirmButton: false,
-                    timer: 1000
-                });
-                get_invoices();
-                set_popup_menu({ popup: { visible: false } });
-            },error =>{
-                console.log(error);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Please Contact your software developer',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                })
-            }
-        )
+        if(new_invoice_data.supplier_id != '' && new_invoice_data.store_id != '' && new_invoice_data.invoice_amount != '' && new_invoice_data.invoice_number != ''){
+            
+            var temp_invoice_date=moment(new Date(invoice_date));
+            temp_invoice_date=temp_invoice_date.format("dd/MM/yyyy, h:mm:ss a");
+            new_invoice_data.invoice_date=invoice_date;
+            axios.post('http://localhost:4000/invoice',new_invoice_data).then(
+                response => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Added',
+                        showConfirmButton: true,
+                        // timer: 1000
+                    });
+                    get_invoices();
+                    reset_invoice();
+                    set_popup_menu({ popup: { visible: false } });
+                },error =>{
+                    console.log(error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Please Contact your software developer',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    })
+                }
+            )
+        }else{
+            
+            Swal.fire({
+                icon: 'warning',
+                title: 'Please Fill required fields',
+                showConfirmButton: true,
+                // timer: 1000
+            });
+        }
+    }
+
+    /*Reset invoice form after successfully added */
+    const reset_invoice = () => {
+        set_new_invoice_data({
+            supplier_id:'',
+            store_id:'',
+            invoice_number:'',
+            invoice_amount:'',
+            invoice_date:''
+        })
+        set_selected_store_invoice({"label":"","value":"","store_id":""});
+        set_selected_supplier_invoice({"label":"","value":"","supplier_id":""});
     }
 
     /* Get Invoices */
     const [invoices_list,set_invoices_list] =useState([]);
     const get_invoices = function(){
+        console.log('get_invoices')
+        console.log(edit_invoice_data)
         axios.get('http://localhost:4000/invoice').then(
             response => {
                 let invoices=response.data
@@ -150,6 +177,98 @@ function Invoice () {
         )
     }
 
+    /* Open Invoice Details */
+    const open_invoice_details = () => {
+
+    }
+
+    /*Edit Invoice Date */
+    const [edit_invoice_date,set_edit_invoice_date] = useState(new Date());
+    const [edit_invoice_data,set_edit_invoice_data] = useState({
+        invoice_id:'',
+        supplier_id:'',
+        store_id:'',
+        edit_invoice_number:'',
+        edit_invoice_amount:'',
+        edit_invoice_date:''
+    })
+
+    /* Handle New Invoice data */
+    const handle_edit_invoice = (e) =>{
+        set_edit_invoice_data({...edit_invoice_data,[e.target.name]:e.target.value});
+    }
+
+    /* Edit Invoice */
+    const [is_open_edit_invoice_modal,set_is_open_edit_invoice_modal] = useState(false);
+    const close_edit_invoice_modal = () =>{
+        set_is_open_edit_invoice_modal(false);
+        reset_after_update();
+    }
+    
+    /* EDIT Store SELECT */
+    const [selected_edit_store_invoice,set_selected_edit_store_invoice] = useState('');
+    const handle_edit_select_store = (_selectedOption) =>{
+        set_selected_edit_store_invoice(_selectedOption);
+        edit_invoice_data.store_id=_selectedOption.store_id;
+    }
+
+    /* EDIT Supplier SELECT */
+    const [selected_edit_supplier_invoice,set_selected_edit_supplier_invoice] = useState('');
+    const handle_edit_select_supplier = (_selectedOption) =>{
+        set_selected_edit_supplier_invoice(_selectedOption);
+        edit_invoice_data.supplier_id=_selectedOption.supplier_id;
+    }
+
+    /* Reset Invoice after update */
+    const reset_after_update = () => {
+        set_edit_invoice_data({
+            invoice_id:'',
+            supplier_id:'',
+            store_id:'',
+            edit_invoice_number:'',
+            edit_invoice_amount:'',
+            edit_invoice_date:''
+        })
+        set_selected_edit_store_invoice({'label':'','value':'','store_id':''});
+        set_selected_edit_supplier_invoice({'label':'','value':'','store_id':''});
+    }
+    /* Open Edit Invoice Modal */
+    const open_edit_inv_modal = (selected_invoice_data) =>{
+        set_is_open_edit_invoice_modal(true);
+        // set_edit_invoice_data(edit_invoice_data);
+        edit_invoice_data.invoice_id=selected_invoice_data.invoice_id;
+        set_selected_edit_store_invoice({'label':selected_invoice_data.store_name,'value':selected_invoice_data.store_name,'store_id':selected_invoice_data.store_id});
+        set_selected_edit_supplier_invoice({'label':selected_invoice_data.supplier_name,'value':selected_invoice_data.supplier_name,'store_id':selected_invoice_data.supplier_id});
+    }
+
+    /* Update Invoice */
+    const update_invoice = () => {
+        var temp_edit_invoice_date=moment(new Date(edit_invoice_date));
+        temp_edit_invoice_date=temp_edit_invoice_date.format("dd/MM/yyyy, h:mm:ss a");
+        edit_invoice_data.edit_invoice_date=edit_invoice_date;
+        set_edit_invoice_data(edit_invoice_data);
+        axios.post('http://localhost:4000/update_invoice',edit_invoice_data).then(
+            response => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Added',
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+                get_invoices();
+                reset_after_update();
+                set_popup_menu({ popup: { visible: false } });
+            },error =>{
+                console.log(error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please Contact your software developer',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
+            }
+        )
+    }
     /* Popup Menu functionalities */
     const [popup_menu, set_popup_menu] = useState({
         popup: {
@@ -158,12 +277,15 @@ function Invoice () {
             y: 0
         }
     });
+
     const [selected_row,set_selected_row] = useState({
         rowId:''
-    })
-    var  setRowClassName = (record) => {
+    });
+
+    var setRowClassName = (record) => {
         return record.invoice_id === selected_row.rowId && record.invoice_order=='0'? 'selected-row' : record.supplier_id === selected_row.rowId && record.invoice_order=='1' ? 'selected-important-row' :record.invoice_order=='1' ? 'important-row':'';
-    }
+    };
+
     const onRow = record => ({
         onClick: () => {
             set_popup_menu({ popup: { visible: false } });
@@ -178,7 +300,8 @@ function Invoice () {
                     // pin_supplier,
                     // un_pin_supplier,
                     // delete_supplier,
-                    // open_edit_sup_modal,
+                    open_edit_inv_modal,
+                    open_invoice_details,
                     visible: true,
                     x: event.clientX,
                     y: event.clientY
@@ -186,7 +309,6 @@ function Invoice () {
             });
         }
     });
-    
     return (
         <div className='supplier-view'>
             <div>
@@ -211,7 +333,7 @@ function Invoice () {
                 <ModalBody>
                     <div className='store-form'>
                         <div className="form-group">
-                            <label className='input-label'>Supplier Name</label>  
+                            <label className='input-label'>Store Name</label>  
                             <Select
                                 placeholder='Select Store'
                                 value={selected_store_invoice}
@@ -221,7 +343,7 @@ function Invoice () {
                             />
                         </div>
                         <div className="form-group">
-                            <label className='input-label'>Store Name</label>  
+                            <label className='input-label'>Supplier Name</label>  
                             <Select
                                 placeholder='Select Supplier'
                                 value={selected_supplier_invoice}
@@ -249,6 +371,54 @@ function Invoice () {
                 <ModalFooter>
                     <button onClick={add_new_invoice} className="btn btn-success">Soumettre</button>
                     <button onClick={close_new_inv_modal} className="btn btn-danger">Annuler</button>
+                </ModalFooter>
+            </Modal>
+
+            <Modal show={is_open_edit_invoice_modal} onHide={close_edit_invoice_modal}>
+                <ModalHeader>
+                    <ModalTitle>Edit Invoice</ModalTitle>
+                </ModalHeader>
+                <ModalBody>
+                    <div className='store-form'>
+                        <div className="form-group">
+                            <label className='input-label'>Supplier Name</label>  
+                            <Select
+                                placeholder='Select Store'
+                                value={selected_edit_store_invoice}
+                                onChange={handle_edit_select_store}
+                                options={all_stores}
+                                isDisabled
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label className='input-label'>Store Name</label>  
+                            <Select
+                                placeholder='Select Supplier'
+                                value={selected_edit_supplier_invoice}
+                                onChange={handle_edit_select_supplier}
+                                options={supplier_list}
+                                isDisabled
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label className='input-label'>Invoice Number</label>
+                            <input name='edit_invoice_number' onChange={handle_edit_invoice} value={edit_invoice_data.edit_invoice_number} type="number" className="form-control" placeholder="Invoice Number" />
+                        </div>
+                        <div className='form-group row'>
+                            <div className="col-md-6">
+                                <label className='input-label'>Invoice Amount</label>
+                                <input name='edit_invoice_amount' onChange={handle_edit_invoice} value={edit_invoice_data.edit_invoice_amount} type="number" className="form-control" placeholder="Invoice Amount" />
+                            </div>
+                            <div className="col-md-6">
+                                <label className='input-label'>Invoice Date</label>
+                                <DatePicker dateFormat="dd/MM/yyyy" className='form-control' selected={invoice_date} onChange={date => set_edit_invoice_date(date)}/>
+                            </div>
+                        </div>
+                    </div>
+                </ModalBody>
+                <ModalFooter>
+                    <button onClick={update_invoice} className="btn btn-success">Soumettre</button>
+                    <button onClick={close_edit_invoice_modal} className="btn btn-danger">Annuler</button>
                 </ModalFooter>
             </Modal>
         </div>
