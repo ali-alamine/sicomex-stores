@@ -226,7 +226,7 @@ function Supplier(){
     const delete_supplier = (supplier_data) =>{
         Swal.fire({
             title: 'Delete Supplier',
-            text: "Are you sure you want to delete image?",
+            text: "Are you sure you want to delete supplier?",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',

@@ -159,8 +159,6 @@ function Invoice () {
     /* Get Invoices */
     const [invoices_list,set_invoices_list] =useState([]);
     const get_invoices = function(){
-        console.log('get_invoices')
-        console.log(edit_invoice_data)
         axios.get('http://localhost:4000/invoice').then(
             response => {
                 let invoices=response.data
@@ -190,9 +188,30 @@ function Invoice () {
         store_id:'',
         edit_invoice_number:'',
         edit_invoice_amount:'',
+        edit_old_invoice_amount:'',
         edit_invoice_date:''
     })
 
+    /* Slide Notification */
+    function createNotification(type,message){
+        switch (type) {
+          case 'info':
+            NotificationManager.info('Info', message,1000);
+            break;
+          case 'success':
+            NotificationManager.success('Success', message, 1000);
+            break;
+          case 'warning':
+            NotificationManager.warning('Warning', message, 1000);
+            break;
+          case 'error':
+            NotificationManager.error('Error', message, 1000, () => {
+              alert('Please Contact your software developer!');
+            });
+            break;
+        }
+      
+    };
     /* Handle New Invoice data */
     const handle_edit_invoice = (e) =>{
         set_edit_invoice_data({...edit_invoice_data,[e.target.name]:e.target.value});
@@ -203,6 +222,7 @@ function Invoice () {
     const close_edit_invoice_modal = () =>{
         set_is_open_edit_invoice_modal(false);
         reset_after_update();
+        set_popup_menu({ popup: { visible: false } });
     }
     
     /* EDIT Store SELECT */
@@ -235,7 +255,12 @@ function Invoice () {
     /* Open Edit Invoice Modal */
     const open_edit_inv_modal = (selected_invoice_data) =>{
         set_is_open_edit_invoice_modal(true);
-        // set_edit_invoice_data(edit_invoice_data);
+        edit_invoice_data.edit_invoice_amount=selected_invoice_data.invoice_amount;
+        edit_invoice_data.edit_old_invoice_amount=selected_invoice_data.invoice_amount;
+        edit_invoice_data.edit_invoice_number=selected_invoice_data.invoice_number;
+        edit_invoice_data.supplier_id=selected_invoice_data.supplier_id;
+        edit_invoice_data.store_id=selected_invoice_data.store_id;
+        set_edit_invoice_data(edit_invoice_data);
         edit_invoice_data.invoice_id=selected_invoice_data.invoice_id;
         set_selected_edit_store_invoice({'label':selected_invoice_data.store_name,'value':selected_invoice_data.store_name,'store_id':selected_invoice_data.store_id});
         set_selected_edit_supplier_invoice({'label':selected_invoice_data.supplier_name,'value':selected_invoice_data.supplier_name,'store_id':selected_invoice_data.supplier_id});
@@ -243,31 +268,41 @@ function Invoice () {
 
     /* Update Invoice */
     const update_invoice = () => {
-        var temp_edit_invoice_date=moment(new Date(edit_invoice_date));
-        temp_edit_invoice_date=temp_edit_invoice_date.format("dd/MM/yyyy, h:mm:ss a");
-        edit_invoice_data.edit_invoice_date=edit_invoice_date;
-        set_edit_invoice_data(edit_invoice_data);
-        axios.post('http://localhost:4000/update_invoice',edit_invoice_data).then(
-            response => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Added',
-                    showConfirmButton: false,
-                    timer: 1000
-                });
-                get_invoices();
-                reset_after_update();
-                set_popup_menu({ popup: { visible: false } });
-            },error =>{
-                console.log(error);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Please Contact your software developer',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                })
-            }
-        )
+            var temp_edit_invoice_date=moment(new Date(edit_invoice_date));
+            temp_edit_invoice_date=temp_edit_invoice_date.format("dd/MM/yyyy, h:mm:ss a");
+            edit_invoice_data.edit_invoice_date=edit_invoice_date;
+            set_edit_invoice_data(edit_invoice_data);
+            console.log(edit_invoice_data.edit_invoice_amount)
+        if(edit_invoice_data.edit_invoice_amount < 0){
+            Swal.fire({
+                title: 'Invoice amount can not be less than 0',
+                text: 'Invoice amount can not be less than 0',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            })
+        }else{
+            axios.post('http://localhost:4000/update_invoice',edit_invoice_data).then(
+                response => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Added',
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                    close_edit_invoice_modal();
+                    get_invoices();
+                    set_popup_menu({ popup: { visible: false } });
+                },error =>{
+                    console.log(error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Please Contact your software developer',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    })
+                }
+            )
+        }
     }
     /* Popup Menu functionalities */
     const [popup_menu, set_popup_menu] = useState({
@@ -297,9 +332,9 @@ function Invoice () {
             set_popup_menu({
                 popup: {
                     record,
-                    // pin_supplier,
-                    // un_pin_supplier,
-                    // delete_supplier,
+                    pin_invoice,
+                    un_pin_invoice,
+                    delete_invoice,
                     open_edit_inv_modal,
                     open_invoice_details,
                     visible: true,
@@ -309,6 +344,80 @@ function Invoice () {
             });
         }
     });
+
+    /* Update Invoice */
+    const delete_invoice = (selected_invoice) => {
+        Swal.fire({
+            title: 'Delete Invoice',
+            text: "Are you sure you want to delete image?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            set_popup_menu({ popup: { visible: false } });
+            if (result.value) {
+                axios.post('http://localhost:4000/delete_invoice',selected_invoice).then(
+                    response => {
+                        Swal.fire({
+                            title: 'Deleted',
+                            text: 'Successfully Deleted',
+                            icon: 'success',
+                            showConfirmButton: false,
+                            timer: 1000
+                        })
+                        get_invoices();
+                    },error =>{
+                        console.log(error);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Please Contact your software developer',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        })
+                    }
+                ) 
+            }  
+        })
+    }
+    
+    /* Pin Invoice */
+    const pin_invoice = (pin_invoice) => {
+        axios.post('http://localhost:4000/pin_invoice',pin_invoice).then(
+            response => {
+                createNotification('success','To the top of list');
+                get_invoices();
+                set_popup_menu({ popup: { visible: false } });
+            },error =>{
+                console.log(error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please Contact your software developer',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
+            }
+        )
+    }
+    /* Unpin Invoice */
+    const un_pin_invoice = (pin_invoice) => {
+        axios.post('http://localhost:4000/un_pin_invoice',pin_invoice).then(
+            response => {
+                createNotification('success','Removed');
+                get_invoices();
+                set_popup_menu({ popup: { visible: false } });
+            },error =>{
+                console.log(error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please Contact your software developer',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
+            }
+        )
+    }
     return (
         <div className='supplier-view'>
             <div>
@@ -318,12 +427,12 @@ function Invoice () {
                 <input onClick={open_new_inv_modal} type='submit' value='New Invoice' className='btn btn-primary add-supp-btn' />
             </div>
             <div>
-            <Table bordered
-                columns={columns}
-                dataSource={invoices_list}
-                onRow={onRow}
-                rowClassName={setRowClassName} />
-            <Popup {...popup_menu.popup}  />
+                <Table bordered
+                    columns={columns}
+                    dataSource={invoices_list}
+                    onRow={onRow}
+                    rowClassName={setRowClassName} />
+                <Popup {...popup_menu.popup} />
             </div>
             {/* *****************  START - MODALS *********************************  */}
             <Modal show={is_open_new_inv_modal} onHide={close_new_inv_modal}>
@@ -421,6 +530,7 @@ function Invoice () {
                     <button onClick={close_edit_invoice_modal} className="btn btn-danger">Annuler</button>
                 </ModalFooter>
             </Modal>
+            <NotificationContainer/>
         </div>
     )
 }
