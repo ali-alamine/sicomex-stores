@@ -3,6 +3,7 @@ import { BrowserRouter as Router,Switch,Route,Link,Redirect  } from "react-route
 import Report_entries from '../Report_entries/Report_entries'
 import Supplier from '../Supplier/Supplier'
 import Invoice from '../Invoice/Invoice'
+import Check from '../Check/Check'
 import './Menu.css';
 function Menu(){
 
@@ -67,7 +68,7 @@ function Menu(){
                             <Invoice />
                         </Route>
                         <Route path="/Check">
-                            {/* <Check /> */}
+                            <Check />
                         </Route>
                         <Route path="/Store Account">
                             {/* <Store_bank_account /> */}

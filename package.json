@@ -26,6 +26,7 @@
     "react-jquery-datatables": "^1.0.0",
     "react-modal": "^3.11.2",
     "react-moment": "^0.9.7",
+    "react-multi-select-component": "^2.0.5",
     "react-notifications": "^1.6.0",
     "react-notifications-component": "^2.4.0",
     "react-router": "^5.1.2",
@@ -33,6 +34,7 @@
     "react-scripts": "3.4.1",
     "react-select": "^3.1.0",
     "react-simple-snackbar": "^1.1.9",
+    "react-widgets": "^4.5.0",
     "sweetalert2": "^9.10.12"
   },
   "scripts": {

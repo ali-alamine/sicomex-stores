@@ -295,7 +295,7 @@ function Report_entries(){
                     </div>
                 </div>
                 <div>
-                    <Add_new_check all_stores={all_stores}/>
+                    <Add_new_check all_stores={all_stores} check_type='exp'/>
                 </div>
             </div>
 

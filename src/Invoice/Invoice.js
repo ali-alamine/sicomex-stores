@@ -53,6 +53,13 @@ function Invoice () {
         )
     };
 
+    /* Store SELECT */
+    const [selected_store_invoice,set_selected_store_invoice] = useState('');
+    const handle_select_store = (_selectedOption) =>{
+        set_selected_store_invoice(_selectedOption);
+        new_invoice_data.store_id=_selectedOption.store_id;
+    }
+
     /* Get all Suppliers*/
     const [supplier_list,set_supplier_list] = useState(null);
     const get_suppliers= () => {
@@ -72,14 +79,6 @@ function Invoice () {
             }
         )
     };
-
-    /* Store SELECT */
-    const [selected_store_invoice,set_selected_store_invoice] = useState('');
-    const handle_select_store = (_selectedOption) =>{
-        set_selected_store_invoice(_selectedOption);
-        new_invoice_data.store_id=_selectedOption.store_id;
-    }
-
     /* Supplier SELECT */
     const [selected_supplier_invoice,set_selected_supplier_invoice] = useState('');
     const handle_select_supplier = (_selectedOption) =>{

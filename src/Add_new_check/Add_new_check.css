@@ -44,9 +44,8 @@ input[type='text'], input[type='password'], input[type='number'], textarea {
     -webkit-appearance: square-button !important;
 }
 
-
 @media (min-width: 576px){
-    .exp-modal .modal-dialog {
+    .new-check-modal .modal-dialog {
         max-width: 780px !important;
         margin: 1.75rem auto;
     }
@@ -57,4 +56,8 @@ input[type='text'], input[type='password'], input[type='number'], textarea {
 }
 .react-datepicker-wrapper{
     display: block !important;
+}
+.add-check-sup-btn{
+    margin-top: 10px;
+    margin-left: -12px;
 }
