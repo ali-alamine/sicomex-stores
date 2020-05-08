@@ -25,8 +25,10 @@ import 'react-notifications/lib/notifications.css';
 function Check (){
     const [all_stores,set_all_stores]= useState([]);
     
+    const [supplier_list,set_supplier_list] = useState([]);
     useEffect(()=>{
         get_all_stores();
+        get_suppliers();
     },[]);
     const get_all_stores= () => {
         axios.get('http://localhost:4000/store').then(
@@ -45,7 +47,17 @@ function Check (){
             }
         )
     };
-
+    /* Get suppliers */
+    
+    const get_suppliers= () => {
+        axios.get('http://localhost:4000/supplier').then(
+            response => {
+                set_supplier_list(response.data);
+            },error =>{
+                console.log(error);
+            }
+        )
+    };
     /* Get Checks */
     const [check_list, set_check_list] = useState([]);
     const get_checks = () => {
@@ -112,7 +124,7 @@ function Check (){
             </div>
             <div>
                 <div>
-                    <Add_new_check all_stores={all_stores} check_type='sup'/>
+                    <Add_new_check all_stores={all_stores} supplier_list={supplier_list} check_type='sup'/>
                 </div>
             </div>
             <div>

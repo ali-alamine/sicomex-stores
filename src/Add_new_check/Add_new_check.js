@@ -1,3 +1,5 @@
+/* Old  */
+
 import React, { useEffect,useState } from 'react';
 import './Add_new_check.css';
 import Modal from "react-bootstrap/Modal";
@@ -5,16 +7,16 @@ import ModalBody from "react-bootstrap/ModalBody";
 import ModalHeader from "react-bootstrap/ModalHeader";
 import ModalFooter from "react-bootstrap/ModalFooter";
 import ModalTitle from "react-bootstrap/ModalTitle";
-import Select from 'react-select';
+// import Select from 'react-select';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import DatePicker from "react-datepicker";
 import moment from 'moment';
 import MultiSelect from "react-multi-select-component";
-// import Multiselect from 'react-widgets/lib/Multiselect';
-// import { Multiselect } from 'react-widgets'
+import { Select } from 'antd';
 function Add_new_check(props){
 
+    /* Handle Open check Modal */
     var [is_open_new_check,set_is_open_new_check] = useState(false);
     const open_new_check = () => {set_is_open_new_check(true)};
     const close_check = () => {
@@ -22,42 +24,29 @@ function Add_new_check(props){
         reset_check_form();
     };
 
-    /* Get all Suppliers*/
-    const [supplier_list,set_supplier_list] = useState(null);
-    const get_suppliers= () => {
-        axios.get('http://localhost:4000/supplier').then(
-            response => {
-                var temp_all_stores=[];
-                for(var i =0;i<response.data.length;i++){
-                    temp_all_stores.push({
-                        'value':response.data[i].supplier_name,
-                        'label':response.data[i].supplier_name,
-                        'supplier_id':response.data[i].supplier_id
-                    })
-                }
-                set_supplier_list(temp_all_stores);
-            },error =>{
-                console.log(error);
-            }
-        )
-    };
-
-    /* Supplier SELECT */
-    const [selected_supplier_check,set_selected_supplier_check] = useState('');
-    const handle_select_supplier = (_selectedOption) =>{
-        set_selected_supplier_check(_selectedOption);
+    /* Handle Suppliers*/
+    const [supplier_list,set_supplier_list] = useState([]);
+    const handle_select_supplier = (supplier_id) =>{
+        new_check_data.supplier_id=supplier_id;
     }
+
+    /* Handle Stores */
     const [all_stores,set_all_stores] = useState([]);
+    const handle_select_store = (store_id) => {
+        new_check_data.store_id=store_id;
+    }
+
+    /* Handle supplier and store data  */
     useEffect(()=>{
         set_all_stores(props.all_stores);
+        if(props.check_type=='sup'){
+            set_supplier_list(props.supplier_list);
+        }else{
+            set_supplier_list([{label:'',value:''}]);
+        }
     },[is_open_new_check]);
 
-    const [selected_store,set_selected_store]= useState({});
-    const handle_select_store = (_selectedOption) => {
-        set_selected_store(_selectedOption)
-        new_check_data.store_id=_selectedOption.store_id;
-    }
-
+    /* Handle check payment */
     const [is_paid_check,set_is_paid_check]= useState(false);
     const toggle_payment = () => {
         set_is_paid_check(!is_paid_check);
@@ -67,15 +56,17 @@ function Add_new_check(props){
         }));
     }
 
+    /*Handle new check data */
     const [new_check_data,set_new_check_data] =  useState({
         store_id:'',
         supplier_id:'',
+        invoice_ids:[],
         check_description:'',
         check_amount:'',
         check_number:'',
         check_date:'',
         is_paid_check:'',
-        is_for_sup:false,
+        is_for_sup:'',
     });
     const handle_new_check_data = (e) => {
         let name= e.target.name;
@@ -85,9 +76,9 @@ function Add_new_check(props){
 
     }
 
+    /* Rest check from */
     const reset_check_form = () => {
         set_is_paid_check(false);
-        set_selected_store({})
         set_new_check_data({
             store_id:'',
             check_description:'',
@@ -99,17 +90,25 @@ function Add_new_check(props){
         })
     }
 
+    /* Handle check date */
     const [check_new_date,set_check_new_date] = useState(new Date());
 
+    /* Submit new check */
     const submit_new_check = () => {
-        if(new_check_data.store_id != '' && new_check_data.check_amount != '' && new_check_data.check_amount != ' ' && new_check_data.check_description != '' && new_check_data.check_number != ''){
+        if(new_check_data.store_id != '' && new_check_data.check_amount != '' && new_check_data.check_amount != ' ' && new_check_data.check_number != ''){
             new_check_data.is_paid_check=is_paid_check;
+            if(props.check_type=='sup'){
+                new_check_data.is_for_sup=true;
+            }
         
             var temp_check_date=moment(new Date(check_new_date));
             temp_check_date=temp_check_date.format("YYYY-MM-DD")
             new_check_data.check_date=temp_check_date;
     
             set_new_check_data(new_check_data);
+
+            console.log('new_check_data')
+            console.log(new_check_data)
     
             axios.post('http://localhost:4000/add_new_exp_check',new_check_data).then(
                 response => {
@@ -142,50 +141,30 @@ function Add_new_check(props){
     }
 
     /* Get Invoices */
-    function search_invoices_by_number() {
-        console.log('Here we go');
+    const { Option } = Select;
+    var [invoices,set_invoices] = useState([]);
+    const handle_select_invoices =(value) => {
+        new_check_data.invoice_ids=value;
     }
-
-    // const options = [
-    //     { label: "Grapes 🍇", value: "grapes" },
-    //     { label: "Mango 🥭", value: "mango" },
-    //     { label: "Strawberry 🍓", value: "strawberry" },
-    // ];
-
-    const [invoices,set_invoices] = useState([]);
-    function test(options, filter) {
-        if (!filter) {
-            return options;
-        }else{
-
-            var data={'invoice_number':'22'}
-            axios.post('http://localhost:4000/get_invoice_by_number',data).then(
-                response => {
-                    var temp_invoices=[];
-                    for(var i =0;i<response.data.length;i++){
-                        temp_invoices.push({
-                            label:response.data[i].invoice_number,
-                            value:response.data[i].invoice_number
-                        })
-                    }
-                    // JSON.stringify(temp_invoices)
-                    set_invoices(temp_invoices);
-                    console.log('FIRED')
-                    
-                },error =>{
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'Please Contact your software developer',
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    })
+    function search_invoice_by_number(value) {
+        var data={'invoice_number':value};
+        axios.post('http://localhost:4000/get_invoice_by_number',data).then(
+            response => {
+                if(response.data.length > 0){
+                    set_invoices(response.data);
+                }else{
+                    set_invoices([{'invoice_number':''}]);
                 }
-            )
-            return options;
-        }
+            },error =>{
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please Contact your software developer',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
+            }
+        )
     }
-
-    const [selected, setSelected] = useState([]);
     return (
         <div className='col-md-8' >
             <div Style={props.check_type=='sup' ? 'display:block':'display:none'}>
@@ -211,12 +190,22 @@ function Add_new_check(props){
                             <div className='check-form'>
                                 <div className="form-group">
                                     <label className='input-label'>Store Name</label>
-                                    <Select
-                                        placeholder='Select Store'
-                                        value={selected_store}
+                                      <Select
+                                        showSearch
+                                        style={{ width: '100%',borderRadius:20}}
+                                        placeholder="Select Store"
+                                        optionFilterProp="children"
                                         onChange={handle_select_store}
-                                        options={all_stores}
-                                    />
+                                        filterOption={(input, option) =>
+                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                        }
+                                        >
+                                        {
+                                            all_stores.map((el,index) => {
+                                                return <Option key={index} value={el.store_id}>{el.label}</Option>
+                                            })
+                                        }
+                                        </Select>
                                 </div>
                                 <div className="form-group">
                                     <label className='input-label'>Check Number</label>
@@ -227,25 +216,53 @@ function Add_new_check(props){
                                     <textarea name='check_description' onChange={handle_new_check_data} id="check-description" className="form-control" placeholder="Write Text Here..." />
                                 </div>
 
-                                <div Style={props.check_type == 'exp' ? 'display:none' : 'display:block'} className="form-group">
-                                    <label className='input-label'>Supplier Name</label>  
-                                    <Select
-                                        placeholder='Select Supplier'
-                                        value={selected_supplier_check}
-                                        options={supplier_list}
-                                        name='store_data'
-                                    />
+                                <div Style={props.check_type == 'sup' ? 'display:block' : 'display:none'} className="form-group">
+                                    <label className='input-label'>Supplier Name</label> 
+                                      <Select
+                                        showSearch
+                                        style={{ width: '100%',borderRadius:20}}
+                                        placeholder="Select supplier"
+                                        optionFilterProp="children"
+                                        onChange={handle_select_supplier}
+                                        filterOption={(input, option) =>
+                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                        }
+                                        >
+                                            {
+                                                supplier_list.map((el,index) => {
+                                                    console.log('*********************************** supplier_list')
+                                                    console.log(supplier_list)
+                                                   return <Option key={index} value={el.supplier_id}>{el.supplier_name}</Option>
+                                                })
+                                            }
+                                        </Select>
                                 </div>
                                 <div>
-                                <div>
-                                    <pre>{JSON.stringify(selected)}</pre>
-                                    <MultiSelect
-                                        options={invoices}
-                                        value={selected}
-                                        labelledBy={"Select"}
-                                        onChange={setSelected}
-                                        filterOptions={test}
-                                    />
+                                <div Style={props.check_type == 'sup' ? 'display:block' : 'display:none'}>
+                                    <label className='input-label'>Select Invoices</label>  
+                                    <Select
+                                        mode="multiple"
+                                        style={{ width: '100%' }}
+                                        placeholder="select invoices"
+                                        defaultValue={[]}
+                                        onChange={handle_select_invoices}
+                                        optionLabelProp="label"
+                                        onSearch={search_invoice_by_number}
+                                    >
+                                    {
+                                        invoices.map((el,index) => {
+                                            console.log(el)
+                                            return <Option value={el.invoice_number} label={el.invoice_number}>
+                                                <div className="demo-option-label-item">
+                                                    {/* <span role="img" aria-label="China">
+                                                    🇨🇳
+                                                    </span> */}
+                                                    {el.invoice_number}
+                                                </div>
+                                            </Option>
+                                        })
+                                    }
+                                    </Select>                           
                                 </div>
                                 </div>
 

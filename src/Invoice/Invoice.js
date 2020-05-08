@@ -112,15 +112,26 @@ function Invoice () {
             new_invoice_data.invoice_date=invoice_date;
             axios.post('http://localhost:4000/invoice',new_invoice_data).then(
                 response => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Added',
-                        showConfirmButton: true,
-                        // timer: 1000
-                    });
-                    get_invoices();
-                    reset_invoice();
-                    set_popup_menu({ popup: { visible: false } });
+                    if(response.data == 'DUPLICATE_INV_NUM'){
+                        Swal.fire({
+                            icon: 'info',
+                            title: new_invoice_data.invoice_number,
+                            text: 'Duplication invoice number',
+                            showConfirmButton: true,
+                            // timer: 1000
+                        });
+                    }else{
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Added',
+                            showConfirmButton: true,
+                            // timer: 1000
+                        });
+                        get_invoices();
+                        reset_invoice();
+                        close_new_inv_modal()
+                        set_popup_menu({ popup: { visible: false } });
+                    }
                 },error =>{
                     console.log(error);
                     Swal.fire({

@@ -93,7 +93,6 @@ function Report_entries(){
     const [selected_store_entry,set_selected_store_entry] = useState('');
 
     const handle_select_store = (_selectedOption) => {
-
         set_selected_store_entry(_selectedOption)
         get_starting_amount(_selectedOption)
         set_entry_report_data(prevState => ({
