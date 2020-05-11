@@ -121,12 +121,7 @@ function Invoice () {
                             // timer: 1000
                         });
                     }else{
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Added',
-                            showConfirmButton: true,
-                            // timer: 1000
-                        });
+                        createNotification('success','Added');
                         get_invoices();
                         reset_invoice();
                         close_new_inv_modal()
@@ -195,6 +190,7 @@ function Invoice () {
     const [edit_invoice_data,set_edit_invoice_data] = useState({
         invoice_id:'',
         supplier_id:'',
+        supplier_amount:'',
         store_id:'',
         edit_invoice_number:'',
         edit_invoice_amount:'',
@@ -206,16 +202,16 @@ function Invoice () {
     function createNotification(type,message){
         switch (type) {
           case 'info':
-            NotificationManager.info('Info', message,1000);
+            NotificationManager.info('Info', message,1500);
             break;
           case 'success':
-            NotificationManager.success('Success', message, 1000);
+            NotificationManager.success('Success', message, 1500);
             break;
           case 'warning':
-            NotificationManager.warning('Warning', message, 1000);
+            NotificationManager.warning('Warning', message, 1500);
             break;
           case 'error':
-            NotificationManager.error('Error', message, 1000, () => {
+            NotificationManager.error('Error', message, 1500, () => {
               alert('Please Contact your software developer!');
             });
             break;
@@ -266,6 +262,7 @@ function Invoice () {
     const open_edit_inv_modal = (selected_invoice_data) =>{
         set_is_open_edit_invoice_modal(true);
         edit_invoice_data.edit_invoice_amount=selected_invoice_data.invoice_amount;
+        edit_invoice_data.supplier_amount=selected_invoice_data.supplier_amount;
         edit_invoice_data.edit_old_invoice_amount=selected_invoice_data.invoice_amount;
         edit_invoice_data.edit_invoice_number=selected_invoice_data.invoice_number;
         edit_invoice_data.supplier_id=selected_invoice_data.supplier_id;
@@ -293,12 +290,7 @@ function Invoice () {
         }else{
             axios.post('http://localhost:4000/update_invoice',edit_invoice_data).then(
                 response => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Added',
-                        showConfirmButton: false,
-                        timer: 1000
-                    });
+                    createNotification('success','updated');
                     close_edit_invoice_modal();
                     get_invoices();
                     set_popup_menu({ popup: { visible: false } });
@@ -429,7 +421,7 @@ function Invoice () {
         )
     }
     return (
-        <div className='supplier-view'>
+        <div className='supplier-view' id='body'>
             <div>
                 <Common_filter />
             </div>

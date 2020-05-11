@@ -26,8 +26,9 @@ function Add_new_check(props){
 
     /* Handle Suppliers*/
     const [supplier_list,set_supplier_list] = useState([]);
-    const handle_select_supplier = (supplier_id) =>{
+    const handle_select_supplier = (supplier_id,supplier_amount) =>{
         new_check_data.supplier_id=supplier_id;
+        new_check_data.supplier_amount=supplier_amount.key;
     }
 
     /* Handle Stores */
@@ -60,6 +61,7 @@ function Add_new_check(props){
     const [new_check_data,set_new_check_data] =  useState({
         store_id:'',
         supplier_id:'',
+        supplier_amount:'',
         invoice_ids:[],
         check_description:'',
         check_amount:'',
@@ -68,6 +70,7 @@ function Add_new_check(props){
         is_paid_check:'',
         is_for_sup:'',
     });
+
     const handle_new_check_data = (e) => {
         let name= e.target.name;
         let value= e.target.value;
@@ -99,6 +102,8 @@ function Add_new_check(props){
             new_check_data.is_paid_check=is_paid_check;
             if(props.check_type=='sup'){
                 new_check_data.is_for_sup=true;
+            }else{
+                new_check_data.is_for_sup=false;
             }
         
             var temp_check_date=moment(new Date(check_new_date));
@@ -140,20 +145,24 @@ function Add_new_check(props){
 
     }
 
-    /* Get Invoices */
+    /* Multi Select - Invoice */
     const { Option } = Select;
     var [invoices,set_invoices] = useState([]);
-    const handle_select_invoices =(value) => {
+    const handle_select_invoices =(value,key) => {
+        console.log('************* key ******************')
+        console.log(key)
         new_check_data.invoice_ids=value;
     }
+
     function search_invoice_by_number(value) {
         var data={'invoice_number':value};
         axios.post('http://localhost:4000/get_invoice_by_number',data).then(
             response => {
+
                 if(response.data.length > 0){
                     set_invoices(response.data);
                 }else{
-                    set_invoices([{'invoice_number':''}]);
+                    set_invoices([]);
                 }
             },error =>{
                 Swal.fire({
@@ -165,6 +174,7 @@ function Add_new_check(props){
             }
         )
     }
+    
     return (
         <div className='col-md-8' >
             <div Style={props.check_type=='sup' ? 'display:block':'display:none'}>
@@ -230,40 +240,29 @@ function Add_new_check(props){
                                         >
                                             {
                                                 supplier_list.map((el,index) => {
-                                                    console.log('*********************************** supplier_list')
-                                                    console.log(supplier_list)
-                                                   return <Option key={index} value={el.supplier_id}>{el.supplier_name}</Option>
+                                                   return <Option key={el.supplier_amount} value={el.supplier_id}>{el.supplier_name}</Option>
                                                 })
                                             }
                                         </Select>
                                 </div>
                                 <div>
-                                <div Style={props.check_type == 'sup' ? 'display:block' : 'display:none'}>
-                                    <label className='input-label'>Select Invoices</label>  
-                                    <Select
-                                        mode="multiple"
-                                        style={{ width: '100%' }}
-                                        placeholder="select invoices"
-                                        defaultValue={[]}
-                                        onChange={handle_select_invoices}
-                                        optionLabelProp="label"
-                                        onSearch={search_invoice_by_number}
-                                    >
-                                    {
-                                        invoices.map((el,index) => {
-                                            console.log(el)
-                                            return <Option value={el.invoice_number} label={el.invoice_number}>
-                                                <div className="demo-option-label-item">
-                                                    {/* <span role="img" aria-label="China">
-                                                    🇨🇳
-                                                    </span> */}
-                                                    {el.invoice_number}
-                                                </div>
-                                            </Option>
-                                        })
-                                    }
-                                    </Select>                           
-                                </div>
+                                    <div Style={props.check_type == 'sup' ? 'display:block' : 'display:none'}>
+                                        <label className='input-label'>Select Invoices</label>  
+                                        <Select
+                                            mode="multiple"
+                                            style={{ width: '100%' }}
+                                            placeholder="Select Invoices"
+                                            onChange={handle_select_invoices}
+                                            optionLabelProp="label"
+                                            onSearch={search_invoice_by_number}
+                                        >
+                                        {
+                                            invoices.map((el,index) => {
+                                                return <Option key={el.invoice_id} value={el.invoice_number + ' |'+el.invoice_id}>{el.invoice_number}</Option>
+                                            })
+                                        }
+                                        </Select>                               
+                                    </div>
                                 </div>
 
                                 <div className='form-group row'>

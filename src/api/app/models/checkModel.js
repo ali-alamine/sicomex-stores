@@ -1,7 +1,8 @@
 'use strict';
 
 var sql = require('./db.js');
-
+var invoiceModel = require('./invoiceModel.js');
+var supplierModel = require('../models/supplierModel');
 var Check =function(check){
     this.check_description=check.check_description;
     this.check_amount=check.check_amount;
@@ -15,18 +16,63 @@ var Check =function(check){
 }
 
 Check.addNewCheck = function (check_data,result){
-    // console.log(check_data);
 
-    sql.query('INSERT INTO bank_check SET ?',check_data, function(err,res){
-        if(err){
-            result(err,null);
-        }else{
-            result(null,res.inserted);
-        }
-    });
+    sql.beginTransaction(function(err){
+        var insert_check_data={'store_id':check_data.store_id,'supplier_id':check_data.supplier_id,'check_number':check_data.check_number,'check_amount':check_data.check_amount,'check_date':check_data.check_date,'is_paid':check_data.is_paid_check,'invoice_ids':check_data.invoice_ids,'is_for_sup':check_data.is_for_sup};
+        sql.query('INSERT INTO bank_check SET ?',insert_check_data, function(err,res){
+            if(err){
+                sql.rollback(function() {
+                    throw err;
+                });
+            }else{
+                
+                if(check_data.is_for_sup){
+                    var check_id=res.insertId;
+                    var data ={'check_id':check_id,'invoice_ids':check_data.invoice_ids};
+                    invoiceModel.updateInvoiceCheckID(data,function(err,res){
+                        if(err){
+                            sql.rollback(function() {
+                                throw err;
+                            });
+                        }else{
+                            if(check_data.is_paid){
+                                var new_supplier_amount=(parseInt(check_data.supplier_amount) - parseInt(check_data.check_amount));
+                                var update_supplier_amount = {'new_supplier_amount':new_supplier_amount,'supplier_id':check_data.supplier_id};
+                                supplierModel.updateAmount(update_supplier_amount,function(err,response){
+                                    if(err){
+                                        sql.rollback(function() {
+                                            throw err;
+                                        });
+                                    }else{
+                                        sql.commit(function(err) {
+                                            if (err) { 
+                                                sql.rollback(function() {
+                                                    throw err;
+                                                });
+                                            }
+                                            result(null,res);
+                                        });
+                                    }
+                                })
+                            }
+                        }
+                    })
+                }else{
+                    sql.commit(function(err) {
+                        if (err) { 
+                            sql.rollback(function() {
+                                throw err;
+                            });
+                        }else{
+                            result(null,res);
+                        }
+                    });
+                }
+            }
+        });
+    })
 
 }
-
 Check.getChecks = function (result){
     sql.query('SELECT * FROM bank_check ',function(err,res){
         if(err){
