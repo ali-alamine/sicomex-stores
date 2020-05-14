@@ -1,14 +1,13 @@
 
 export const columns = [
     { title: `ID`, dataIndex: `bank_check_id`},
-    { title: `Type`, dataIndex: `is_for_sup`},
     { title: `Check Number`, dataIndex: `check_number`},
-    { title: `Supplier Name`, dataIndex: `supplier_name`},
+    { title: `For`, dataIndex: `supplier_name`},
     { title: `Store Name`, dataIndex: `store_name`},
     { title: `Amount`, dataIndex: `check_amount`},
-    { title: `Check Description`, dataIndex: `check_description` },
+    // { title: `Check Description`, dataIndex: `check_description` },
     { title: `Creation Date`, dataIndex: `check_date`},
-    { title: `Is Paid`, dataIndex: `check_date`},
+    { title: `Check Type`, dataIndex: `is_for_sup`},
   ]
   
   // export const data = [

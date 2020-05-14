@@ -172,8 +172,6 @@ function Invoice () {
                     el.invoice_date = date.format("DD/MM/YYYY")
                 })
                 set_invoices_list(invoices);
-                
-                console.log(invoices_list);
             },error =>{
                 console.log(error.data);
             }
@@ -306,7 +304,8 @@ function Invoice () {
             )
         }
     }
-    /* Popup Menu functionalities */
+
+    /* START - Popup Menu functionalities */
     const [popup_menu, set_popup_menu] = useState({
         popup: {
             visible: false,
@@ -318,11 +317,12 @@ function Invoice () {
     const [selected_row,set_selected_row] = useState({
         rowId:''
     });
-
+    /* Highllight selected row  */
     var setRowClassName = (record) => {
         return record.invoice_id === selected_row.rowId && record.invoice_order=='0'? 'selected-row' : record.supplier_id === selected_row.rowId && record.invoice_order=='1' ? 'selected-important-row' :record.invoice_order=='1' ? 'important-row':'';
     };
 
+    /* Context - Menu */
     const onRow = record => ({
         onClick: () => {
             set_popup_menu({ popup: { visible: false } });
@@ -346,8 +346,9 @@ function Invoice () {
             });
         }
     });
+    /* END - Popup Menu functionalities */
 
-    /* Update Invoice */
+    /* DELETE Invoice */
     const delete_invoice = (selected_invoice) => {
         Swal.fire({
             title: 'Delete Invoice',
@@ -383,7 +384,7 @@ function Invoice () {
             }  
         })
     }
-    
+
     /* Pin Invoice */
     const pin_invoice = (pin_invoice) => {
         axios.post('http://localhost:4000/pin_invoice',pin_invoice).then(

@@ -29,6 +29,7 @@ function Check (){
     useEffect(()=>{
         get_all_stores();
         get_suppliers();
+        get_checks();
     },[]);
     const get_all_stores= () => {
         axios.get('http://localhost:4000/store').then(
@@ -61,22 +62,43 @@ function Check (){
     /* Get Checks */
     const [check_list, set_check_list] = useState([]);
     const get_checks = () => {
-        // axios.get('http://localhost:4000/check').then(
-        //     response => {
-        //         var temp_all_stores=[];
-        //         for(var i =0;i<response.data.length;i++){
-        //             temp_all_stores.push({
-        //                 'value':response.data[i].store_name,
-        //                 'label':response.data[i].store_name,
-        //                 'store_id':response.data[i].store_id
-        //             })
-        //         }
-        //         set_check_list(temp_all_stores);
-        //     },error =>{
-        //         console.log(error);
-        //     }
-        // )
+        axios.get('http://localhost:4000/get_checks').then(
+            response => {
+                console.log(response.data)
+                let checks=response.data
+                checks.map(el => {
+                    let date = moment(new Date(el.check_date));
+                    el.check_date = date.format("DD/MM/YYYY");
+                    el.is_for_sup == 1 ? el.is_for_sup='Supplier':el.is_for_sup==0? el.is_for_sup='Expense':el.is_for_sup='Not specified'
+                })
+                set_check_list(response.data);
+            },error =>{
+                console.log(error);
+            }
+        )
     }
+
+    /* Slide Notification */
+    function createNotification(type,message){
+        switch (type) {
+            case 'info':
+            NotificationManager.info('Info', message,1500);
+            break;
+            case 'success':
+            NotificationManager.success('Success', message, 1500);
+            break;
+            case 'warning':
+            NotificationManager.warning('Warning', message, 1500);
+            break;
+            case 'error':
+            NotificationManager.error('Error', message, 1500, () => {
+                alert('Please Contact your software developer!');
+            });
+            break;
+        }
+        
+    };
+
     const [selected_row,set_selected_row] = useState({
         rowId:''
     });
@@ -91,8 +113,9 @@ function Check (){
     });
 
     var setRowClassName = (record) => {
-        return record.bank_check_id === selected_row.rowId && record.check_order=='0'? 'selected-row' : record.supplier_id === selected_row.rowId && record.check_order=='1' ? 'selected-important-row' :record.check_order=='1' ? 'important-row':'';
+        return record.bank_check_id === selected_row.rowId && record.check_order==1 && record.is_paid==1 ? 'selected-important-row':record.bank_check_id === selected_row.rowId && record.is_paid == 1 && record.check_order == 0? 'is_paid-selected' : record.bank_check_id === selected_row.rowId && record.check_order=='0'? 'selected-row' :record.check_order=='1' ? 'important-row': record.is_paid == 1? 'is_paid':'';
     };
+
     const onRow = record => ({
         onClick: () => {
             set_popup_menu({ popup: { visible: false } });
@@ -101,21 +124,70 @@ function Check (){
         onContextMenu: event => {
             event.preventDefault();
             set_selected_row({rowId:record.bank_check_id});
+
             set_popup_menu({
                 popup: {
                     record,
-                    // pin_invoice,
-                    // un_pin_invoice,
+                    pin_check,
+                    un_pin_check,
                     // delete_invoice,
                     // open_edit_inv_modal,
                     // open_invoice_details,
+                    open_check_description,   
                     visible: true,
                     x: event.clientX,
                     y: event.clientY
                 }
             });
+
         }
     });
+
+    const open_check_description = (record) => {
+        Swal.fire({
+          title: record.check_description,
+          showClass: {
+            popup: 'animate__animated animate__fadeInDown'
+          },
+          hideClass: {
+            popup: 'animate__animated animate__fadeOutUp'
+          }
+        })
+    }
+    const pin_check = (pin_check) => {
+        axios.post('http://localhost:4000/pin_check',pin_check).then(
+            response => {
+                createNotification('success','Pinned');
+                get_checks();
+                set_popup_menu({ popup: { visible: false } });
+            },error =>{
+                console.log(error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please Contact your software developer',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
+            }
+        )
+    }
+    const un_pin_check = (un_pin_check) =>{
+        axios.post('http://localhost:4000/un_pin_check',un_pin_check).then(
+            response => {
+                createNotification('success','Unpinned');
+                get_checks();
+                set_popup_menu({ popup: { visible: false } });
+            },error =>{
+                console.log(error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please Contact your software developer',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
+            }
+        )
+    }
     
     return (
         <div className='check-view'>
@@ -124,7 +196,7 @@ function Check (){
             </div>
             <div>
                 <div>
-                    <Add_new_check all_stores={all_stores} supplier_list={supplier_list} check_type='sup'/>
+                    <Add_new_check get_checks={get_checks} all_stores={all_stores} supplier_list={supplier_list} check_type='sup'/>
                 </div>
             </div>
             <div>
@@ -135,7 +207,7 @@ function Check (){
                     rowClassName={setRowClassName} />
                 <Popup {...popup_menu.popup} />
             </div>
-           
+            <NotificationContainer/>
         </div>
     )
 }

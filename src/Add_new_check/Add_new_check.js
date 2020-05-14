@@ -23,20 +23,17 @@ function Add_new_check(props){
         set_is_open_new_check(false);
         reset_check_form();
     };
-
     /* Handle Suppliers*/
     const [supplier_list,set_supplier_list] = useState([]);
     const handle_select_supplier = (supplier_id,supplier_amount) =>{
         new_check_data.supplier_id=supplier_id;
         new_check_data.supplier_amount=supplier_amount.key;
     }
-
     /* Handle Stores */
     const [all_stores,set_all_stores] = useState([]);
     const handle_select_store = (store_id) => {
         new_check_data.store_id=store_id;
     }
-
     /* Handle supplier and store data  */
     useEffect(()=>{
         set_all_stores(props.all_stores);
@@ -46,7 +43,6 @@ function Add_new_check(props){
             set_supplier_list([{label:'',value:''}]);
         }
     },[is_open_new_check]);
-
     /* Handle check payment */
     const [is_paid_check,set_is_paid_check]= useState(false);
     const toggle_payment = () => {
@@ -56,7 +52,6 @@ function Add_new_check(props){
             is_paid_check:is_paid_check
         }));
     }
-
     /*Handle new check data */
     const [new_check_data,set_new_check_data] =  useState({
         store_id:'',
@@ -70,7 +65,6 @@ function Add_new_check(props){
         is_paid_check:'',
         is_for_sup:'',
     });
-
     const handle_new_check_data = (e) => {
         let name= e.target.name;
         let value= e.target.value;
@@ -78,10 +72,10 @@ function Add_new_check(props){
         set_new_check_data(new_check_data);
 
     }
-
     /* Rest check from */
     const reset_check_form = () => {
         set_is_paid_check(false);
+        set_check_amount(0);
         set_new_check_data({
             store_id:'',
             check_description:'',
@@ -92,66 +86,39 @@ function Add_new_check(props){
             is_for_sup:false,
         })
     }
-
     /* Handle check date */
     const [check_new_date,set_check_new_date] = useState(new Date());
-
-    /* Submit new check */
-    const submit_new_check = () => {
-        if(new_check_data.store_id != '' && new_check_data.check_amount != '' && new_check_data.check_amount != ' ' && new_check_data.check_number != ''){
-            new_check_data.is_paid_check=is_paid_check;
-            if(props.check_type=='sup'){
-                new_check_data.is_for_sup=true;
-            }else{
-                new_check_data.is_for_sup=false;
-            }
-        
-            var temp_check_date=moment(new Date(check_new_date));
-            temp_check_date=temp_check_date.format("YYYY-MM-DD")
-            new_check_data.check_date=temp_check_date;
-    
-            set_new_check_data(new_check_data);
-
-            console.log('new_check_data')
-            console.log(new_check_data)
-    
-            axios.post('http://localhost:4000/add_new_exp_check',new_check_data).then(
-                response => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        showConfirmButton: false,
-                        timer: 1000
-                    });
- 
-                    close_check();
-                },error =>{
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'Please Contact your software developer',
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    })
-                }
-            )
-        }else{
-            Swal.fire({
-                title: 'Required fields',
-                text: 'Please make sure to fill all fields',
-                icon: 'info',
-                confirmButtonText: 'OK'
-            })
-        }
-
-    }
 
     /* Multi Select - Invoice */
     const { Option } = Select;
     var [invoices,set_invoices] = useState([]);
-    const handle_select_invoices =(value,key) => {
-        console.log('************* key ******************')
-        console.log(key)
-        new_check_data.invoice_ids=value;
+    var [check_amount,set_check_amount] = useState(0);
+    var [invoice_ids,set_invoice_ids] = useState([]);
+
+    function handle_invoice_on_select (value,key){
+        /* Sum check total amount */
+        var amount= invoices.find(item => {
+            return item.invoice_id == key.key;
+         })
+         check_amount+=amount.invoice_amount;
+         set_check_amount(check_amount);
+
+         /* Push invoice ids to temp array */
+         invoice_ids.push(key.key);
+         set_invoice_ids(invoice_ids);
+    }
+
+    function handle_invoice_on_deselect (value,key){
+        /* Subtract removed invoice amount from total check amount */
+        var amount= invoices.find(item => {
+            return item.invoice_id == key.key;
+         })
+         check_amount-=amount.invoice_amount;
+         set_check_amount(check_amount);
+
+         /* Pop invoice ids to temp array */
+         const index = invoice_ids.indexOf(key.key);
+         invoice_ids.splice(index,1);
     }
 
     function search_invoice_by_number(value) {
@@ -174,7 +141,56 @@ function Add_new_check(props){
             }
         )
     }
+
+    /* Submit new check */
+    const submit_new_check = () => {
+        new_check_data.invoice_ids=invoice_ids;
+        var temp_check_date=moment(new Date(check_new_date));
+        temp_check_date=temp_check_date.format("YYYY-MM-DD");
+        new_check_data.is_paid_check=is_paid_check;
+        new_check_data.check_date=temp_check_date;
+        set_new_check_data(new_check_data);
+        if(props.check_type=='sup'){
+            new_check_data.is_for_sup=true;
+            new_check_data.check_amount=check_amount;
+        }else{
+            new_check_data.is_for_sup=false;
+        }
+        set_new_check_data(new_check_data);
+        if(new_check_data.store_id != '' && new_check_data.check_amount != '' && new_check_data.check_number != ' ' && new_check_data.check_date != ''){
+            
+            axios.post('http://localhost:4000/add_new_check',new_check_data).then(
+                response => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                    if(props.check_type=='sup'){
+                        props.get_checks();
+                    }
     
+                    close_check();
+                },error =>{
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Please Contact your software developer',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    })
+                }
+            )
+        }else{
+            Swal.fire({
+                title: 'Required fields',
+                text: 'Please make sure to fill all fields',
+                icon: 'info',
+                confirmButtonText: 'OK'
+            })
+        }
+
+    }
     return (
         <div className='col-md-8' >
             <div Style={props.check_type=='sup' ? 'display:block':'display:none'}>
@@ -252,13 +268,16 @@ function Add_new_check(props){
                                             mode="multiple"
                                             style={{ width: '100%' }}
                                             placeholder="Select Invoices"
-                                            onChange={handle_select_invoices}
+                                            // onChange={handle_select_invoices}
                                             optionLabelProp="label"
                                             onSearch={search_invoice_by_number}
+                                            onSelect={handle_invoice_on_select}
+                                            onDeselect={handle_invoice_on_deselect}
+                                            loading='true'
                                         >
                                         {
                                             invoices.map((el,index) => {
-                                                return <Option key={el.invoice_id} value={el.invoice_number + ' |'+el.invoice_id}>{el.invoice_number}</Option>
+                                                return <Option key={el.invoice_id} value={el.invoice_number} />
                                             })
                                         }
                                         </Select>                               
@@ -268,7 +287,8 @@ function Add_new_check(props){
                                 <div className='form-group row'>
                                     <div className="col-md-6">
                                         <label className='input-label'>Check Amount</label>
-                                        <input name='check_amount' onChange={handle_new_check_data} type="text" className="form-control" placeholder="Check Amount" />
+                                        <input Style={props.check_type=='sup'? 'display:block':'display:none'} name='check_amount' value={check_amount} onChange={handle_new_check_data} type="text" className="form-control" placeholder="Check Amount" disabled/>
+                                        <input Style={props.check_type=='exp'? 'display:block':'display:none'} name='check_amount' onChange={handle_new_check_data} type="text" className="form-control" placeholder="Check Amount"/>
                                     </div>
                                     <div className="col-md-6">
                                         <label className='input-label'>Check Date</label>
