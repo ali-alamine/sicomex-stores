@@ -8,7 +8,6 @@ import ModalBody from "react-bootstrap/ModalBody";
 import ModalHeader from "react-bootstrap/ModalHeader";
 import ModalFooter from "react-bootstrap/ModalFooter";
 import ModalTitle from "react-bootstrap/ModalTitle";
-
 import Add_new_check from '../Add_new_check/Add_new_check';
 import Select from 'react-select';
 import axios from 'axios';
@@ -26,11 +25,14 @@ function Check (){
     const [all_stores,set_all_stores]= useState([]);
     
     const [supplier_list,set_supplier_list] = useState([]);
+    const [is_open_edit_check_modal,set_is_open_edit_check_modal] = useState([]);
+
     useEffect(()=>{
         get_all_stores();
         get_suppliers();
         get_checks();
     },[]);
+
     const get_all_stores= () => {
         axios.get('http://localhost:4000/store').then(
             response => {
@@ -48,8 +50,8 @@ function Check (){
             }
         )
     };
+
     /* Get suppliers */
-    
     const get_suppliers= () => {
         axios.get('http://localhost:4000/supplier').then(
             response => {
@@ -59,6 +61,7 @@ function Check (){
             }
         )
     };
+
     /* Get Checks */
     const [check_list, set_check_list] = useState([]);
     const get_checks = () => {
@@ -111,7 +114,7 @@ function Check (){
             y: 0
         }
     });
-
+    
     var setRowClassName = (record) => {
         return record.bank_check_id === selected_row.rowId && record.check_order==1 && record.is_paid==1 ? 'selected-important-row':record.bank_check_id === selected_row.rowId && record.is_paid == 1 && record.check_order == 0? 'is_paid-selected' : record.bank_check_id === selected_row.rowId && record.check_order=='0'? 'selected-row' :record.check_order=='1' ? 'important-row': record.is_paid == 1? 'is_paid':'';
     };
@@ -131,7 +134,7 @@ function Check (){
                     pin_check,
                     un_pin_check,
                     // delete_invoice,
-                    // open_edit_inv_modal,
+                    open_edit_check_modal,
                     // open_invoice_details,
                     open_check_description,   
                     visible: true,
@@ -154,6 +157,11 @@ function Check (){
           }
         })
     }
+    
+    const open_edit_check_modal = (record) => {
+        console.log(record)
+    }
+
     const pin_check = (pin_check) => {
         axios.post('http://localhost:4000/pin_check',pin_check).then(
             response => {
@@ -171,6 +179,7 @@ function Check (){
             }
         )
     }
+
     const un_pin_check = (un_pin_check) =>{
         axios.post('http://localhost:4000/un_pin_check',un_pin_check).then(
             response => {
@@ -207,6 +216,42 @@ function Check (){
                     rowClassName={setRowClassName} />
                 <Popup {...popup_menu.popup} />
             </div>
+                            
+            {/* START - Edit Check MODAL */}
+                <Modal>
+                    <ModalHeader>
+                        <ModalTitle>Edit Check</ModalTitle>
+                    </ModalHeader>
+                    <ModalBody>
+                            <div className='check-form'>
+                                <div className='form-group row' >
+                                    <div className="col-md-6">
+                                    <label className='input-label'>Store Name</label>
+                                        <input type="text" className="form-control" placeholder="Check Amount" />
+                                    </div>
+                                    <div className="col-md-6">
+                                    <label className='input-label'>Supplier Name</label>
+                                        <input type="text" className="form-control" placeholder="Check Amount" />
+                                    </div>
+                                </div>
+                                <div className='form-group row'>
+                                    <div className="col-md-6">
+                                        <label className='input-label'>Check Amount</label>
+                                        <input type="text" name='checkAmount' className="form-control" placeholder="Check Amount" />
+                                    </div>
+                                    <div className="col-md-6">
+                                        <label className='input-label'>Check Date</label>
+                                        <input type="date" name='checkDate' className="form-control" placeholder="Check Date" />
+                                    </div>
+                                </div>
+                            </div>
+                    </ModalBody>
+                    <ModalFooter>
+                        <button type="submit" className="btn btn-success">Soumettre</button>
+                        <button type="button" className="btn btn-danger">Annuler</button>
+                    </ModalFooter>
+                </Modal>
+            {/* ********************** END - MODALS ******************************************** */}
             <NotificationContainer/>
         </div>
     )

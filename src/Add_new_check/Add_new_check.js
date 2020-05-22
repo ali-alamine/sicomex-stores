@@ -161,17 +161,25 @@ function Add_new_check(props){
             
             axios.post('http://localhost:4000/add_new_check',new_check_data).then(
                 response => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        showConfirmButton: false,
-                        timer: 1000
-                    });
-                    if(props.check_type=='sup'){
-                        props.get_checks();
+                    if(response.data=='DUPLICATE_CHECK_NUM'){
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Check with same number already exist',
+                            showConfirmButton: true
+                        });
+                    }else{
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            showConfirmButton: false,
+                            timer: 1000
+                        });
+                        if(props.check_type=='sup'){
+                            props.get_checks();
+                        }
+                        close_check();
                     }
-    
-                    close_check();
+
                 },error =>{
                     Swal.fire({
                         title: 'Error!',
@@ -306,50 +314,6 @@ function Add_new_check(props){
                         <button onClick={close_check} className="btn btn-danger">Annuler</button>
                     </ModalFooter>
                 </Modal>
-                
-                {/* START - Supplier Check MODAL */}
-                <Modal>
-                    <ModalHeader>
-                        <ModalTitle>Create New Check</ModalTitle>
-                    </ModalHeader>
-                    <ModalBody>
-                            <div className='check-form'>
-                                <div className='form-group row' >
-                                    <div className="col-md-6">
-                                    <label className='input-label'>Store Name</label>
-                                        <Select
-                                            placeholder='Select Store'
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                    <label className='input-label'>Supplier Name</label>
-                                        <Select
-                                            placeholder='Select Supplier'
-                                        />
-                                    </div>
-                                </div>
-                                <div className='form-group row'>
-                                    <div className="col-md-6">
-                                        <label className='input-label'>Check Amount</label>
-                                        <input type="text" name='checkAmount' className="form-control" placeholder="Check Amount" />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label className='input-label'>Check Date</label>
-                                        <input type="date" name='checkDate' className="form-control" placeholder="Check Date" />
-                                    </div>
-                                </div>
-                                <div className="form-group check-status">
-                                    <label className='input-label'>Paid</label>
-                                    <input checked={false} type="checkbox" className="form-control"/>
-                                </div>
-                            </div>
-                    </ModalBody>
-                    <ModalFooter>
-                        <button type="submit" className="btn btn-success">Soumettre</button>
-                        <button type="button" className="btn btn-danger">Annuler</button>
-                    </ModalFooter>
-                </Modal>
-            {/* ********************** END - MODALS ******************************************** */}
         </div>
     )
 }
