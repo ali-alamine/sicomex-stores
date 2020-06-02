@@ -16,3 +16,12 @@
 .nav-item-active{
     color:red
 }
+.logout-icon{
+    color:rgb(185, 174, 174);
+    font-size: 30px !important;
+}
+.logout-icon:hover{
+    color:white;
+    font-size: 32px !important;
+    cursor: pointer;
+}

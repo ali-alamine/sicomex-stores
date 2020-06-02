@@ -22,17 +22,22 @@ import { Table } from "antd";
 import 'react-notifications/lib/notifications.css';
 
 function Check (){
+    
     const [all_stores,set_all_stores]= useState([]);
     
     const [supplier_list,set_supplier_list] = useState([]);
-    const [is_open_edit_check_modal,set_is_open_edit_check_modal] = useState([]);
+    const [is_open_edit_check_modal,set_is_open_edit_check_modal] = useState(false);
+
+    const close_edit_check_modal = () => {
+        set_is_open_edit_check_modal(false);
+        set_edit_check_date(new Date())
+    }
 
     useEffect(()=>{
         get_all_stores();
         get_suppliers();
         get_checks();
     },[]);
-
     const get_all_stores= () => {
         axios.get('http://localhost:4000/store').then(
             response => {
@@ -41,7 +46,8 @@ function Check (){
                     temp_all_stores.push({
                         'value':response.data[i].store_name,
                         'label':response.data[i].store_name,
-                        'store_id':response.data[i].store_id
+                        'store_id':response.data[i].store_id,
+                        'store_amount':response.data[i].amount,
                     })
                 }
                 set_all_stores(temp_all_stores);
@@ -50,7 +56,6 @@ function Check (){
             }
         )
     };
-
     /* Get suppliers */
     const get_suppliers= () => {
         axios.get('http://localhost:4000/supplier').then(
@@ -61,7 +66,6 @@ function Check (){
             }
         )
     };
-
     /* Get Checks */
     const [check_list, set_check_list] = useState([]);
     const get_checks = () => {
@@ -80,7 +84,6 @@ function Check (){
             }
         )
     }
-
     /* Slide Notification */
     function createNotification(type,message){
         switch (type) {
@@ -89,6 +92,8 @@ function Check (){
             break;
             case 'success':
             NotificationManager.success('Success', message, 1500);
+            case 'check_success':
+            NotificationManager.success('Success', message, 3000);
             break;
             case 'warning':
             NotificationManager.warning('Warning', message, 1500);
@@ -101,11 +106,9 @@ function Check (){
         }
         
     };
-
     const [selected_row,set_selected_row] = useState({
         rowId:''
     });
-
     /* Popup Menu functionalities */
     const [popup_menu, set_popup_menu] = useState({
         popup: {
@@ -114,11 +117,9 @@ function Check (){
             y: 0
         }
     });
-    
     var setRowClassName = (record) => {
-        return record.bank_check_id === selected_row.rowId && record.check_order==1 && record.is_paid==1 ? 'selected-important-row':record.bank_check_id === selected_row.rowId && record.is_paid == 1 && record.check_order == 0? 'is_paid-selected' : record.bank_check_id === selected_row.rowId && record.check_order=='0'? 'selected-row' :record.check_order=='1' ? 'important-row': record.is_paid == 1? 'is_paid':'';
+        return record.bank_check_id === selected_row.rowId && record.check_order == 1 && record.is_paid == 1 ? 'selected-important-row':record.bank_check_id === selected_row.rowId && record.is_paid == 1 && record.check_order == 0 ? 'is_paid-selected' : record.bank_check_id === selected_row.rowId && record.check_order=='0'? 'selected-row' :record.check_order=='1' ? 'important-row': record.is_paid == 1? 'is_paid':'';
     };
-
     const onRow = record => ({
         onClick: () => {
             set_popup_menu({ popup: { visible: false } });
@@ -135,8 +136,9 @@ function Check (){
                     un_pin_check,
                     // delete_invoice,
                     open_edit_check_modal,
-                    // open_invoice_details,
-                    open_check_description,   
+                    set_check_paid,
+                    set_check_unpaid,
+                    open_check_description,
                     visible: true,
                     x: event.clientX,
                     y: event.clientY
@@ -145,7 +147,40 @@ function Check (){
 
         }
     });
-
+    const set_check_paid = (record) => {
+        axios.post('http://localhost:4000/set_check_paid',record).then(
+            response => {
+                createNotification('check_success','le statut du chèque est passé à payér');
+                get_checks();
+                set_popup_menu({ popup: { visible: false } });
+            },error =>{
+                console.log(error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please Contact your software developer',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
+            }
+        )
+    }
+    const set_check_unpaid = (record) => {
+        axios.post('http://localhost:4000/set_check_unpaid',record).then(
+            response => {
+                createNotification('check_success','le statut du chèque est passé à payér');
+                get_checks();
+                set_popup_menu({ popup: { visible: false } });
+            },error =>{
+                console.log(error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please Contact your software developer',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
+            }
+        )
+    }
     const open_check_description = (record) => {
         Swal.fire({
           title: record.check_description,
@@ -157,11 +192,65 @@ function Check (){
           }
         })
     }
-    
+    const [edit_check_data,set_edit_check_data]= useState({
+        check_id:'',
+        check_number:'',
+        check_amount:'',
+        check_date:'',
+        check_description:'',
+        supplier_name:'',
+        store_name:'',
+    });
+    var [edit_check_date,set_edit_check_date] = useState(moment(new Date(), 'DD-MM-YYYY'));
     const open_edit_check_modal = (record) => {
         console.log(record)
-    }
+        set_popup_menu({ popup: { visible: false } });
+        record.is_for_sup == 'Expense' ? edit_check_data.check_type='exp' : edit_check_data.check_type='sup';
+        // edit_check_data.check_date=record.check_date;
+        edit_check_data.check_id=record.bank_check_id;
+        edit_check_data.check_description=record.check_description;
+        edit_check_data.check_amount=record.check_amount;
+        edit_check_data.supplier_name=record.supplier_name;
+        edit_check_data.store_name=record.store_name;
+        edit_check_data.store_amount=record.amount;
+        edit_check_data.check_number=record.check_number;
+        console.log(record.check_date);
+        
+        let date = record.check_date;
+        let new_edit_date_format = new Date(date.split("/").reverse().join("-"));
+        set_edit_check_date(new_edit_date_format);
 
+        set_edit_check_data(edit_check_data);
+        set_is_open_edit_check_modal(true);
+    }
+    const handle_edit_check_data = (e) => {
+        set_edit_check_data({ ...edit_check_data, [e.target.name]: e.target.value });
+    }
+    const update_check_data = () => {
+        console.log('edit_check_data.check_date');
+        console.log(edit_check_data.check_date);
+        var temp_check_date=moment(new Date(edit_check_date));
+        temp_check_date=temp_check_date.format("YYYY-MM-DD");
+        edit_check_data.check_date=temp_check_date;
+        set_edit_check_data(edit_check_data);
+        console.log('************************ edit_check_data ******************************* ')
+        console.log(edit_check_data);
+        axios.post('http://localhost:4000/update_check',edit_check_data).then(
+            response => {
+                createNotification('success','Updated');
+                get_checks();
+                close_edit_check_modal();
+            },error =>{
+                console.log(error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please Contact your software developer',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
+            }
+        )
+    }
     const pin_check = (pin_check) => {
         axios.post('http://localhost:4000/pin_check',pin_check).then(
             response => {
@@ -179,7 +268,6 @@ function Check (){
             }
         )
     }
-
     const un_pin_check = (un_pin_check) =>{
         axios.post('http://localhost:4000/un_pin_check',un_pin_check).then(
             response => {
@@ -218,39 +306,46 @@ function Check (){
             </div>
                             
             {/* START - Edit Check MODAL */}
-                <Modal>
-                    <ModalHeader>
-                        <ModalTitle>Edit Check</ModalTitle>
-                    </ModalHeader>
-                    <ModalBody>
-                            <div className='check-form'>
-                                <div className='form-group row' >
-                                    <div className="col-md-6">
-                                    <label className='input-label'>Store Name</label>
-                                        <input type="text" className="form-control" placeholder="Check Amount" />
-                                    </div>
-                                    <div className="col-md-6">
-                                    <label className='input-label'>Supplier Name</label>
-                                        <input type="text" className="form-control" placeholder="Check Amount" />
-                                    </div>
-                                </div>
-                                <div className='form-group row'>
-                                    <div className="col-md-6">
-                                        <label className='input-label'>Check Amount</label>
-                                        <input type="text" name='checkAmount' className="form-control" placeholder="Check Amount" />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label className='input-label'>Check Date</label>
-                                        <input type="date" name='checkDate' className="form-control" placeholder="Check Date" />
-                                    </div>
-                                </div>
+            <Modal show={is_open_edit_check_modal} onHide={close_edit_check_modal }>
+                <ModalHeader>
+                    <ModalTitle>Edit Check</ModalTitle>
+                </ModalHeader>
+                <ModalBody>
+                    <div className='check-form'>
+                        <div className='form-group row' >
+                            <div className="col-md-12">
+                                <label className='input-label'>Store Name</label>
+                                <input type="text" onChange={handle_edit_check_data} className="form-control" value={edit_check_data.store_name} disabled/>
                             </div>
-                    </ModalBody>
-                    <ModalFooter>
-                        <button type="submit" className="btn btn-success">Soumettre</button>
-                        <button type="button" className="btn btn-danger">Annuler</button>
-                    </ModalFooter>
-                </Modal>
+                            <div className="col-md-12">
+                                <label className='input-label'>Supplier Name</label>
+                                <input type="text" onChange={handle_edit_check_data} className="form-control" value={edit_check_data.supplier_name} disabled/>
+                            </div>
+                            <div Style={edit_check_data.check_type == 'exp' ? 'display:block' : 'display:none'} className="col-md-12">
+                                <label className='input-label'>Details</label>
+                                <textarea onChange={handle_edit_check_data} name='check_description' value={edit_check_data.check_description} id="check-description" className="form-control" placeholder="Write Text Here..." />
+                            </div>
+                            <div className="col-md-12">
+                                <label className='input-label'>Check Amount</label>
+                                <input onChange={handle_edit_check_data} type="text" name='check_amount' value={edit_check_data.check_amount} className="form-control" placeholder="Check Amount" />
+                            </div>
+                            <div className="col-md-12">
+                                <label className='input-label'>Check Number</label>
+                                <input onChange={handle_edit_check_data} type="text" name='check_number' value={edit_check_data.check_number} className="form-control" placeholder="Check Number" />
+                            </div>
+                            <div className="col-md-6">
+                                <label className='input-label'>Check Date</label>
+                                {/* <input onChange={handle_edit_check_data} type="text" name='check_date' value={edit_check_data.check_date} className="form-control" placeholder="Check date" /> */}
+                                <DatePicker dateFormat="dd/MM/yyyy" className='form-control' selected={edit_check_date} onChange={date => set_edit_check_date(date)}/>
+                            </div>
+                        </div>
+                    </div>
+                </ModalBody>
+                <ModalFooter>
+                    <button type="submit" onClick={update_check_data} className="btn btn-success">Soumettre</button>
+                    <button type="button" className="btn btn-danger">Annuler</button>
+                </ModalFooter>
+            </Modal>
             {/* ********************** END - MODALS ******************************************** */}
             <NotificationContainer/>
         </div>

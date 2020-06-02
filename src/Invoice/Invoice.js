@@ -256,6 +256,7 @@ function Invoice () {
         set_selected_edit_store_invoice({'label':'','value':'','store_id':''});
         set_selected_edit_supplier_invoice({'label':'','value':'','store_id':''});
     }
+    
     /* Open Edit Invoice Modal */
     const open_edit_inv_modal = (selected_invoice_data) =>{
         set_is_open_edit_invoice_modal(true);

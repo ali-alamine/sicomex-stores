@@ -31,8 +31,10 @@ function Add_new_check(props){
     }
     /* Handle Stores */
     const [all_stores,set_all_stores] = useState([]);
-    const handle_select_store = (store_id) => {
+    const handle_select_store = (store_id,store_amount) => {
         new_check_data.store_id=store_id;
+        new_check_data.store_amount=store_amount.key;
+        console.log(store_amount.key)
     }
     /* Handle supplier and store data  */
     useEffect(()=>{
@@ -57,6 +59,7 @@ function Add_new_check(props){
         store_id:'',
         supplier_id:'',
         supplier_amount:'',
+        store_amount:'',
         invoice_ids:[],
         check_description:'',
         check_amount:'',
@@ -236,7 +239,8 @@ function Add_new_check(props){
                                         >
                                         {
                                             all_stores.map((el,index) => {
-                                                return <Option key={index} value={el.store_id}>{el.label}</Option>
+                                                console.log(el)
+                                                return <Option key={el.store_amount} value={el.store_id}>{el.label}</Option>
                                             })
                                         }
                                         </Select>
@@ -245,6 +249,7 @@ function Add_new_check(props){
                                     <label className='input-label'>Check Number</label>
                                     <input name='check_number' onChange={handle_new_check_data} type="number" className="form-control" placeholder="Check Number" />
                                 </div>
+                                
                                 <div Style={props.check_type == 'exp' ? 'display:block' : 'display:none'} className="form-group">
                                     <label className='input-label'>Details</label>
                                     <textarea name='check_description' onChange={handle_new_check_data} id="check-description" className="form-control" placeholder="Write Text Here..." />

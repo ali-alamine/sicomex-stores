@@ -5,6 +5,7 @@ import Supplier from '../Supplier/Supplier'
 import Invoice from '../Invoice/Invoice'
 import Check from '../Check/Check'
 import './Menu.css';
+import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 function Menu(){
 
     return (
@@ -14,38 +15,32 @@ function Menu(){
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul className="navbar-nav mr-auto">
                             <li className="nav-item">
-                                <Link className="nav-link" to="/Home">Home</Link>
+                                <Link className="nav-link" to="/Home">Entrée de rapport</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" to="/Supplier">Supplier</Link>
+                                <Link className="nav-link" to="/Supplier">fournisseuses</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" to="/Invoice">Invoices</Link>
+                                <Link className="nav-link" to="/Invoice">Factures</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" to="/Check">Checks</Link>
+                                <Link className="nav-link" to="/Check">Chèques</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" to="/Store Account">Bank Account</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/Store Account">Reports</Link>
+                                <Link className="nav-link" to="/Store Account">Compte bancaire</Link>
                             </li>
                             <li className="nav-item dropdown">
                                 <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Dropdown link
+                                Rapports
                                 </a>
                                 <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                    <a className="dropdown-item" href="#">Action</a>
-                                    <a className="dropdown-item" href="#">Another action</a>
-                                    <a className="dropdown-item" href="#">Something else here</a>
+                                    <a className="dropdown-item" href="#">Dépenses de magasin</a>
+                                    <a className="dropdown-item" href="#">La fourniture</a>
+                                    <a className="dropdown-item" href="#">Dépôts de banque</a>
                                 </div>
                             </li>
                         </ul>
-                        <div className="form-inline my-2 my-lg-0">
-                            <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
-                            <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                        </div>
+                            <div><PowerSettingsNewIcon /></div>
                         </div>
                 </nav>
                 {/* <Route path='/'>
