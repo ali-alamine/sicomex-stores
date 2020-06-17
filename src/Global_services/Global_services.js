@@ -1,5 +1,6 @@
 import React from 'react';
 var is_prod=true;
+var is_running_locally=false;
 var base_url ='';
 base_url= is_prod ? 'http://ec2-35-153-50-38.compute-1.amazonaws.com:4000' : 'localhost:4000';
 
