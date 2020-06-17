@@ -14,15 +14,17 @@ import $ from 'jquery';
 import moment from 'moment';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import Global_services from '../Global_services/Global_services'
+// const public_endpoint=
 function Report_entries(){
+    console.log(Global_services.get_store_api)
     const [all_stores,set_all_stores]= useState([]);
     useEffect(()=>{
         get_all_stores();
     },[]);
     /* START -  STORE SECTION */
     const get_all_stores= () => {
-        axios.get('http://localhost:4000/store').then(
+        axios.get(Global_services.get_store_api).then(
             response => {
                 var temp_all_stores=[];
                 for(var i =0;i<response.data.length;i++){
@@ -53,7 +55,7 @@ function Report_entries(){
     }
     const add_new_store = () => {
         if(new_store_data.new_store_name != ''){
-            return axios.post('http://localhost:4000/store',new_store_data).then(
+            return axios.post(Global_services.get_store_api,new_store_data).then(
                 response=>{
                     Swal.fire({
                         icon: 'success',
@@ -101,7 +103,7 @@ function Report_entries(){
         }));
     }
     const get_starting_amount= (selected_store) => {
-        axios.post('http://localhost:4000/starting_amount',selected_store).then(
+        axios.post(Global_services.get_starting_amount,selected_store).then(
             response=>{
                 var responseData=response.data;
                 if(responseData === undefined || response.data.length == 0){
@@ -202,7 +204,7 @@ function Report_entries(){
             console.log('entry_report_data');
             console.log(entry_report_data);
 
-            return axios.post('http://localhost:4000/add_new_store_entry',entry_report_data).then(
+            return axios.post(Global_services.add_new_store_entry,entry_report_data).then(
                 response=>{
                     set_entry_report_data({
                         store_id:'',
