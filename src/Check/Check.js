@@ -20,7 +20,7 @@ import "antd/dist/antd.css";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import { Table } from "antd";
 import 'react-notifications/lib/notifications.css';
-
+import Global_services from '../Global_services/Global_services'
 function Check (){
     
     const [all_stores,set_all_stores]= useState([]);
@@ -39,7 +39,7 @@ function Check (){
         get_checks();
     },[]);
     const get_all_stores= () => {
-        axios.get('http://localhost:4000/store').then(
+        axios.get(Global_services.get_stores).then(
             response => {
                 var temp_all_stores=[];
                 for(var i =0;i<response.data.length;i++){
@@ -58,7 +58,7 @@ function Check (){
     };
     /* Get suppliers */
     const get_suppliers= () => {
-        axios.get('http://localhost:4000/supplier').then(
+        axios.get(Global_services.get_suppliers).then(
             response => {
                 set_supplier_list(response.data);
             },error =>{
@@ -69,7 +69,7 @@ function Check (){
     /* Get Checks */
     const [check_list, set_check_list] = useState([]);
     const get_checks = () => {
-        axios.get('http://localhost:4000/get_checks').then(
+        axios.get(Global_services.get_checks).then(
             response => {
                 console.log(response.data)
                 let checks=response.data
@@ -148,7 +148,7 @@ function Check (){
         }
     });
     const set_check_paid = (record) => {
-        axios.post('http://localhost:4000/set_check_paid',record).then(
+        axios.post(Global_services.set_check_paid,record).then(
             response => {
                 createNotification('check_success','le statut du chèque est passé à payér');
                 get_checks();
@@ -165,7 +165,7 @@ function Check (){
         )
     }
     const set_check_unpaid = (record) => {
-        axios.post('http://localhost:4000/set_check_unpaid',record).then(
+        axios.post(Global_services.set_check_unpaid,record).then(
             response => {
                 createNotification('check_success','le statut du chèque est passé à payér');
                 get_checks();
@@ -227,15 +227,11 @@ function Check (){
         set_edit_check_data({ ...edit_check_data, [e.target.name]: e.target.value });
     }
     const update_check_data = () => {
-        console.log('edit_check_data.check_date');
-        console.log(edit_check_data.check_date);
         var temp_check_date=moment(new Date(edit_check_date));
         temp_check_date=temp_check_date.format("YYYY-MM-DD");
         edit_check_data.check_date=temp_check_date;
         set_edit_check_data(edit_check_data);
-        console.log('************************ edit_check_data ******************************* ')
-        console.log(edit_check_data);
-        axios.post('http://localhost:4000/update_check',edit_check_data).then(
+        axios.post(Global_services.update_check,edit_check_data).then(
             response => {
                 createNotification('success','Updated');
                 get_checks();
@@ -252,7 +248,7 @@ function Check (){
         )
     }
     const pin_check = (pin_check) => {
-        axios.post('http://localhost:4000/pin_check',pin_check).then(
+        axios.post(Global_services.pin_check,pin_check).then(
             response => {
                 createNotification('success','Pinned');
                 get_checks();
@@ -269,7 +265,7 @@ function Check (){
         )
     }
     const un_pin_check = (un_pin_check) =>{
-        axios.post('http://localhost:4000/un_pin_check',un_pin_check).then(
+        axios.post(Global_services.un_pin_check,un_pin_check).then(
             response => {
                 createNotification('success','Unpinned');
                 get_checks();

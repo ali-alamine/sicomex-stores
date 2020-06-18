@@ -14,6 +14,8 @@ import DatePicker from "react-datepicker";
 import moment from 'moment';
 import MultiSelect from "react-multi-select-component";
 import { Select } from 'antd';
+import Global_services from '../Global_services/Global_services';
+
 function Add_new_check(props){
 
     /* Handle Open check Modal */
@@ -126,7 +128,7 @@ function Add_new_check(props){
 
     function search_invoice_by_number(value) {
         var data={'invoice_number':value};
-        axios.post('http://localhost:4000/get_invoice_by_number',data).then(
+        axios.post(Global_services.search_invoice_by_number,data).then(
             response => {
 
                 if(response.data.length > 0){
@@ -162,7 +164,7 @@ function Add_new_check(props){
         set_new_check_data(new_check_data);
         if(new_check_data.store_id != '' && new_check_data.check_amount != '' && new_check_data.check_number != ' ' && new_check_data.check_date != ''){
             
-            axios.post('http://localhost:4000/add_new_check',new_check_data).then(
+            axios.post(Global_services.add_new_check,new_check_data).then(
                 response => {
                     if(response.data=='DUPLICATE_CHECK_NUM'){
                         Swal.fire({

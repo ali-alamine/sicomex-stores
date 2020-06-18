@@ -19,6 +19,7 @@ import "antd/dist/antd.css";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import { Table } from "antd";
 import 'react-notifications/lib/notifications.css';
+import Global_services from '../Global_services/Global_services'
 function Supplier(){
 
     useEffect(()=>{
@@ -28,7 +29,7 @@ function Supplier(){
     /* Get all suppliers */
     const [supplier_list,set_supplier_list] = useState(null);
     const get_suppliers= () => {
-        axios.get('http://localhost:4000/supplier').then(
+        axios.get(Global_services.get_suppliers).then(
             response => {
                 set_supplier_list(response.data);
                 console.log(response.data)
@@ -78,7 +79,7 @@ function Supplier(){
     const add_new_supplier = () => {
         if(new_sup_data.supplier_name != ''){
 
-            axios.post('http://localhost:4000/supplier',new_sup_data).then(
+            axios.post(Global_services.add_new_supplier,new_sup_data).then(
                 response => {
                     Swal.fire({
                         icon: 'success',
@@ -151,7 +152,7 @@ function Supplier(){
     const update_supplier_data = () => {
         console.log(edit_sup_data)
         if(edit_sup_data.supplier_name != ''){
-            axios.post('http://localhost:4000/update_supplier',edit_sup_data).then(
+            axios.post(Global_services.update_supplier,edit_sup_data).then(
                 response => {
                     Swal.fire({
                         icon: 'success',
@@ -235,7 +236,7 @@ function Supplier(){
         }).then((result) => {
             set_popup_menu({ popup: { visible: false } });
             if (result.value) {
-                axios.post('http://localhost:4000/delete_supplier',supplier_data).then(
+                axios.post(Global_services.delete_supplier,supplier_data).then(
                     response => {
                         Swal.fire({
                             title: 'Deleted',
@@ -259,7 +260,7 @@ function Supplier(){
         })
     }
     const pin_supplier = (pin_supplier) => {
-        axios.post('http://localhost:4000/pin_supplier',pin_supplier).then(
+        axios.post(Global_services.pin_supplier,pin_supplier).then(
             response => {
                 createNotification('success','To the top of list');
                 get_suppliers();
@@ -276,7 +277,7 @@ function Supplier(){
         )
     }
     const un_pin_supplier = (pin_supplier) => {
-        axios.post('http://localhost:4000/un_pin_supplier',pin_supplier).then(
+        axios.post(Global_services.un_pin_supplier,pin_supplier).then(
             response => {
                 createNotification('success','Removed');
                 get_suppliers();

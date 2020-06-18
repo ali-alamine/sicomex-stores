@@ -14,17 +14,18 @@ import $ from 'jquery';
 import moment from 'moment';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import Global_services from '../Global_services/Global_services'
-// const public_endpoint=
+import Global_services from '../Global_services/Global_services';
+import "bootstrap/dist/css/bootstrap.min.css";
+import ReactSpinner from 'react-bootstrap-spinner';
 function Report_entries(){
-    console.log(Global_services.get_store_api)
+    const [show_loader,set_show_loader] = useState(false);
     const [all_stores,set_all_stores]= useState([]);
     useEffect(()=>{
         get_all_stores();
     },[]);
     /* START -  STORE SECTION */
     const get_all_stores= () => {
-        axios.get(Global_services.get_store_api).then(
+        axios.get(Global_services.get_stores).then(
             response => {
                 var temp_all_stores=[];
                 for(var i =0;i<response.data.length;i++){
@@ -41,7 +42,8 @@ function Report_entries(){
         )
     };
     const [is_open_new_store_modal,set_is_open_new_store_modal] = useState(false);
-    const open_store_modal = () => {set_is_open_new_store_modal(true)};
+    const open_store_modal = () => {set_is_open_new_store_modal(true);
+        set_show_loader(false);};
     const close_store_modal = () => {set_is_open_new_store_modal(false)};
     const [new_store_data,set_new_store_data]= useState({
         new_store_name:'',
@@ -54,8 +56,9 @@ function Report_entries(){
         set_new_store_data(new_store_data);
     }
     const add_new_store = () => {
+        set_show_loader(true)
         if(new_store_data.new_store_name != ''){
-            return axios.post(Global_services.get_store_api,new_store_data).then(
+            return axios.post(Global_services.add_new_store,new_store_data).then(
                 response=>{
                     Swal.fire({
                         icon: 'success',
@@ -69,6 +72,7 @@ function Report_entries(){
                     })
                     get_all_stores();
                     close_store_modal();
+                    set_show_loader(false);
                 },
                 error =>{
                     Swal.fire({
@@ -253,76 +257,87 @@ function Report_entries(){
     const [refreshDialog, doRefreshDialog] = useState(false);
     const [entry_date, set_entry_date] = useState(new Date());
     /* END - CASH  DETAILS */
+
+    
     return (
     <div className='create-new-store'>
-            <button onClick={open_store_modal} className='create-store-btn btn btn-primary'>Create New Store</button>
-            <div className='store-data-entry row'>
-                <div className='col-md-4' >
-                    <div className='entry-select'>    
-                        <Select
-                            placeholder='Select Store'
-                            value={selected_store_entry}
-                            onChange={handle_select_store}
-                            options={all_stores}
-                            name='store_data'
-                        />
-                    </div>
-                    <div className='entry'>
-                        <span>Starting Amount</span> <input value={entry_report_data.starting_amount} name='starting_amount' type='number' className='entry-input-add' disabled/>
-                    </div>
-                    <div className='entry'>
-                        <span>Sales</span> <input value={entry_report_data.sales_amount} onChange={handle_entry_report} name='sales_amount' type='number' className='entry-input-add'/>
-                    </div>
-                    <div className='entry supply'>
-                        <span>Cash Supply</span> <input type='number' value={supply_total_amount} disabled className='entry-input-sub'/>
-                        <span className='add-details'><Dialog refresh={refreshDialog} calc={calc_remain_amount} get_supply_total_amount={get_supply_total_amount} view='supply' action_name='Cash Supply' cash_supply_details={cash_supply_details}/></span>
-                    </div>
-                    <div className='entry cash'>
-                        <span>Cash Expenses</span> <input type='number' value={expense_total_amount} disabled className='entry-input-sub'/> 
-                        <span className='add-details'><Dialog refresh={refreshDialog} calc={calc_remain_amount}  get_expense_total_amount={get_expense_total_amount}  view='expense' action_name='Cash Expenses' cash_expense_details={cash_expense_details}/></span>
-                    </div>
-                    <div className='entry'>
-                        <span>Bank Deposit</span> <input value={entry_report_data.bank_deposit} name='bank_deposit' onChange={handle_entry_report} type='number' className='entry-input-add'/>
-                    </div>
-                    <div className='entry'>
-                        <span>Remain: </span> <input type='text' value={remain} disabled />
-                    </div>
-                    <div className='entry'>
-                        <span>Date: </span> <div className='entry-date'> <DatePicker dateFormat="dd/MM/yyyy" selected={entry_date} onChange={date => set_entry_date(date)} /> </div> 
-                        {/* <span>Date: </span>  <input type='date' /> */}
-                    </div>
-                    <div className='entry-submit'>
-                        <input onClick={submit_store_entry} type='submit' className='btn btn-success'/>
-                    </div>
-                </div>
-                <div>
-                    <Add_new_check all_stores={all_stores} check_type='exp'/>
-                </div>
-            </div>
 
-            {/* *****************  START - MODALS *********************************  */}
-            <Modal show={is_open_new_store_modal} onHide={close_store_modal}>
-                <ModalHeader>
-                    <ModalTitle>Create New Store</ModalTitle>
-                </ModalHeader>
-                <ModalBody>
-                    <div className='store-form'>
-                        <div className="form-group">
-                            <label className='input-label'>Store Name</label>
-                            <input onChange={handler_new_store} name='new_store_name' type="text" className="form-control" placeholder="Store Name"/>
+                <button onClick={open_store_modal} className='create-store-btn btn btn-primary'>Create New Store</button>
+                <div className='store-data-entry row'>
+                    <div className='col-md-4' >
+                        <div className='entry-select'> 
+                        {
+                            all_stores.length > 0 ?
+                            <div>   
+                                <Select
+                                    placeholder='Select Store'
+                                    value={selected_store_entry}
+                                    onChange={handle_select_store}
+                                    options={all_stores}
+                                    name='store_data'
+                                />
+                            </div>
+                            : Global_services.show_spinner()
+                        }
                         </div>
-                        <div className="form-group">
-                            <label className='input-label'>Initial Amount</label>
-                            <input onChange={handler_new_store} name='new_store_init_amount' type="text" className="form-control" placeholder="Manager Name"/>
+                        <div className='entry'>
+                            <span>Starting Amount</span> <input value={entry_report_data.starting_amount} name='starting_amount' type='number' className='entry-input-add' disabled/>
+                        </div>
+                        <div className='entry'>
+                            <span>Sales</span> <input value={entry_report_data.sales_amount} onChange={handle_entry_report} name='sales_amount' type='number' className='entry-input-add'/>
+                        </div>
+                        <div className='entry supply'>
+                            <span>Cash Supply</span> <input type='number' value={supply_total_amount} disabled className='entry-input-sub'/>
+                            <span className='add-details'><Dialog refresh={refreshDialog} calc={calc_remain_amount} get_supply_total_amount={get_supply_total_amount} view='supply' action_name='Cash Supply' cash_supply_details={cash_supply_details}/></span>
+                        </div>
+                        <div className='entry cash'>
+                            <span>Cash Expenses</span> <input type='number' value={expense_total_amount} disabled className='entry-input-sub'/> 
+                            <span className='add-details'><Dialog refresh={refreshDialog} calc={calc_remain_amount}  get_expense_total_amount={get_expense_total_amount}  view='expense' action_name='Cash Expenses' cash_expense_details={cash_expense_details}/></span>
+                        </div>
+                        <div className='entry'>
+                            <span>Bank Deposit</span> <input value={entry_report_data.bank_deposit} name='bank_deposit' onChange={handle_entry_report} type='number' className='entry-input-add'/>
+                        </div>
+                        <div className='entry'>
+                            <span>Remain: </span> <input type='text' value={remain} disabled />
+                        </div>
+                        <div className='entry'>
+                            <span>Date: </span> <div className='entry-date'> <DatePicker dateFormat="dd/MM/yyyy" selected={entry_date} onChange={date => set_entry_date(date)} /> </div> 
+                            {/* <span>Date: </span>  <input type='date' /> */}
+                        </div>
+                        <div className='entry-submit'>
+                            <input onClick={submit_store_entry} type='submit' className='btn btn-success'/>
                         </div>
                     </div>
-                </ModalBody>
-                <ModalFooter>
-                    <button onClick={add_new_store} className="btn btn-success">Soumettre</button>
-                    <button onClick={close_store_modal} className="btn btn-danger">Annuler</button>
-                </ModalFooter>
-            </Modal>
-            {/* *****************  END - MODALS *********************************  */}
+                    <div>
+                        <Add_new_check all_stores={all_stores} check_type='exp'/>
+                    </div>
+                </div>
+
+                {/* *****************  START - MODALS *********************************  */}
+                <Modal show={is_open_new_store_modal} onHide={close_store_modal}>
+                    <ModalHeader>
+                        <ModalTitle>Create New Store</ModalTitle>
+                    </ModalHeader>
+                    <ModalBody>
+                        <div className='store-form'>
+                            <div className="form-group">
+                                <label className='input-label'>Store Name</label>
+                                <input onChange={handler_new_store} name='new_store_name' type="text" className="form-control" placeholder="Store Name"/>
+                            </div>
+                            <div className="form-group">
+                                <label className='input-label'>Initial Amount</label>
+                                <input onChange={handler_new_store} name='new_store_init_amount' type="text" className="form-control" placeholder="Manager Name"/>
+                            </div>
+                        </div>
+                    </ModalBody>
+                    <ModalFooter>
+                        {
+                            !show_loader ? <div className='on-submit-loader'>{Global_services.show_spinner()}</div>: <button onClick={add_new_store} className="btn btn-success">Soumettre</button> 
+                        }
+                        <button onClick={close_store_modal} className="btn btn-danger">Annuler</button>
+                    </ModalFooter>
+                </Modal>
+        
     </div>   
     )
 }
