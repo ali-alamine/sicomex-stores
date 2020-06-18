@@ -16,7 +16,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Global_services from '../Global_services/Global_services';
 import "bootstrap/dist/css/bootstrap.min.css";
-import ReactSpinner from 'react-bootstrap-spinner';
+// import ReactSpinner from 'react-bootstrap-spinner';
 function Report_entries(){
     const [show_loader,set_show_loader] = useState(false);
     const [all_stores,set_all_stores]= useState([]);
@@ -56,8 +56,8 @@ function Report_entries(){
         set_new_store_data(new_store_data);
     }
     const add_new_store = () => {
-        set_show_loader(true)
         if(new_store_data.new_store_name != ''){
+            set_show_loader(true)
             return axios.post(Global_services.add_new_store,new_store_data).then(
                 response=>{
                     Swal.fire({
@@ -332,7 +332,7 @@ function Report_entries(){
                     </ModalBody>
                     <ModalFooter>
                         {
-                            !show_loader ? <div className='on-submit-loader'>{Global_services.show_spinner()}</div>: <button onClick={add_new_store} className="btn btn-success">Soumettre</button> 
+                            show_loader ? <div className='on-submit-loader'>{Global_services.show_spinner()}</div>: <button onClick={add_new_store} className="btn btn-success">Soumettre</button> 
                         }
                         <button onClick={close_store_modal} className="btn btn-danger">Annuler</button>
                     </ModalFooter>

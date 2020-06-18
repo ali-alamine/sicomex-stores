@@ -18,9 +18,10 @@ import Global_services from '../Global_services/Global_services';
 
 function Add_new_check(props){
 
+    const [show_loader,set_show_loader] = useState(false);
     /* Handle Open check Modal */
     var [is_open_new_check,set_is_open_new_check] = useState(false);
-    const open_new_check = () => {set_is_open_new_check(true)};
+    const open_new_check = () => {set_is_open_new_check(true);set_show_loader(false);};
     const close_check = () => {
         set_is_open_new_check(false);
         reset_check_form();
@@ -149,6 +150,8 @@ function Add_new_check(props){
 
     /* Submit new check */
     const submit_new_check = () => {
+        
+ 
         new_check_data.invoice_ids=invoice_ids;
         var temp_check_date=moment(new Date(check_new_date));
         temp_check_date=temp_check_date.format("YYYY-MM-DD");
@@ -163,9 +166,10 @@ function Add_new_check(props){
         }
         set_new_check_data(new_check_data);
         if(new_check_data.store_id != '' && new_check_data.check_amount != '' && new_check_data.check_number != ' ' && new_check_data.check_date != ''){
-            
+            set_show_loader(true);
             axios.post(Global_services.add_new_check,new_check_data).then(
                 response => {
+                    set_show_loader(false);
                     if(response.data=='DUPLICATE_CHECK_NUM'){
                         Swal.fire({
                             icon: 'info',
@@ -186,6 +190,7 @@ function Add_new_check(props){
                     }
 
                 },error =>{
+                    set_show_loader(false);
                     Swal.fire({
                         title: 'Error!',
                         text: 'Please Contact your software developer',
@@ -317,7 +322,9 @@ function Add_new_check(props){
                             </div>
                     </ModalBody>
                     <ModalFooter>
-                        <button onClick={submit_new_check} className="btn btn-success">Soumettre</button>
+                        {
+                           show_loader ? <div>{Global_services.show_spinner()}</div>:<button onClick={submit_new_check} className="btn btn-success">Soumettre</button>
+                        }
                         <button onClick={close_check} className="btn btn-danger">Annuler</button>
                     </ModalFooter>
                 </Modal>
