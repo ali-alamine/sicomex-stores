@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactSpinner from 'react-bootstrap-spinner';
 import './Global_services.css';
-var is_prod=true;
+var is_prod=false;
 var base_url ='';
 base_url= is_prod ? 'https://ec2-35-153-50-38.compute-1.amazonaws.com:4000' : 'http://localhost:4000';
 
@@ -20,7 +20,6 @@ class Global_services extends React.Component {
     static get_starting_amount= base_url+'/starting_amount';
     static add_new_store_entry= base_url+'/add_new_store_entry';
 
-    
     static get_suppliers = base_url+'/supplier';
     static get_checks = base_url+'/get_checks';
     static set_check_paid = base_url+'/set_check_paid';
@@ -32,6 +31,7 @@ class Global_services extends React.Component {
 
     static update_invoice = base_url+'/update_invoice';
     static delete_invoice = base_url+'/delete_invoice';
+    static get_invoices = base_url+'/invoice';
 
 
     static pin_supplier = base_url+'/pin_supplier';
@@ -40,7 +40,7 @@ class Global_services extends React.Component {
     static update_supplier = base_url+'/update_supplier';
     static delete_supplier = base_url+'/delete_supplier';
 
-    static search_invoice_by_number = base_url+'/search_invoice_by_number';
+    static search_invoice_by_number = base_url+'/get_invoice_by_number';
     static add_new_check = base_url+'/add_new_check';
     
 }

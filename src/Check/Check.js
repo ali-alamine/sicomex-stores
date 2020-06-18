@@ -92,8 +92,6 @@ function Check (){
             break;
             case 'success':
             NotificationManager.success('Success', message, 1500);
-            case 'check_success':
-            NotificationManager.success('Success', message, 3000);
             break;
             case 'warning':
             NotificationManager.warning('Warning', message, 1500);
@@ -150,7 +148,7 @@ function Check (){
     const set_check_paid = (record) => {
         axios.post(Global_services.set_check_paid,record).then(
             response => {
-                createNotification('check_success','le statut du chèque est passé à payér');
+                createNotification('success','le statut du chèque est passé à payér');
                 get_checks();
                 set_popup_menu({ popup: { visible: false } });
             },error =>{
@@ -167,7 +165,7 @@ function Check (){
     const set_check_unpaid = (record) => {
         axios.post(Global_services.set_check_unpaid,record).then(
             response => {
-                createNotification('check_success','le statut du chèque est passé à payér');
+                createNotification('success','le statut du chèque est passé à payér');
                 get_checks();
                 set_popup_menu({ popup: { visible: false } });
             },error =>{

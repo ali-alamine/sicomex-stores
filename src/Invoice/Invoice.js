@@ -165,7 +165,7 @@ function Invoice () {
     /* Get Invoices */
     const [invoices_list,set_invoices_list] =useState([]);
     const get_invoices = function(){
-        axios.get(Global_services.set_check_paid).then(
+        axios.get(Global_services.get_invoices).then(
             response => {
                 let invoices=response.data
                 invoices.map(el => {

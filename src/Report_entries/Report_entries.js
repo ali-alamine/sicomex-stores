@@ -32,7 +32,8 @@ function Report_entries(){
                     temp_all_stores.push({
                         'value':response.data[i].store_name,
                         'label':response.data[i].store_name,
-                        'store_id':response.data[i].store_id
+                        'store_id':response.data[i].store_id,
+                        'store_amount':response.data[i].amount
                     })
                 }
                 set_all_stores(temp_all_stores);

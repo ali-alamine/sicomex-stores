@@ -37,7 +37,10 @@ function Add_new_check(props){
     const handle_select_store = (store_id,store_amount) => {
         new_check_data.store_id=store_id;
         new_check_data.store_amount=store_amount.key;
+        console.log('HERE WE GOOO');
         console.log(store_amount.key)
+        console.log('---------------------------------------')
+        console.log(all_stores)
     }
     /* Handle supplier and store data  */
     useEffect(()=>{
@@ -131,7 +134,6 @@ function Add_new_check(props){
         var data={'invoice_number':value};
         axios.post(Global_services.search_invoice_by_number,data).then(
             response => {
-
                 if(response.data.length > 0){
                     set_invoices(response.data);
                 }else{
@@ -150,23 +152,26 @@ function Add_new_check(props){
 
     /* Submit new check */
     const submit_new_check = () => {
-        
- 
+
         new_check_data.invoice_ids=invoice_ids;
         var temp_check_date=moment(new Date(check_new_date));
         temp_check_date=temp_check_date.format("YYYY-MM-DD");
         new_check_data.is_paid_check=is_paid_check;
         new_check_data.check_date=temp_check_date;
         set_new_check_data(new_check_data);
+
         if(props.check_type=='sup'){
             new_check_data.is_for_sup=true;
             new_check_data.check_amount=check_amount;
         }else{
             new_check_data.is_for_sup=false;
         }
+
         set_new_check_data(new_check_data);
+        
         if(new_check_data.store_id != '' && new_check_data.check_amount != '' && new_check_data.check_number != ' ' && new_check_data.check_date != ''){
             set_show_loader(true);
+            console.log(new_check_data)
             axios.post(Global_services.add_new_check,new_check_data).then(
                 response => {
                     set_show_loader(false);
