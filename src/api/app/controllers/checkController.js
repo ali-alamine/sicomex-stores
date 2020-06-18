@@ -48,7 +48,6 @@ exports.un_pin_check= function(req,res){
         }
     });
 }
-
 exports.set_check_paid= function(req,res){
     Check.setCheckPaid(req.body,function(err,check){
         if(err){

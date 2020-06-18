@@ -60,5 +60,11 @@ tbody[class*="ant-table-tbody"] td:hover{
     background-color:rgb(224, 224, 224) !important;
     color:black !important;
 }
+.table-col-loader{
+    position: absolute;
+    margin-left: 38%;
+    margin-top: 20%;
+    z-index: 99;
+}
 
   

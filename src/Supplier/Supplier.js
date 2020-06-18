@@ -19,7 +19,7 @@ import "antd/dist/antd.css";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import { Table } from "antd";
 import 'react-notifications/lib/notifications.css';
-import Global_services from '../Global_services/Global_services'
+import Global_services from '../Global_services/Global_services';
 function Supplier(){
 
     useEffect(()=>{
@@ -27,7 +27,7 @@ function Supplier(){
     },[]);
     
     /* Get all suppliers */
-    const [supplier_list,set_supplier_list] = useState(null);
+    const [supplier_list,set_supplier_list] = useState([]);
     const get_suppliers= () => {
         axios.get(Global_services.get_suppliers).then(
             response => {
@@ -78,9 +78,10 @@ function Supplier(){
     /* Add New supplier */
     const add_new_supplier = () => {
         if(new_sup_data.supplier_name != ''){
-
+            set_submit_sup_loader(true);
             axios.post(Global_services.add_new_supplier,new_sup_data).then(
                 response => {
+                    set_submit_sup_loader(false);
                     Swal.fire({
                         icon: 'success',
                         title: 'Success',
@@ -94,6 +95,7 @@ function Supplier(){
                         supplier_amount:''
                     })
                 },error =>{
+                    set_submit_sup_loader(false);
                     console.log(error);
                     Swal.fire({
                         title: 'Error!',
@@ -131,13 +133,12 @@ function Supplier(){
         edit_supplier_name:selected_supplier.supplier_name,
         edit_supplier_amount:selected_supplier.supplier_amount,
         supplier_id:selected_supplier.supplier_id
-    })
-    set_popup_menu({ popup: { visible: false } });}
-
+        })
+        set_popup_menu({ popup: { visible: false } });
+        set_submit_sup_loader(false);
+    }
     /*  Close Edit Sup Modal */
     const close_edit_sup_modal = () => {set_is_open_edit_sup_modal(false);}
-
-    
     /* Handle Edit supplier data */
     const [edit_sup_data,set_edit_sup_data] = useState({
         edit_supplier_name:'',
@@ -147,10 +148,9 @@ function Supplier(){
     const handle_edit_sup_data = (e) => {
         set_edit_sup_data({ ...edit_sup_data, [e.target.name]: e.target.value });
     }
-
     /* Submit Edit supplier data */
     const update_supplier_data = () => {
-        console.log(edit_sup_data)
+        set_submit_sup_loader(true);
         if(edit_sup_data.supplier_name != ''){
             axios.post(Global_services.update_supplier,edit_sup_data).then(
                 response => {
@@ -160,6 +160,7 @@ function Supplier(){
                         showConfirmButton: false,
                         timer: 1000
                     });
+                    set_submit_sup_loader(false);
                     close_edit_sup_modal();
                     get_suppliers();
                     set_new_sup_data({
@@ -168,6 +169,7 @@ function Supplier(){
                     })
                 },error =>{
                     console.log(error);
+                    set_submit_sup_loader(false);
                     Swal.fire({
                         title: 'Error!',
                         text: 'Please Contact your software developer',
@@ -185,7 +187,6 @@ function Supplier(){
             })
         }
     }
-
     /* Popup Menu functionalities */
     const [popup_menu, set_popup_menu] = useState({
         popup: {
@@ -259,13 +260,17 @@ function Supplier(){
             }  
         })
     }
+    const [pin_unpin_loader,set_pin_unpin_loader] = useState(false);
     const pin_supplier = (pin_supplier) => {
+        set_pin_unpin_loader(true);
         axios.post(Global_services.pin_supplier,pin_supplier).then(
             response => {
+                set_pin_unpin_loader(false);
                 createNotification('success','To the top of list');
                 get_suppliers();
                 set_popup_menu({ popup: { visible: false } });
             },error =>{
+                set_pin_unpin_loader(false);
                 console.log(error);
                 Swal.fire({
                     title: 'Error!',
@@ -277,12 +282,15 @@ function Supplier(){
         )
     }
     const un_pin_supplier = (pin_supplier) => {
+        set_pin_unpin_loader(true);
         axios.post(Global_services.un_pin_supplier,pin_supplier).then(
             response => {
+                set_pin_unpin_loader(false);
                 createNotification('success','Removed');
                 get_suppliers();
                 set_popup_menu({ popup: { visible: false } });
             },error =>{
+                set_pin_unpin_loader(false);
                 console.log(error);
                 Swal.fire({
                     title: 'Error!',
@@ -293,23 +301,37 @@ function Supplier(){
             }
         )
     }
-
+    const [submit_sup_loader,set_submit_sup_loader] =  useState(false);
     return(
         <div className='supplier-view'>
+            {
+                pin_unpin_loader?
+                <div class='table-col-loader'>
+                    {Global_services.show_spinner('border',8,'primary')}
+                </div>
+                :''
+            }
+   
             <div>
                 <Common_filter />
             </div>
             <div>
                 <input type='submit' onClick={open_sup_modal} value='New Supplier' className='btn btn-primary add-supp-btn' />
             </div>
-            <div >
-                <Table bordered
-                columns={columns}
-                dataSource={supplier_list}
-                onRow={onRow}
-                rowClassName={setRowClassName}/>
-                <Popup {...popup_menu.popup}  />
-            </div>
+            {
+                supplier_list.length > 0 ?
+
+                <div>
+                    <Table bordered
+                    columns={columns}
+                    dataSource={supplier_list}
+                    onRow={onRow}
+                    rowClassName={setRowClassName}/>
+                    <Popup {...popup_menu.popup}  />
+                </div>
+                :
+                Global_services.show_spinner('border',5,'primary')
+            }
 
             {/* *****************  START - MODALS *********************************  */}
             <Modal show={is_open_sup_modal} onHide={close_sup_modal}>
@@ -329,7 +351,13 @@ function Supplier(){
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <button onClick={add_new_supplier} className="btn btn-success">Soumettre</button>
+                    {
+                        submit_sup_loader? 
+                        Global_services.show_spinner('grow',2,'success')
+                        : 
+                        <button onClick={add_new_supplier} className="btn btn-success">Soumettre</button>
+                    }
+                    
                     <button onClick={close_sup_modal} className="btn btn-danger">Annuler</button>
                 </ModalFooter>
             </Modal>
@@ -345,12 +373,17 @@ function Supplier(){
                         </div>
                         <div className="form-group">
                             <label className='input-label'>Amount</label>
-                            <input onChange={handle_edit_sup_data} value={edit_sup_data.edit_supplier_amount} name='edit_supplier_amount' type="text" className="form-control" placeholder="Amount"/>
+                            <input onChange={handle_edit_sup_data} value={edit_sup_data.edit_supplier_amount} name='edit_supplier_amount' type="text" className="form-control" placeholder="Amount" disabled/>
                         </div>
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <button onClick={update_supplier_data} className="btn btn-success">Soumettre</button>
+                    {
+                        submit_sup_loader? 
+                        Global_services.show_spinner('grow',2,'success')
+                        : 
+                        <button onClick={update_supplier_data} className="btn btn-success">Soumettre</button>
+                    }
                     <button onClick={close_edit_sup_modal} className="btn btn-danger">Annuler</button>
                 </ModalFooter>
             </Modal>

@@ -5,6 +5,8 @@ var StoreEntry=  require('../models/storeEntryModel.js');
 exports.add_new_store_entry = function(req,res){
  
     var request=req.body;
+    console.log('----------------------------------------------------')
+    console.log(request)
     var expense_details=request.cash_expense_details;
     var supply_details=request.cash_supply_details;
     var new_store_entry = new StoreEntry(request);

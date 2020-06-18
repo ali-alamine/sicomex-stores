@@ -3,7 +3,7 @@
 var sql = require('./db.js');
 var CashDetailModel = require('./cashDetailModel.js');
 // store constructor
-
+var storeModel = require('../models/storeModel');
 var StoreEntry =function(storeEntry){
     this.store_id=storeEntry.store_id;
     this.cash_expense_amount=storeEntry.cash_expense_amount;
@@ -52,6 +52,24 @@ StoreEntry.addNewStoreEntry = function (supply_details,expense_details,entry_det
                         }
                     }
                 }
+                // var new_store_amount=(parseInt(check_data.store_amount) - parseInt(check_data.check_amount));
+                // var update_store_amount = {'new_store_amount':new_store_amount,'store_id':check_data.store_id};
+                // storeModel.updateAmount(update_store_amount,function(err,response){
+                //     if(err){
+                //         sql.rollback(function(){
+                //             throw err;
+                //         })
+                //     }else{
+                //         sql.commit(function(err) {
+                //             if (err) { 
+                //                 sql.rollback(function() {
+                //                     throw err;
+                //                 });
+                //             }
+                //             result(null,res);
+                //         });
+                //     }
+                // })
                 sql.commit(function(err) {
                     if (err) { 
                         sql.rollback(function() {

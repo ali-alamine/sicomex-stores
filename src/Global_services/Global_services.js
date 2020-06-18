@@ -8,10 +8,10 @@ base_url= is_prod ? 'https://ec2-35-153-50-38.compute-1.amazonaws.com:4000' : 'h
 
 class Global_services extends React.Component {
     /* Show Loader on response success*/
-    static show_spinner = () => {
+    static show_spinner = (type,size,color) => {
         return (
             <div className='loader'>
-                <ReactSpinner type="border" color="primary" size="2" />
+                <ReactSpinner type={type} color={color} size={size} />
             </div>
         )
     }
@@ -36,9 +36,11 @@ class Global_services extends React.Component {
 
     static pin_supplier = base_url+'/pin_supplier';
     static un_pin_supplier = base_url+'/un_pin_supplier';
-    static add_new_supplier = base_url+'/add_new_supplier';
+    static add_new_supplier = base_url+'/supplier';
     static update_supplier = base_url+'/update_supplier';
     static delete_supplier = base_url+'/delete_supplier';
+    
+    static add_new_invoice = base_url+'/invoice';
 
     static search_invoice_by_number = base_url+'/get_invoice_by_number';
     static add_new_check = base_url+'/add_new_check';

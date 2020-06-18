@@ -54,6 +54,7 @@ function Report_entries(){
         let name=e.target.name;
         let value= e.target.value;
         new_store_data[name]=value;
+        entry_report_data.store_amount=all_stores.store_amount;
         set_new_store_data(new_store_data);
     }
     const add_new_store = () => {
@@ -131,6 +132,7 @@ function Report_entries(){
     const [entry_report_data,set_entry_report_data] = useState({
         store_id:'',
         starting_amount:'',
+        store_amount:'',
         sales_amount:'',
         cash_supply_amount:'',
         cash_supply_details:[],
@@ -192,6 +194,7 @@ function Report_entries(){
     const get_supply_total_amount = (total_supply_amount) => {
         set_supply_total_amount(total_supply_amount);
     }
+    const [show_submit_loader,set_show_submit_loader] = useState(false);
     const submit_store_entry = () => {
         if(entry_report_data.sales_amount != '' && entry_report_data.bank_deposit != '' && entry_report_data.store_id != ''){
             entry_report_data.cash_supply_details=cash_supply_details_arr;
@@ -202,15 +205,13 @@ function Report_entries(){
             var temp_entry_date=moment(new Date(entry_date));
             temp_entry_date=temp_entry_date.format("YYYY-MM-DD")
             entry_report_data.entry_report_date=temp_entry_date;
-            
             set_entry_report_data(entry_report_data);
-
-
             console.log('entry_report_data');
             console.log(entry_report_data);
-
+            set_show_submit_loader(true);
             return axios.post(Global_services.add_new_store_entry,entry_report_data).then(
                 response=>{
+                    set_show_submit_loader(false);
                     set_entry_report_data({
                         store_id:'',
                         starting_amount:'',
@@ -224,7 +225,7 @@ function Report_entries(){
                         entry_report_date:''
                     });
                     set_remain(0);
-                    set_selected_store_entry({'value':'','label':'','store_id':''})
+                    set_selected_store_entry({'value':'','label':'','store_id':'','store_amount':''})
                     set_supply_total_amount(0);
                     set_expense_total_amount(0);
                     set_cash_expense_details_arr([]);
@@ -238,6 +239,7 @@ function Report_entries(){
                     });
                 },
                 error =>{
+                    set_show_submit_loader(false);
                     Swal.fire({
                         title: 'Error!',
                         text: 'Please Contact your software developer',
@@ -259,87 +261,91 @@ function Report_entries(){
     const [entry_date, set_entry_date] = useState(new Date());
     /* END - CASH  DETAILS */
 
-    
     return (
-    <div className='create-new-store'>
-
-                <button onClick={open_store_modal} className='create-store-btn btn btn-primary'>Create New Store</button>
-                <div className='store-data-entry row'>
-                    <div className='col-md-4' >
-                        <div className='entry-select'> 
-                        {
-                            all_stores.length > 0 ?
-                            <div>   
-                                <Select
-                                    placeholder='Select Store'
-                                    value={selected_store_entry}
-                                    onChange={handle_select_store}
-                                    options={all_stores}
-                                    name='store_data'
-                                />
-                            </div>
-                            : Global_services.show_spinner()
-                        }
+        <div className='create-new-store'>
+            <button onClick={open_store_modal} className='create-store-btn btn btn-primary'>Create New Store</button>
+            <div className='store-data-entry row'>
+                <div className='col-md-4' >
+                    <div className='entry-select'> 
+                    {
+                        all_stores.length > 0 ?
+                        <div>   
+                            <Select
+                                placeholder='Select Store'
+                                value={selected_store_entry}
+                                onChange={handle_select_store}
+                                options={all_stores}
+                                name='store_data'
+                            />
                         </div>
-                        <div className='entry'>
-                            <span>Starting Amount</span> <input value={entry_report_data.starting_amount} name='starting_amount' type='number' className='entry-input-add' disabled/>
-                        </div>
-                        <div className='entry'>
-                            <span>Sales</span> <input value={entry_report_data.sales_amount} onChange={handle_entry_report} name='sales_amount' type='number' className='entry-input-add'/>
-                        </div>
-                        <div className='entry supply'>
-                            <span>Cash Supply</span> <input type='number' value={supply_total_amount} disabled className='entry-input-sub'/>
-                            <span className='add-details'><Dialog refresh={refreshDialog} calc={calc_remain_amount} get_supply_total_amount={get_supply_total_amount} view='supply' action_name='Cash Supply' cash_supply_details={cash_supply_details}/></span>
-                        </div>
-                        <div className='entry cash'>
-                            <span>Cash Expenses</span> <input type='number' value={expense_total_amount} disabled className='entry-input-sub'/> 
-                            <span className='add-details'><Dialog refresh={refreshDialog} calc={calc_remain_amount}  get_expense_total_amount={get_expense_total_amount}  view='expense' action_name='Cash Expenses' cash_expense_details={cash_expense_details}/></span>
-                        </div>
-                        <div className='entry'>
-                            <span>Bank Deposit</span> <input value={entry_report_data.bank_deposit} name='bank_deposit' onChange={handle_entry_report} type='number' className='entry-input-add'/>
-                        </div>
-                        <div className='entry'>
-                            <span>Remain: </span> <input type='text' value={remain} disabled />
-                        </div>
-                        <div className='entry'>
-                            <span>Date: </span> <div className='entry-date'> <DatePicker dateFormat="dd/MM/yyyy" selected={entry_date} onChange={date => set_entry_date(date)} /> </div> 
-                            {/* <span>Date: </span>  <input type='date' /> */}
-                        </div>
-                        <div className='entry-submit'>
-                            <input onClick={submit_store_entry} type='submit' className='btn btn-success'/>
-                        </div>
+                        : Global_services.show_spinner('grow',2,'warning')
+                    }
                     </div>
-                    <div>
-                        <Add_new_check all_stores={all_stores} check_type='exp'/>
+                    <div className='entry'>
+                        <span>Starting Amount</span> <input value={entry_report_data.starting_amount} name='starting_amount' type='number' className='entry-input-add' disabled/>
+                    </div>
+                    <div className='entry'>
+                        <span>Sales</span> <input value={entry_report_data.sales_amount} onChange={handle_entry_report} name='sales_amount' type='number' className='entry-input-add'/>
+                    </div>
+                    <div className='entry supply'>
+                        <span>Cash Supply</span> <input type='number' value={supply_total_amount} disabled className='entry-input-sub'/>
+                        <span className='add-details'><Dialog refresh={refreshDialog} calc={calc_remain_amount} get_supply_total_amount={get_supply_total_amount} view='supply' action_name='Cash Supply' cash_supply_details={cash_supply_details}/></span>
+                    </div>
+                    <div className='entry cash'>
+                        <span>Cash Expenses</span> <input type='number' value={expense_total_amount} disabled className='entry-input-sub'/> 
+                        <span className='add-details'><Dialog refresh={refreshDialog} calc={calc_remain_amount}  get_expense_total_amount={get_expense_total_amount}  view='expense' action_name='Cash Expenses' cash_expense_details={cash_expense_details}/></span>
+                    </div>
+                    <div className='entry'>
+                        <span>Bank Deposit</span> <input value={entry_report_data.bank_deposit} name='bank_deposit' onChange={handle_entry_report} type='number' className='entry-input-add'/>
+                    </div>
+                    <div className='entry'>
+                        <span>Remain: </span> <input type='text' value={remain} disabled />
+                    </div>
+                    <div className='entry'>
+                        <span>Date: </span> <div className='entry-date'> <DatePicker dateFormat="dd/MM/yyyy" selected={entry_date} onChange={date => set_entry_date(date)} /> </div> 
+                        {/* <span>Date: </span>  <input type='date' /> */}
+                    </div>
+                    <div className='entry-submit'>
+                        {
+                            show_submit_loader ? 
+                            Global_services.show_spinner('grow',2,'success')
+                            : 
+                            <div>
+                                <input onClick={submit_store_entry} type='submit' className='btn btn-success'/>
+                            </div>
+                        }
                     </div>
                 </div>
+                <div>
+                    <Add_new_check all_stores={all_stores} check_type='exp'/>
+                </div>
+            </div>
 
-                {/* *****************  START - MODALS *********************************  */}
-                <Modal show={is_open_new_store_modal} onHide={close_store_modal}>
-                    <ModalHeader>
-                        <ModalTitle>Create New Store</ModalTitle>
-                    </ModalHeader>
-                    <ModalBody>
-                        <div className='store-form'>
-                            <div className="form-group">
-                                <label className='input-label'>Store Name</label>
-                                <input onChange={handler_new_store} name='new_store_name' type="text" className="form-control" placeholder="Store Name"/>
-                            </div>
-                            <div className="form-group">
-                                <label className='input-label'>Initial Amount</label>
-                                <input onChange={handler_new_store} name='new_store_init_amount' type="text" className="form-control" placeholder="Manager Name"/>
-                            </div>
+            {/* *****************  START - MODALS *********************************  */}
+            <Modal show={is_open_new_store_modal} onHide={close_store_modal}>
+                <ModalHeader>
+                    <ModalTitle>Create New Store</ModalTitle>
+                </ModalHeader>
+                <ModalBody>
+                    <div className='store-form'>
+                        <div className="form-group">
+                            <label className='input-label'>Store Name</label>
+                            <input onChange={handler_new_store} name='new_store_name' type="text" className="form-control" placeholder="Store Name"/>
                         </div>
-                    </ModalBody>
-                    <ModalFooter>
-                        {
-                            show_loader ? <div className='on-submit-loader'>{Global_services.show_spinner()}</div>: <button onClick={add_new_store} className="btn btn-success">Soumettre</button> 
-                        }
-                        <button onClick={close_store_modal} className="btn btn-danger">Annuler</button>
-                    </ModalFooter>
-                </Modal>
-        
-    </div>   
+                        <div className="form-group">
+                            <label className='input-label'>Initial Amount</label>
+                            <input onChange={handler_new_store} name='new_store_init_amount' type="text" className="form-control" placeholder="Manager Name"/>
+                        </div>
+                    </div>
+                </ModalBody>
+                <ModalFooter>
+                    {
+                        show_loader ? <div className='on-submit-loader'>{Global_services.show_spinner('grow',2,'success')}</div>: <button onClick={add_new_store} className="btn btn-success">Soumettre</button> 
+                    }
+                    <button onClick={close_store_modal} className="btn btn-danger">Annuler</button>
+                </ModalFooter>
+            </Modal>
+        </div>   
     )
 }
 

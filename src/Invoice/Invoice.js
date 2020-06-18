@@ -104,15 +104,17 @@ function Invoice () {
         set_new_invoice_data({...new_invoice_data,[e.target.name]:e.target.value})
     }
 
+    const [show_submit_invoice_loader,set_show_submit_invoice_loader] = useState(false);
     /* Submit Invoice */
     const add_new_invoice = () => {
         if(new_invoice_data.supplier_id != '' && new_invoice_data.store_id != '' && new_invoice_data.invoice_amount != '' && new_invoice_data.invoice_number != ''){
-            
+            set_show_submit_invoice_loader(true);
             var temp_invoice_date=moment(new Date(invoice_date));
             temp_invoice_date=temp_invoice_date.format("dd/MM/yyyy, h:mm:ss a");
             new_invoice_data.invoice_date=invoice_date;
-            axios.post(Global_services.get_checks,new_invoice_data).then(
+            axios.post(Global_services.add_new_invoice,new_invoice_data).then(
                 response => {
+                    set_show_submit_invoice_loader(false);
                     if(response.data == 'DUPLICATE_INV_NUM'){
                         Swal.fire({
                             icon: 'info',
@@ -129,6 +131,7 @@ function Invoice () {
                         set_popup_menu({ popup: { visible: false } });
                     }
                 },error =>{
+                    set_show_submit_invoice_loader(false);
                     console.log(error);
                     Swal.fire({
                         title: 'Error!',
@@ -139,7 +142,7 @@ function Invoice () {
                 }
             )
         }else{
-            
+            set_show_submit_invoice_loader(false);
             Swal.fire({
                 icon: 'warning',
                 title: 'Please Fill required fields',
@@ -275,11 +278,11 @@ function Invoice () {
 
     /* Update Invoice */
     const update_invoice = () => {
-            var temp_edit_invoice_date=moment(new Date(edit_invoice_date));
-            temp_edit_invoice_date=temp_edit_invoice_date.format("dd/MM/yyyy, h:mm:ss a");
-            edit_invoice_data.edit_invoice_date=edit_invoice_date;
-            set_edit_invoice_data(edit_invoice_data);
-            console.log(edit_invoice_data.edit_invoice_amount)
+        var temp_edit_invoice_date=moment(new Date(edit_invoice_date));
+        temp_edit_invoice_date=temp_edit_invoice_date.format("dd/MM/yyyy, h:mm:ss a");
+        edit_invoice_data.edit_invoice_date=edit_invoice_date;
+        set_edit_invoice_data(edit_invoice_data);
+        console.log(edit_invoice_data.edit_invoice_amount);
         if(edit_invoice_data.edit_invoice_amount < 0){
             Swal.fire({
                 title: 'Invoice amount can not be less than 0',
@@ -288,13 +291,16 @@ function Invoice () {
                 confirmButtonText: 'OK'
             })
         }else{
+            set_show_submit_invoice_loader(true);
             axios.post(Global_services.update_invoice,edit_invoice_data).then(
                 response => {
+                    set_show_submit_invoice_loader(false);
                     createNotification('success','updated');
                     close_edit_invoice_modal();
                     get_invoices();
                     set_popup_menu({ popup: { visible: false } });
                 },error =>{
+                    set_show_submit_invoice_loader(false);
                     console.log(error);
                     Swal.fire({
                         title: 'Error!',
@@ -386,15 +392,18 @@ function Invoice () {
             }  
         })
     }
-
+    const [pin_unpin_loader,set_pin_unpin_loader] = useState(false);
     /* Pin Invoice */
     const pin_invoice = (pin_invoice) => {
+        set_pin_unpin_loader(true);
         axios.post('http://localhost:4000/pin_invoice',pin_invoice).then(
             response => {
+                set_pin_unpin_loader(false)
                 createNotification('success','To the top of list');
                 get_invoices();
                 set_popup_menu({ popup: { visible: false } });
             },error =>{
+                set_pin_unpin_loader(false)
                 console.log(error);
                 Swal.fire({
                     title: 'Error!',
@@ -407,12 +416,15 @@ function Invoice () {
     }
     /* Unpin Invoice */
     const un_pin_invoice = (pin_invoice) => {
+        set_pin_unpin_loader(true);
         axios.post('http://localhost:4000/un_pin_invoice',pin_invoice).then(
             response => {
+                set_pin_unpin_loader(false);
                 createNotification('success','Removed');
                 get_invoices();
                 set_popup_menu({ popup: { visible: false } });
             },error =>{
+                set_pin_unpin_loader(false);
                 console.log(error);
                 Swal.fire({
                     title: 'Error!',
@@ -425,20 +437,32 @@ function Invoice () {
     }
     return (
         <div className='supplier-view' id='body'>
+            {
+                pin_unpin_loader?
+                <div class='table-col-loader'>
+                    {Global_services.show_spinner('border',8,'primary')}
+                </div>
+                :''
+            }
             <div>
                 <Common_filter />
             </div>
             <div>
                 <input onClick={open_new_inv_modal} type='submit' value='New Invoice' className='btn btn-primary add-supp-btn' />
             </div>
-            <div>
-                <Table bordered
-                    columns={columns}
-                    dataSource={invoices_list}
-                    onRow={onRow}
-                    rowClassName={setRowClassName} />
-                <Popup {...popup_menu.popup} />
-            </div>
+            {
+                invoices_list.length > 0 ?
+                <div>
+                    <Table bordered
+                        columns={columns}
+                        dataSource={invoices_list}
+                        onRow={onRow}
+                        rowClassName={setRowClassName} />
+                    <Popup {...popup_menu.popup} />
+                </div>
+                :
+                Global_services.show_spinner('border',5,'primary')
+            }
             {/* *****************  START - MODALS *********************************  */}
             <Modal show={is_open_new_inv_modal} onHide={close_new_inv_modal}>
                 <ModalHeader>
@@ -483,7 +507,14 @@ function Invoice () {
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <button onClick={add_new_invoice} className="btn btn-success">Soumettre</button>
+                    {
+                        show_submit_invoice_loader?
+                        Global_services.show_spinner('grow',3,'success')
+                        :
+                        <button onClick={add_new_invoice} className="btn btn-success">Soumettre</button>
+                       
+                    }
+                    
                     <button onClick={close_new_inv_modal} className="btn btn-danger">Annuler</button>
                 </ModalFooter>
             </Modal>
@@ -531,7 +562,12 @@ function Invoice () {
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <button onClick={update_invoice} className="btn btn-success">Soumettre</button>
+                    {
+                        show_submit_invoice_loader? 
+                        Global_services.show_spinner('grow',3,'success')
+                        : 
+                        <button onClick={update_invoice} className="btn btn-success">Soumettre</button>
+                    }
                     <button onClick={close_edit_invoice_modal} className="btn btn-danger">Annuler</button>
                 </ModalFooter>
             </Modal>

@@ -328,7 +328,7 @@ function Add_new_check(props){
                     </ModalBody>
                     <ModalFooter>
                         {
-                           show_loader ? <div>{Global_services.show_spinner()}</div>:<button onClick={submit_new_check} className="btn btn-success">Soumettre</button>
+                           show_loader ? Global_services.show_spinner('grow',2,'success'):<button onClick={submit_new_check} className="btn btn-success">Soumettre</button>
                         }
                         <button onClick={close_check} className="btn btn-danger">Annuler</button>
                     </ModalFooter>
