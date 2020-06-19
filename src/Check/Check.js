@@ -71,7 +71,6 @@ function Check (){
     const get_checks = () => {
         axios.get(Global_services.get_checks).then(
             response => {
-                console.log(response.data)
                 let checks=response.data
                 checks.map(el => {
                     let date = moment(new Date(el.check_date));
@@ -290,14 +289,20 @@ function Check (){
                     <Add_new_check get_checks={get_checks} all_stores={all_stores} supplier_list={supplier_list} check_type='sup'/>
                 </div>
             </div>
-            <div>
-                <Table bordered
-                    columns={columns}
-                    dataSource={check_list}
-                    onRow={onRow}
-                    rowClassName={setRowClassName} />
-                <Popup {...popup_menu.popup} />
-            </div>
+            {
+                check_list.length > 0?
+                <div>
+                    <Table bordered
+                        columns={columns}
+                        dataSource={check_list}
+                        onRow={onRow}
+                        rowClassName={setRowClassName} />
+                    <Popup {...popup_menu.popup} />
+                </div>
+                :
+                Global_services.show_spinner('border',5,'primary')
+            }
+
                             
             {/* START - Edit Check MODAL */}
             <Modal show={is_open_edit_check_modal} onHide={close_edit_check_modal }>

@@ -44,19 +44,20 @@ function Report_entries(){
     };
     const [is_open_new_store_modal,set_is_open_new_store_modal] = useState(false);
     const open_store_modal = () => {set_is_open_new_store_modal(true);
-        set_show_loader(false);};
+        set_show_loader(false);
+    };
     const close_store_modal = () => {set_is_open_new_store_modal(false)};
     const [new_store_data,set_new_store_data]= useState({
         new_store_name:'',
         new_store_init_amount:''
-    })
+    });
     const handler_new_store = (e) => {
         let name=e.target.name;
         let value= e.target.value;
         new_store_data[name]=value;
         entry_report_data.store_amount=all_stores.store_amount;
         set_new_store_data(new_store_data);
-    }
+    };
     const add_new_store = () => {
         if(new_store_data.new_store_name != ''){
             set_show_loader(true)
@@ -94,7 +95,7 @@ function Report_entries(){
             })
         }
   
-    }
+    };
     /* END -  STORE SECTION */
 
     /* START - ENTRIES REPORT DATA SECTION */
@@ -107,7 +108,9 @@ function Report_entries(){
             ...prevState,
             store_id:_selectedOption.store_id
         }));
-    }
+        console.log('_selectedOption.store_amount');
+        entry_report_data.store_amount=_selectedOption.store_amount;
+    };
     const get_starting_amount= (selected_store) => {
         axios.post(Global_services.get_starting_amount,selected_store).then(
             response=>{
@@ -128,7 +131,7 @@ function Report_entries(){
                 console.log('error')
             }
         );
-    }
+    };
     const [entry_report_data,set_entry_report_data] = useState({
         store_id:'',
         starting_amount:'',
@@ -161,7 +164,7 @@ function Report_entries(){
         });
         var total = sum_in_values - sum_out_values
         set_remain(total);
-    }
+    };
     const [remain,set_remain] = useState(0);
 
     const handle_entry_report = (e) => {
@@ -170,9 +173,7 @@ function Report_entries(){
         entry_report_data[name]=value;
         calc_remain_amount();
         set_entry_report_data(entry_report_data);
-        // set_entry_report_data({ ...entry_report_data, [name]: value });
-        console.log(entry_report_data)
-    }
+    };
     /* END - ENTRIES REPORT DATA SECTION */
 
     /* START - CASH  DETAILS */
@@ -180,23 +181,25 @@ function Report_entries(){
     const cash_supply_details = (data) => {
         set_cash_supply_details_arr(data);
         calc_remain_amount();
-    }
+    };
     const [cash_expense_details_arr,set_cash_expense_details_arr]= useState([]);
     const cash_expense_details = (data) => {
         set_cash_expense_details_arr(data);
 
-    }
+    };
     const [expense_total_amount,set_expense_total_amount]= useState(0);
     const get_expense_total_amount = (total_expense_amount) => {
         set_expense_total_amount(total_expense_amount);
-    }
+    };
     const [supply_total_amount,set_supply_total_amount]= useState(0);
     const get_supply_total_amount = (total_supply_amount) => {
         set_supply_total_amount(total_supply_amount);
-    }
+    };
     const [show_submit_loader,set_show_submit_loader] = useState(false);
     const submit_store_entry = () => {
         if(entry_report_data.sales_amount != '' && entry_report_data.bank_deposit != '' && entry_report_data.store_id != ''){
+            console.log('entry_report_data')
+            console.log(entry_report_data)
             entry_report_data.cash_supply_details=cash_supply_details_arr;
             entry_report_data.cash_supply_amount=supply_total_amount;
             entry_report_data.cash_expense_details=cash_expense_details_arr;
@@ -211,6 +214,7 @@ function Report_entries(){
             set_show_submit_loader(true);
             return axios.post(Global_services.add_new_store_entry,entry_report_data).then(
                 response=>{
+                    get_all_stores();
                     set_show_submit_loader(false);
                     set_entry_report_data({
                         store_id:'',
@@ -256,7 +260,7 @@ function Report_entries(){
                 confirmButtonText: 'OK'
             })
         }
-    }
+    };
     const [refreshDialog, doRefreshDialog] = useState(false);
     const [entry_date, set_entry_date] = useState(new Date());
     /* END - CASH  DETAILS */

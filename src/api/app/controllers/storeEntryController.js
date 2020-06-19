@@ -5,14 +5,14 @@ var StoreEntry=  require('../models/storeEntryModel.js');
 exports.add_new_store_entry = function(req,res){
  
     var request=req.body;
-    console.log('----------------------------------------------------')
-    console.log(request)
     var expense_details=request.cash_expense_details;
     var supply_details=request.cash_supply_details;
     var new_store_entry = new StoreEntry(request);
     new_store_entry.starting_amount=new_store_entry.remain_amount;
 
-    StoreEntry.addNewStoreEntry(supply_details,expense_details,new_store_entry,function(err,storeEntry){
+    var new_store_amount=(parseInt(request.store_amount) + parseInt(request.bank_deposit));
+
+    StoreEntry.addNewStoreEntry(supply_details,expense_details,new_store_entry,new_store_amount,function(err,storeEntry){
         if(err){
             res.send(err);
         }else{
