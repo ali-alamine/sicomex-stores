@@ -313,7 +313,7 @@ function Supplier(){
             }
    
             <div>
-                <Common_filter />
+                <Common_filter view='sup'/>
             </div>
             <div>
                 <input type='submit' onClick={open_sup_modal} value='New Supplier' className='btn btn-primary add-supp-btn' />

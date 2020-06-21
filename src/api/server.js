@@ -8,32 +8,23 @@ bodyParser = require('body-parser');
 port = process.env.PORT || 4000;
 app.use(cors())
 
-
-
 console.log('API server started on: ' + port);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// function clientErrorHandler (err, req, res, next) {
-//   if (req.xhr) {
-//      res.status(500).send({ error: 'Something failed!' })
-//    } else {
-//      next(err)
-//   }
-// }
-
-// app.use(clientErrorHandler);
 
 var routes = require('./app/routes/approutes'); //importing route
 routes(app); //register the route
 
-/* ------------ FOR LOCALHOST ------------------ */
-// app.listen(4000)
+var is_prod=false;
 
-/* ------------ FOR PRODUCTION ------------------ */
-https.createServer({
-  key: fs.readFileSync('./key.pem'),
-  cert: fs.readFileSync('./cert.pem'),
-  passphrase: 'pm12'
-}, app).listen(4000);
+if(is_prod){
+  https.createServer({
+    key: fs.readFileSync('./key.pem'),
+    cert: fs.readFileSync('./cert.pem'),
+    passphrase: 'pm12'
+  }, app).listen(4000);
+}else{
+  app.listen(4000);
+}

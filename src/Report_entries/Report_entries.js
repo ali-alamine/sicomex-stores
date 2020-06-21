@@ -16,7 +16,9 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Global_services from '../Global_services/Global_services';
 import "bootstrap/dist/css/bootstrap.min.css";
-// import ReactSpinner from 'react-bootstrap-spinner';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 function Report_entries(){
     const [show_loader,set_show_loader] = useState(false);
     const [all_stores,set_all_stores]= useState([]);
@@ -267,7 +269,7 @@ function Report_entries(){
 
     return (
         <div className='create-new-store'>
-            <button onClick={open_store_modal} className='create-store-btn btn btn-primary'>Create New Store</button>
+            <button onClick={open_store_modal} className='create-store-btn btn btn-primary'>Nouveau magasin</button>
             <div className='store-data-entry row'>
                 <div className='col-md-4' >
                     <div className='entry-select'> 
@@ -286,24 +288,24 @@ function Report_entries(){
                     }
                     </div>
                     <div className='entry'>
-                        <span>Starting Amount</span> <input value={entry_report_data.starting_amount} name='starting_amount' type='number' className='entry-input-add' disabled/>
+                        <span>Montant de départ</span> <input value={entry_report_data.starting_amount} name='starting_amount' type='number' className='entry-input-add' disabled/>
                     </div>
                     <div className='entry'>
-                        <span>Sales</span> <input value={entry_report_data.sales_amount} onChange={handle_entry_report} name='sales_amount' type='number' className='entry-input-add'/>
+                        <span>Ventes</span> <input value={entry_report_data.sales_amount} onChange={handle_entry_report} name='sales_amount' type='number' className='entry-input-add'/>
                     </div>
                     <div className='entry supply'>
-                        <span>Cash Supply</span> <input type='number' value={supply_total_amount} disabled className='entry-input-sub'/>
+                        <span>Trésorerie</span> <input type='number' value={supply_total_amount} disabled className='entry-input-sub'/>
                         <span className='add-details'><Dialog refresh={refreshDialog} calc={calc_remain_amount} get_supply_total_amount={get_supply_total_amount} view='supply' action_name='Cash Supply' cash_supply_details={cash_supply_details}/></span>
                     </div>
                     <div className='entry cash'>
-                        <span>Cash Expenses</span> <input type='number' value={expense_total_amount} disabled className='entry-input-sub'/> 
+                        <span>Dépenses en espèces</span> <input type='number' value={expense_total_amount} disabled className='entry-input-sub'/> 
                         <span className='add-details'><Dialog refresh={refreshDialog} calc={calc_remain_amount}  get_expense_total_amount={get_expense_total_amount}  view='expense' action_name='Cash Expenses' cash_expense_details={cash_expense_details}/></span>
                     </div>
                     <div className='entry'>
-                        <span>Bank Deposit</span> <input value={entry_report_data.bank_deposit} name='bank_deposit' onChange={handle_entry_report} type='number' className='entry-input-add'/>
+                        <span>Dépôt bancaire</span> <input value={entry_report_data.bank_deposit} name='bank_deposit' onChange={handle_entry_report} type='number' className='entry-input-add'/>
                     </div>
                     <div className='entry'>
-                        <span>Remain: </span> <input type='text' value={remain} disabled />
+                        <span>Rester: </span> <input type='text' value={remain} disabled />
                     </div>
                     <div className='entry'>
                         <span>Date: </span> <div className='entry-date'> <DatePicker dateFormat="dd/MM/yyyy" selected={entry_date} onChange={date => set_entry_date(date)} /> </div> 

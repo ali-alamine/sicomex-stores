@@ -37,10 +37,6 @@ function Add_new_check(props){
     const handle_select_store = (store_id,store_amount) => {
         new_check_data.store_id=store_id;
         new_check_data.store_amount=store_amount.key;
-        console.log('HERE WE GOOO');
-        console.log(store_amount.key)
-        console.log('---------------------------------------')
-        console.log(all_stores)
     }
     /* Handle supplier and store data  */
     useEffect(()=>{
@@ -251,7 +247,6 @@ function Add_new_check(props){
                                         >
                                         {
                                             all_stores.map((el,index) => {
-                                                console.log(el)
                                                 return <Option key={el.store_amount} value={el.store_id}>{el.label}</Option>
                                             })
                                         }

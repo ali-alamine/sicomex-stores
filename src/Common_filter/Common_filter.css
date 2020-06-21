@@ -3,3 +3,7 @@
     border:solid gainsboro 2px;
     text-align: center;
 }
+.row{
+    margin-left: auto; 
+    margin-right: auto;
+}

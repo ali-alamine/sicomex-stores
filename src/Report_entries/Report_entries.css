@@ -89,7 +89,7 @@
 }
 
 .add-details{
-    margin-left: 224px;
+    margin-left: 238px;
     margin-top: -10px;
     float: right;
     position: absolute;
@@ -103,8 +103,26 @@
     color: blue;
 }
 .cash .add-details{
+    position: absolute; 
+    margin-left: 157px;
+}
+@media (max-width: 900px){
     
-    margin-left: 208px;
+    .add-details{
+        margin-left: 399px;
+    }
+    .cash .add-details{
+        margin-left: 317px;
+    }
+}
+@media (max-width: 600px){
+    
+    .add-details{
+        margin-left: 340px !important;
+    }
+    .cash .add-details{
+        margin-left: 260px !important;
+    }
 }
 .supply-details{
     -webkit-user-select: none;
