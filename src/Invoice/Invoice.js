@@ -62,19 +62,22 @@ function Invoice () {
     }
 
     /* Get all Suppliers*/
-    const [supplier_list,set_supplier_list] = useState(null);
+    const [supplier_list,set_supplier_list] = useState([]);
     const get_suppliers= () => {
         axios.get(Global_services.get_suppliers).then(
             response => {
-                var temp_all_stores=[];
+                console.log(response.data)
+                var temp_supplier_list=[];
                 for(var i =0;i<response.data.length;i++){
-                    temp_all_stores.push({
+                    temp_supplier_list.push({
                         'value':response.data[i].supplier_name,
                         'label':response.data[i].supplier_name,
-                        'supplier_id':response.data[i].supplier_id
+                        'supplier_id':response.data[i].supplier_id,
+                        'supplier_amount':response.data[i].supplier_amount,
+                        'supplier_name':response.data[i].supplier_name,
                     })
                 }
-                set_supplier_list(temp_all_stores);
+                set_supplier_list(temp_supplier_list);
             },error =>{
                 console.log(error);
             }
@@ -445,7 +448,12 @@ function Invoice () {
                 :''
             }
             <div>
-                <Common_filter />
+                {
+                    supplier_list.length > 0 && all_stores.length > 0 ?
+                    <Common_filter view='invoice' supplier_list={supplier_list} all_stores={all_stores}/>
+                    :
+                    Global_services.show_spinner()
+                }
             </div>
             <div>
                 <input onClick={open_new_inv_modal} type='submit' value='New Invoice' className='btn btn-primary add-supp-btn' />

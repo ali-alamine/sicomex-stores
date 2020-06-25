@@ -102,15 +102,13 @@ function Report_entries(){
 
     /* START - ENTRIES REPORT DATA SECTION */
     const [selected_store_entry,set_selected_store_entry] = useState('');
-
     const handle_select_store = (_selectedOption) => {
-        set_selected_store_entry(_selectedOption)
-        get_starting_amount(_selectedOption)
+        set_selected_store_entry(_selectedOption);
+        get_starting_amount(_selectedOption);
         set_entry_report_data(prevState => ({
             ...prevState,
             store_id:_selectedOption.store_id
         }));
-        console.log('_selectedOption.store_amount');
         entry_report_data.store_amount=_selectedOption.store_amount;
     };
     const get_starting_amount= (selected_store) => {
@@ -302,7 +300,7 @@ function Report_entries(){
                         <span className='add-details'><Dialog refresh={refreshDialog} calc={calc_remain_amount}  get_expense_total_amount={get_expense_total_amount}  view='expense' action_name='Cash Expenses' cash_expense_details={cash_expense_details}/></span>
                     </div>
                     <div className='entry'>
-                        <span>Dépôt bancaire</span> <input value={entry_report_data.bank_deposit} name='bank_deposit' onChange={handle_entry_report} type='number' className='entry-input-add'/>
+                        <span>Dépôt bancaire</span> <input value={entry_report_data.bank_deposit} name='bank_deposit' onChange={handle_entry_report} type='number' className='entry-input-sub'/>
                     </div>
                     <div className='entry'>
                         <span>Rester: </span> <input type='text' value={remain} disabled />

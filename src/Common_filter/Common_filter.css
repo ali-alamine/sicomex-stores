@@ -3,7 +3,11 @@
     border:solid gainsboro 2px;
     text-align: center;
 }
-.row{
-    margin-left: auto; 
-    margin-right: auto;
+.ant-select-selector{
+    border-radius: 5px !important;
+    height: 38px !important;
+    border: 1px solid #a1a5a8 !important;
+}
+.range-date{
+    margin-bottom: 30px !important;
 }
