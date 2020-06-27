@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactSpinner from 'react-bootstrap-spinner';
 import './Global_services.css';
-var is_prod=false;
+var is_prod=true;
 var base_url ='';
 base_url= is_prod ? 'https://ec2-35-153-50-38.compute-1.amazonaws.com:4000' : 'http://localhost:4000';
 
