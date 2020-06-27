@@ -168,17 +168,21 @@ function Invoice () {
         set_selected_supplier_invoice({"label":"","value":"","supplier_id":""});
     }
 
+    /* Assign response to invoice list */
+    const assign_response_to_invoice_list = (response) => {
+        let invoices=response.data
+        invoices.map(el => {
+            let date = moment(new Date(el.invoice_date));
+            el.invoice_date = date.format("DD/MM/YYYY")
+        })
+        set_invoices_list(invoices);
+    }
     /* Get Invoices */
     const [invoices_list,set_invoices_list] =useState([]);
     const get_invoices = function(){
         axios.get(Global_services.get_invoices).then(
             response => {
-                let invoices=response.data
-                invoices.map(el => {
-                    let date = moment(new Date(el.invoice_date));
-                    el.invoice_date = date.format("DD/MM/YYYY")
-                })
-                set_invoices_list(invoices);
+                assign_response_to_invoice_list(response)
             },error =>{
                 console.log(error.data);
             }
@@ -450,7 +454,7 @@ function Invoice () {
             <div>
                 {
                     supplier_list.length > 0 && all_stores.length > 0 ?
-                    <Common_filter view='invoice' supplier_list={supplier_list} all_stores={all_stores}/>
+                    <Common_filter view='invoice' response_data={assign_response_to_invoice_list} supplier_list={supplier_list} all_stores={all_stores}/>
                     :
                     Global_services.show_spinner()
                 }

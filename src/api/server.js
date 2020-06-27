@@ -25,6 +25,21 @@ if(is_prod){
     cert: fs.readFileSync('./cert.pem'),
     passphrase: 'pm12'
   }, app).listen(4000);
+  var nginx = require('nginx-server');
+ 
+var options = {
+    config: __dirname + '/test/stubs/nginx.conf',
+};
+ 
+  var server = nginx(options);
+  
+  server.start(function () {
+      console.log('started');
+  });
+  
+  server.stop(function () {
+      console.log('stopped');
+  });
 }else{
   app.listen(4000);
 }

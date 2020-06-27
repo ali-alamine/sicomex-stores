@@ -1,13 +1,47 @@
 .main-filter-box{
     margin-top: 20px;
-    border:solid gainsboro 2px;
+    /* border:solid gainsboro 2px; */
     text-align: center;
+}
+.ant-collapse-content{
+    background-color: rgb(253, 253, 253) !important;
 }
 .ant-select-selector{
     border-radius: 5px !important;
     height: 38px !important;
     border: 1px solid #a1a5a8 !important;
 }
-.range-date{
-    margin-bottom: 30px !important;
+.date-range-filter{
+    margin-top: 20px !important;
 }
+.react-datepicker{
+    display:none !important;
+}
+.filer-order{
+    font-size: 12px;
+    font-weight: bold;
+}
+.date-filter{
+    margin-top: 20px;
+}
+.payment-filter{
+    margin-top: 20px !important;
+}
+.submit-filter-btn{
+    border: solid rgb(182, 179, 179) 1px !important;
+    margin-top: 0px;
+    background-color: rgb(230, 230, 230) !important;
+    /* width: 30% !important; */
+}
+.submit-filter-btn:hover{
+    background-color: rgb(187, 187, 187) !important;
+    color:rgb(66, 107, 121) !important;
+}
+.ant-select-selection-placeholder {
+    color: rgb(0, 0, 0) !important;
+    font-weight: 400;
+    font-size: 15px;
+    font-family: inherit;
+    opacity: 0.6 !important;
+}
+  

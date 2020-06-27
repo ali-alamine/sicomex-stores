@@ -148,7 +148,6 @@ function Add_new_check(props){
 
     /* Submit new check */
     const submit_new_check = () => {
-
         var temp_check_date=moment(new Date(check_new_date));
         temp_check_date=temp_check_date.format("YYYY-MM-DD");
         new_check_data.check_date=temp_check_date;

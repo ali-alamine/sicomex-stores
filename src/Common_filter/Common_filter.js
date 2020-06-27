@@ -10,53 +10,92 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import $ from 'jquery';
 import moment from 'moment';
-// import DatePicker from "react-datepicker";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Collapse } from 'antd';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { DatePicker } from 'antd';
+import DatePicker from "react-datepicker";
+import Global_services from '../Global_services/Global_services';
 function Common_filter (props){
-    
+
+    const { Panel } = Collapse;
+    const { Option } = Select;
+    const [date_from,set_date_from] = useState('');
+    const [date_to,set_date_to] = useState('');
     const [search_data,set_search_data] = React.useState({
         supplier_id:'',
         store_id:'',
         amount_from:'',
         amount_to:'',
-        date_from:'',
-        date_to:'',
+        date_from:date_from,
+        date_to:date_to,
         is_paid:'',
         order_by_date:'',
         order_by_amount:'',
+        invoice_number:'',
     });
-
     const handle_select_store = (store_id,store_amount) => {
         search_data.store_id=store_id;
-    }
+    };
     const handle_select_supplier = (supplier_id,supplier_amount) =>{
         search_data.supplier_id=supplier_id;
-    }
-    const { Panel } = Collapse;
-    const { Option } = Select;
-    const { RangePicker } = DatePicker;
+    };
+    var [is_paid,set_is_paid]= useState('Any');
+    const handle_select_payment_type = (value) =>{
+        set_is_paid(value);
+    };
+    const common_fields = () => {
+        return (
+            <div className='date-range-filter'>
+                <Row>
+                    <Col><DatePicker placeholderText="partir de la date" dateFormat="dd/MM/yyyy" className='form-control date-filter' selected={date_from} onChange={date => set_date_from(date)}/></Col>
+                    <Col><DatePicker placeholderText="à ce jour"  dateFormat="dd/MM/yyyy" className='form-control date-filter' selected={date_to} onChange={date => set_date_to(date)}/></Col>
+                    <Col>
+                        <Select
+                            showSearch
+                            style={{ width: '100%',borderRadius:20}}
+                            placeholder="select payment type"
+                            className='payment-filter'
+                            optionFilterProp="children"
+                            onChange={handle_select_payment_type}
+                            filterOption={(input, option) =>
+                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                            }>
 
-    const [date_from,set_date_from] = useState(new Date());
-    const [date_to,set_date_to] = useState(new Date());
-    const submit_filter = () => {
-        var temp_date_from=moment(new Date(date_from));
-        temp_date_from=temp_date_from.format("YYYY-MM-DD");
-        search_data.date_from=temp_date_from;
-        /* ------------------------------------------------------- */
-        var temp_date_to=moment(new Date(date_from));
-        temp_date_to=temp_date_to.format("YYYY-MM-DD");
-        search_data.date_to=temp_date_to;
-    }
+                            <Option value='any'>any</Option>
+                            <Option value='paid'>paid</Option>
+                            <Option value='unpaid'>unpaid</Option>
 
+                        </Select>
+                    </Col>
+                    <Col><span className='filer-order'>Order by Date</span><input type="checkbox" onChange={toggle_order_by_amount} checked={order_by_amount} className='form-control' /></Col>
+                    <Col><span className='filer-order'>Order by Amount</span><input type="checkbox" onChange={toggle_order_date} checked={order_by_date} className='form-control' /></Col>
+                </Row>
+                <hr />
+                <Row>
+             
+                    <Col></Col>
+                    <Col></Col>
+                    <Col></Col>
+                    <Col>
+                        <input type='submit' value='Chercher' onClick={submit_filter} className='form-control btn btn-default submit-filter-btn'/>
+                    </Col>
+                </Row>
+            </div>
+        )
+    };
+    const handle_data_filter = (e) =>{
+        let name= e.target.name;
+        let value= e.target.value;
+        search_data[name]=value;
+        set_search_data(search_data);
+    };
     const supplier_filter = () =>{
         return (
             <div>
                 <Row>
+
                     <Col>
                         <Select
                         showSearch
@@ -81,36 +120,67 @@ function Common_filter (props){
                         <input type='number' className='form-control' placeholder='Amount less Than'/>
                     </Col>
                     <Col>
-                        <input type='checkbox' className='form-control' placeholder='Amount less Than'/>
+                        <input type='checkbox' className='form-control'/>
                     </Col>
                     <Col>
                         <input type='submit' value='Chercher' className='form-control btn btn-primary'/>
                     </Col>
-                    <Col>
-                        <input type='submit' value='Chercher' className='form-control btn btn-primary'/>
-                    </Col>
-                    
+
                 </Row>
             </div>
         )
     };
-    useEffect(()=>{
+    const [order_by_date,set_order_by_date]= useState(false);
+    const toggle_order_date = () => {
+        set_order_by_date(!order_by_date);
+        set_search_data(prevState => ({
+            ...prevState,
+            order_by_date:order_by_date
+        }));
+    };
+    const [order_by_amount,set_order_by_amount]= useState(false);
+    const toggle_order_by_amount = () => {
+        set_order_by_amount(!order_by_amount);
+        set_search_data(prevState => ({
+            ...prevState,
+            order_by_amount:order_by_amount
+        }));
+    };
+    const submit_filter = () => {
+        
+        search_data.order_by_amount=order_by_amount;
+        search_data.order_by_date=order_by_date;
+        search_data.is_paid=is_paid;
 
-    },props.view);
-    var testD=[];
-    const test = () => {
-        console.log('test')
-        console.log(testD)
-    }
+        var temp_date_from=moment(new Date(date_from));
+        temp_date_from=temp_date_from.format("YYYY-MM-DD");
+        search_data.date_from=temp_date_from;
+        /* ------------------------------------------------------------------ */
+        var temp_date_to=moment(new Date(date_to));
+        temp_date_to=temp_date_to.format("YYYY-MM-DD");
+        search_data.date_to=temp_date_to;
+
+        set_search_data(search_data);
+        console.log(' --------------------- search_data --------------------- ')
+        console.log(search_data);
+
+        axios.post(Global_services.advanced_search_invoice,search_data).then(
+            response => {
+                // set_supplier_list(response.data);
+                console.log(response.data)
+                if(response.data == 'EMPTY_RESULT'){
+                    alert('No result')
+                }else{
+                    props.response_data(response)
+                }
+            },error =>{
+                console.log(error);
+            }
+        )
+    };
     const invoice_filter = () =>{
-        console.log('supplier_list')
-        console.log(props.supplier_list)
-        console.log(props.view)
         return (
-            <div>
-                <Row>
-                    <Col><RangePicker format='DD-MM-YYYY' className='range-date' onChange={test}/></Col>
-                </Row>
+            <div className='common-filter'>
                 <Row>
                     <Col>
                         <Select
@@ -124,7 +194,7 @@ function Common_filter (props){
                         >
                             {
                                 props.all_stores.map((el,index) => {
-                                    return <Option key={el.store_amount} value={el.store_id}>{el.label}</Option>
+                                    return <Option key={el.index} value={el.store_id}>{el.label}</Option>
                                 })
                             }
                         </Select>
@@ -141,28 +211,26 @@ function Common_filter (props){
                         }>
                             {
                                 props.supplier_list.map((el,index) => {
-                                    return <Option key={el.supplier_amount} value={el.supplier_id}>{el.supplier_name}</Option>
+                                    return <Option key={el.index} value={el.supplier_id}>{el.supplier_name}</Option>
                                 })
                             }
                         </Select>
                     </Col>
                     <Col>
-                        <input type='text' className='form-control' placeholder='Invoice Number'/>
+                        <input type='text' onChange={handle_data_filter} name='invoice_number' className='form-control' placeholder='Invoice Number'/>
                     </Col>
                     <Col>
-                        <input type='number' className='form-control' placeholder='Amount Greater Than'/>
+                        <input type='number' onChange={handle_data_filter} name='amount_from' className='form-control' placeholder='Amount Greater Than'/>
                     </Col>
                     <Col>
-                        <input type='number' className='form-control' placeholder='Amount less Than'/>
-                    </Col>
-                    <Col>
-                        <input type='submit' className='form-control btn btn-primary'/>
+                        <input type='number' onChange={handle_data_filter} name='amount_to' className='form-control' placeholder='Amount less Than'/>
                     </Col>
                 </Row>
+                {common_fields()}
+
             </div>
         )
     };
-
     const switch_filter_view = () =>{
         switch(props.view){
             case 'sup':return supplier_filter();
@@ -170,7 +238,7 @@ function Common_filter (props){
             case 'invoice':return invoice_filter();
             break;
         }
-    }
+    };
 
     return (
         <div>
