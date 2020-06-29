@@ -282,7 +282,7 @@ function Check (){
     return (
         <div className='check-view'>
             <div>
-                <Common_filter />
+                <Common_filter view='bank_check' all_stores={all_stores} supplier_list={supplier_list}/>
             </div>
             <div>
                 <div>

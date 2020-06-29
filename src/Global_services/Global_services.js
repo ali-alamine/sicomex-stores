@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactSpinner from 'react-bootstrap-spinner';
 import './Global_services.css';
-var is_prod=true;
+var is_prod=false;
 var base_url ='';
 base_url= is_prod ? 'https://ec2-35-153-50-38.compute-1.amazonaws.com:4000' : 'http://localhost:4000';
 
@@ -44,6 +44,7 @@ class Global_services extends React.Component {
     static add_new_check = base_url+'/add_new_check';
 
     static advanced_search_invoice = base_url+'/advanced_search_invoice';
+    static advanced_search_bank_check = base_url+'/advanced_search_bank_check';
     
 }
 

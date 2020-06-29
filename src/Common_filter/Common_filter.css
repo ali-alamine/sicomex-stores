@@ -2,6 +2,11 @@
     margin-top: 20px;
     /* border:solid gainsboro 2px; */
     text-align: center;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 .ant-collapse-content{
     background-color: rgb(253, 253, 253) !important;

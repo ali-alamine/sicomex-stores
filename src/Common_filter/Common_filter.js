@@ -34,6 +34,7 @@ function Common_filter (props){
         order_by_date:'',
         order_by_amount:'',
         invoice_number:'',
+        check_number:'',
     });
     const handle_select_store = (store_id,store_amount) => {
         search_data.store_id=store_id;
@@ -85,6 +86,46 @@ function Common_filter (props){
             </div>
         )
     };
+    const supplier_store_selection = () => {
+        return(
+            <Row>
+                <Col>
+                    <Select
+                        showSearch
+                        style={{ width: '100%',borderRadius:20}}
+                        placeholder="Select Store"
+                        optionFilterProp="children"
+                        onChange={handle_select_store}
+                        filterOption={(input, option) =>
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                    >
+                        {
+                            props.all_stores.map((el,index) => {
+                                return <Option key={el.index} value={el.store_id}>{el.label}</Option>
+                            })
+                        }
+                    </Select>
+                </Col>
+                <Col>
+                    <Select
+                        showSearch
+                        style={{ width: '100%',borderRadius:20}}
+                        placeholder="Sélectionnez un fournisseur"
+                        optionFilterProp="children"
+                        onChange={handle_select_supplier}
+                        filterOption={(input, option) =>
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }>
+                        {
+                            props.supplier_list.map((el,index) => {
+                                return <Option key={el.index} value={el.supplier_id}>{el.supplier_name}</Option>
+                            })
+                        }
+                    </Select>
+                </Col>
+            </Row>
+        )
+    }
     const handle_data_filter = (e) =>{
         let name= e.target.name;
         let value= e.target.value;
@@ -163,16 +204,18 @@ function Common_filter (props){
         set_search_data(search_data);
         console.log(' --------------------- search_data --------------------- ')
         console.log(search_data);
-
-        axios.post(Global_services.advanced_search_invoice,search_data).then(
+        var filter_api=''
+        if(props.view=='invoice') filter_api=Global_services.advanced_search_invoice;
+        if(props.view=='bank_check') filter_api=Global_services.advanced_search_bank_check;
+        axios.post(filter_api,search_data).then(
             response => {
                 // set_supplier_list(response.data);
                 console.log(response.data)
-                if(response.data == 'EMPTY_RESULT'){
-                    alert('No result')
-                }else{
-                    props.response_data(response)
-                }
+                // if(response.data == 'EMPTY_RESULT'){
+                //     alert('No result')
+                // }else{
+                //     props.response_data(response)
+                // }
             },error =>{
                 console.log(error);
             }
@@ -182,40 +225,7 @@ function Common_filter (props){
         return (
             <div className='common-filter'>
                 <Row>
-                    <Col>
-                        <Select
-                            showSearch
-                            style={{ width: '100%',borderRadius:20}}
-                            placeholder="Select Store"
-                            optionFilterProp="children"
-                            onChange={handle_select_store}
-                            filterOption={(input, option) =>
-                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                        >
-                            {
-                                props.all_stores.map((el,index) => {
-                                    return <Option key={el.index} value={el.store_id}>{el.label}</Option>
-                                })
-                            }
-                        </Select>
-                    </Col>
-                    <Col>
-                        <Select
-                            showSearch
-                            style={{ width: '100%',borderRadius:20}}
-                            placeholder="Sélectionnez un fournisseur"
-                            optionFilterProp="children"
-                            onChange={handle_select_supplier}
-                            filterOption={(input, option) =>
-                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }>
-                            {
-                                props.supplier_list.map((el,index) => {
-                                    return <Option key={el.index} value={el.supplier_id}>{el.supplier_name}</Option>
-                                })
-                            }
-                        </Select>
-                    </Col>
+                    {supplier_store_selection()}
                     <Col>
                         <input type='text' onChange={handle_data_filter} name='invoice_number' className='form-control' placeholder='Invoice Number'/>
                     </Col>
@@ -231,11 +241,32 @@ function Common_filter (props){
             </div>
         )
     };
+    const bank_check_filter = () => {
+        return (
+            <div className='common-filter'>
+                <Row>
+                    {supplier_store_selection()}
+                    <Col>
+                        <input type='text' onChange={handle_data_filter} name='check_number' className='form-control' placeholder='Check Number'/>
+                    </Col>
+                    <Col>
+                        <input type='number' onChange={handle_data_filter} name='amount_from' className='form-control' placeholder='Amount Greater Than'/>
+                    </Col>
+                    <Col>
+                        <input type='number' onChange={handle_data_filter} name='amount_to' className='form-control' placeholder='Amount less Than'/>
+                    </Col>
+                </Row>
+                {common_fields()}
+            </div>
+        )
+    }
     const switch_filter_view = () =>{
         switch(props.view){
             case 'sup':return supplier_filter();
             break;
             case 'invoice':return invoice_filter();
+            break;
+            case 'bank_check':return bank_check_filter();
             break;
         }
     };
