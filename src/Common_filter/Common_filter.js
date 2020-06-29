@@ -56,7 +56,7 @@ function Common_filter (props){
                         <Select
                             showSearch
                             style={{ width: '100%',borderRadius:20}}
-                            placeholder="select payment type"
+                            placeholder="Statut de paiement"
                             className='payment-filter'
                             optionFilterProp="children"
                             onChange={handle_select_payment_type}
@@ -64,14 +64,14 @@ function Common_filter (props){
                             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                             }>
 
-                            <Option value='any'>any</Option>
-                            <Option value='paid'>paid</Option>
-                            <Option value='unpaid'>unpaid</Option>
+                            <Option value='any'>Toute</Option>
+                            <Option value='paid'>Payé</Option>
+                            <Option value='unpaid'>Non payé</Option>
 
                         </Select>
                     </Col>
-                    <Col><span className='filer-order'>Order by Date</span><input type="checkbox" onChange={toggle_order_by_amount} checked={order_by_amount} className='form-control' /></Col>
-                    <Col><span className='filer-order'>Order by Amount</span><input type="checkbox" onChange={toggle_order_date} checked={order_by_date} className='form-control' /></Col>
+                    <Col><span className='filer-order'>Ordonner par montant</span><input type="checkbox" onChange={toggle_order_by_amount} checked={order_by_amount} className='form-control' /></Col>
+                    <Col><span className='filer-order'>Trier par date</span><input type="checkbox" onChange={toggle_order_date} checked={order_by_date} className='form-control' /></Col>
                 </Row>
                 <hr />
                 <Row>
@@ -93,7 +93,7 @@ function Common_filter (props){
                     <Select
                         showSearch
                         style={{ width: '100%',borderRadius:20}}
-                        placeholder="Select Store"
+                        placeholder="Sélectionner un Magasin"
                         optionFilterProp="children"
                         onChange={handle_select_store}
                         filterOption={(input, option) =>
@@ -209,31 +209,38 @@ function Common_filter (props){
         if(props.view=='bank_check') filter_api=Global_services.advanced_search_bank_check;
         axios.post(filter_api,search_data).then(
             response => {
-                // set_supplier_list(response.data);
                 console.log(response.data)
-                // if(response.data == 'EMPTY_RESULT'){
-                //     alert('No result')
-                // }else{
-                //     props.response_data(response)
-                // }
+                if(response.data == 'EMPTY_RESULT'){
+                    alert('No result')
+                }else{
+                    props.response_data(response)
+                }
             },error =>{
                 console.log(error);
             }
         )
     };
+    const common_amount_fields = () => {
+        return(
+            <Row>
+                <Col>
+                    <input type='number' onChange={handle_data_filter} name='amount_from' className='form-control' placeholder='Montant supérieur à'/>
+                </Col>
+                <Col>
+                    <input type='number' onChange={handle_data_filter} name='amount_to' className='form-control' placeholder='Montant inférieure à'/>
+                </Col>
+            </Row>
+        )
+    }
     const invoice_filter = () =>{
         return (
             <div className='common-filter'>
                 <Row>
-                    {supplier_store_selection()}
                     <Col>
-                        <input type='text' onChange={handle_data_filter} name='invoice_number' className='form-control' placeholder='Invoice Number'/>
+                        {supplier_store_selection()}
                     </Col>
                     <Col>
-                        <input type='number' onChange={handle_data_filter} name='amount_from' className='form-control' placeholder='Amount Greater Than'/>
-                    </Col>
-                    <Col>
-                        <input type='number' onChange={handle_data_filter} name='amount_to' className='form-control' placeholder='Amount less Than'/>
+                        {common_amount_fields()}
                     </Col>
                 </Row>
                 {common_fields()}
@@ -245,15 +252,11 @@ function Common_filter (props){
         return (
             <div className='common-filter'>
                 <Row>
-                    {supplier_store_selection()}
                     <Col>
-                        <input type='text' onChange={handle_data_filter} name='check_number' className='form-control' placeholder='Check Number'/>
+                        {supplier_store_selection()}
                     </Col>
                     <Col>
-                        <input type='number' onChange={handle_data_filter} name='amount_from' className='form-control' placeholder='Amount Greater Than'/>
-                    </Col>
-                    <Col>
-                        <input type='number' onChange={handle_data_filter} name='amount_to' className='form-control' placeholder='Amount less Than'/>
+                        {common_amount_fields()}
                     </Col>
                 </Row>
                 {common_fields()}

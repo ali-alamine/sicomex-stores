@@ -19,7 +19,10 @@ import "antd/dist/antd.css";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import { Table } from "antd";
 import 'react-notifications/lib/notifications.css';
-import Global_services from '../Global_services/Global_services'
+import Global_services from '../Global_services/Global_services';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 function Invoice () {
     useEffect(()=>{
@@ -28,6 +31,8 @@ function Invoice () {
         get_all_stores();
     },[]);
 
+    /* Main table loader */
+    const [show_main_loader,set_show_main_loader] = useState(false);
     /* Invoice modal */
     const [is_open_new_inv_modal,set_is_open_new_inv_modal] =useState(false);
     const close_new_inv_modal = () => {set_is_open_new_inv_modal(false);}
@@ -170,7 +175,8 @@ function Invoice () {
 
     /* Assign response to invoice list */
     const assign_response_to_invoice_list = (response) => {
-        let invoices=response.data
+        let invoices=response.data;
+        set_show_main_loader(false);
         invoices.map(el => {
             let date = moment(new Date(el.invoice_date));
             el.invoice_date = date.format("DD/MM/YYYY")
@@ -442,6 +448,37 @@ function Invoice () {
             }
         )
     }
+
+    /* Invoice Global Search */
+    const [search_invoice_number,set_search_invoice_number] = useState({
+        invoice_number:''
+    });
+    const handle_search_invoice = (e) => {
+        let value= e.target.value;
+        let name= e.target.name;
+        search_invoice_number[name]=value;
+        set_search_invoice_number(search_invoice_number);
+    }
+    const submit_search_invoice = () =>{
+        set_show_main_loader(true);
+        axios.post('http://localhost:4000/search_invoice',search_invoice_number).then(
+            response => {
+                if(response.data != 'NO_SEARCH_PARAM'){
+                    assign_response_to_invoice_list(response);
+                }else{
+                    set_show_main_loader(false);
+                }
+            },error =>{
+                console.log(error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please Contact your software developer',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
+            }
+        )
+    }
     return (
         <div className='supplier-view' id='body'>
             {
@@ -453,17 +490,29 @@ function Invoice () {
             }
             <div>
                 {
-                    supplier_list.length > 0 && all_stores.length > 0 ?
+                    all_stores.length > 0 ?
                     <Common_filter view='invoice' response_data={assign_response_to_invoice_list} supplier_list={supplier_list} all_stores={all_stores}/>
                     :
                     Global_services.show_spinner()
                 }
             </div>
-            <div>
-                <input onClick={open_new_inv_modal} type='submit' value='New Invoice' className='btn btn-primary add-supp-btn' />
-            </div>
+            <Row>
+                <Col>
+                    <input onClick={open_new_inv_modal} type='submit' value='New Invoice' className='btn btn-primary add-supp-btn' />
+                </Col>
+                <Col className='search-invoice'>
+                    <Row>
+                        <Col>
+                            <input type='text' onChange={handle_search_invoice} name='invoice_number' className='form-control' placeholder='Check Number'/>
+                        </Col>
+                        <Col>
+                            <input type='submit' value='Chercher' onClick={submit_search_invoice} className='form-control btn btn-primary' />
+                        </Col>
+                    </Row>
+                </Col>
+            </Row>
             {
-                invoices_list.length > 0 ?
+                show_main_loader != true ?
                 <div>
                     <Table bordered
                         columns={columns}
