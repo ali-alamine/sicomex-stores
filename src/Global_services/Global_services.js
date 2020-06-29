@@ -31,6 +31,9 @@ class Global_services extends React.Component {
     static update_invoice = base_url+'/update_invoice';
     static delete_invoice = base_url+'/delete_invoice';
     static get_invoices = base_url+'/invoice';
+    static add_new_invoice = base_url+'/invoice';
+    static pin_invoice = base_url+'/pin_invoice';
+    static un_pin_invoice = base_url+'/un_pin_invoice';
 
     static pin_supplier = base_url+'/pin_supplier';
     static un_pin_supplier = base_url+'/un_pin_supplier';
@@ -38,7 +41,6 @@ class Global_services extends React.Component {
     static update_supplier = base_url+'/update_supplier';
     static delete_supplier = base_url+'/delete_supplier';
     
-    static add_new_invoice = base_url+'/invoice';
 
     static search_invoice_by_number = base_url+'/get_invoice_by_number';
     static add_new_check = base_url+'/add_new_check';

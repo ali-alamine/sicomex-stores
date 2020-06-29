@@ -409,7 +409,7 @@ function Invoice () {
     /* Pin Invoice */
     const pin_invoice = (pin_invoice) => {
         set_pin_unpin_loader(true);
-        axios.post('http://localhost:4000/pin_invoice',pin_invoice).then(
+        axios.post(Global_services.pin_invoice,pin_invoice).then(
             response => {
                 set_pin_unpin_loader(false)
                 createNotification('success','To the top of list');
@@ -430,7 +430,7 @@ function Invoice () {
     /* Unpin Invoice */
     const un_pin_invoice = (pin_invoice) => {
         set_pin_unpin_loader(true);
-        axios.post('http://localhost:4000/un_pin_invoice',pin_invoice).then(
+        axios.post(Global_services.un_pin_invoice,pin_invoice).then(
             response => {
                 set_pin_unpin_loader(false);
                 createNotification('success','Removed');
@@ -461,7 +461,7 @@ function Invoice () {
     }
     const submit_search_invoice = () =>{
         set_show_main_loader(true);
-        axios.post('http://localhost:4000/search_invoice',search_invoice_number).then(
+        axios.post(Global_services.search_invoice_number,search_invoice_number).then(
             response => {
                 if(response.data != 'NO_SEARCH_PARAM'){
                     assign_response_to_invoice_list(response);
