@@ -38,6 +38,18 @@ function Check (){
         get_suppliers();
         get_checks();
     },[]);
+    const [show_main_loader,set_show_main_loader] = useState(false);
+    /* Assign response to invoice list */
+    const assign_response_to_list = (response) => {
+        let checks=response.data;
+        set_show_main_loader(false);
+        checks.map(el => {
+            let date = moment(new Date(el.check_date));
+            el.check_date = date.format("DD/MM/YYYY");
+            el.is_for_sup == 1 ? el.is_for_sup='Supplier':el.is_for_sup==0? el.is_for_sup='Expense':el.is_for_sup='Not specified'
+        })
+        set_check_list(response.data);
+    }
     const get_all_stores= () => {
         axios.get(Global_services.get_stores).then(
             response => {
@@ -71,13 +83,7 @@ function Check (){
     const get_checks = () => {
         axios.get(Global_services.get_checks).then(
             response => {
-                let checks=response.data
-                checks.map(el => {
-                    let date = moment(new Date(el.check_date));
-                    el.check_date = date.format("DD/MM/YYYY");
-                    el.is_for_sup == 1 ? el.is_for_sup='Supplier':el.is_for_sup==0? el.is_for_sup='Expense':el.is_for_sup='Not specified'
-                })
-                set_check_list(response.data);
+                assign_response_to_list(response);
             },error =>{
                 console.log(error);
             }
@@ -131,7 +137,7 @@ function Check (){
                     record,
                     pin_check,
                     un_pin_check,
-                    // delete_invoice,
+                    delete_check,
                     open_edit_check_modal,
                     set_check_paid,
                     set_check_unpaid,
@@ -200,7 +206,6 @@ function Check (){
     });
     var [edit_check_date,set_edit_check_date] = useState(moment(new Date(), 'DD-MM-YYYY'));
     const open_edit_check_modal = (record) => {
-        console.log(record)
         set_popup_menu({ popup: { visible: false } });
         record.is_for_sup == 'Expense' ? edit_check_data.check_type='exp' : edit_check_data.check_type='sup';
         // edit_check_data.check_date=record.check_date;
@@ -211,7 +216,6 @@ function Check (){
         edit_check_data.store_name=record.store_name;
         edit_check_data.store_amount=record.amount;
         edit_check_data.check_number=record.check_number;
-        console.log(record.check_date);
         
         let date = record.check_date;
         let new_edit_date_format = new Date(date.split("/").reverse().join("-"));
@@ -278,11 +282,37 @@ function Check (){
             }
         )
     }
+    const delete_check = (check_data) =>{
+        axios.post(Global_services.delete_check,check_data).then(
+            response => {
+                if(response.data !=='CANT_DELETE_PAID_CHECK'){
+                    createNotification('success','Effacé');
+                    get_checks();
+                    set_popup_menu({ popup: { visible: false } });
+                }else{
+                    Swal.fire({
+                        title: 'Info!',
+                        text: 'Impossible de supprimer un chèque payé',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    })
+                }
+            },error =>{
+                console.log(error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please Contact your software developer',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
+            }
+        )
+    }
     
     return (
         <div className='check-view'>
             <div>
-                <Common_filter view='bank_check' all_stores={all_stores} supplier_list={supplier_list}/>
+                <Common_filter view='bank_check' show_loader={set_show_main_loader} response_data={assign_response_to_list} all_stores={all_stores} supplier_list={supplier_list}/>
             </div>
             <div>
                 <div>
@@ -290,7 +320,7 @@ function Check (){
                 </div>
             </div>
             {
-                check_list.length > 0?
+               show_main_loader != true ?
                 <div>
                     <Table bordered
                         columns={columns}

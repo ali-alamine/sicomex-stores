@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactSpinner from 'react-bootstrap-spinner';
 import './Global_services.css';
-var is_prod=true;
+alert(window.location.href)
+var is_prod=false;
+is_prod = window.location.href.includes('localhost') ? false: true;
 var base_url ='';
 base_url= is_prod ? 'https://apiaws.petitprix.live' : 'http://localhost:4000';
 
@@ -27,6 +29,7 @@ class Global_services extends React.Component {
     static update_check = base_url+'/update_check';
     static pin_check = base_url+'/pin_check';
     static un_pin_check = base_url+'/un_pin_check';
+    static delete_check = base_url+'/delete_check';
 
     static update_invoice = base_url+'/update_invoice';
     static delete_invoice = base_url+'/delete_invoice';
@@ -34,6 +37,7 @@ class Global_services extends React.Component {
     static add_new_invoice = base_url+'/invoice';
     static pin_invoice = base_url+'/pin_invoice';
     static un_pin_invoice = base_url+'/un_pin_invoice';
+    static search_invoice_number = base_url+'/search_invoice';
 
     static pin_supplier = base_url+'/pin_supplier';
     static un_pin_supplier = base_url+'/un_pin_supplier';

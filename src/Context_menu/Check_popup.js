@@ -18,7 +18,7 @@ const Popup = ({record, pin_check,un_pin_check,delete_check,open_edit_check_moda
     {record.is_paid==0? <li onClick={() =>open_edit_check_modal(record)}> <EditIcon /> Éditer</li>:''}
     { record.check_order==0 ? <li onClick={() => pin_check(record)} ><BookmarkIcon/> Épingle</li>: <li onClick={() => un_pin_check(record)} ><BookmarkBorderIcon/> Détacher</li> }
     {record.is_paid == 0 ?<li onClick={() => set_check_paid(record)}> <AttachMoneyIcon /> Régler le paiement</li> : <li onClick={() => set_check_unpaid(record)}> <MoneyOffIcon /> Supprimer le paiement</li> }
-    <li onClick={() => delete_check(record)}> <DeleteIcon /> Supprimer</li>
+    {record.is_paid==0? <li onClick={() => delete_check(record)}> <DeleteIcon /> Supprimer</li> : ''}
   </ul>
 
 

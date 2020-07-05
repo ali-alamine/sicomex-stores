@@ -201,7 +201,7 @@ function Invoice () {
     }
 
     /*Edit Invoice Date */
-    const [edit_invoice_date,set_edit_invoice_date] = useState(new Date());
+    const [edit_invoice_date,set_edit_invoice_date] = useState(moment(new Date(), 'DD-MM-YYYY'));
     const [edit_invoice_data,set_edit_invoice_data] = useState({
         invoice_id:'',
         supplier_id:'',
@@ -276,17 +276,24 @@ function Invoice () {
     
     /* Open Edit Invoice Modal */
     const open_edit_inv_modal = (selected_invoice_data) =>{
-        set_is_open_edit_invoice_modal(true);
+
         edit_invoice_data.edit_invoice_amount=selected_invoice_data.invoice_amount;
         edit_invoice_data.supplier_amount=selected_invoice_data.supplier_amount;
         edit_invoice_data.edit_old_invoice_amount=selected_invoice_data.invoice_amount;
         edit_invoice_data.edit_invoice_number=selected_invoice_data.invoice_number;
         edit_invoice_data.supplier_id=selected_invoice_data.supplier_id;
         edit_invoice_data.store_id=selected_invoice_data.store_id;
+
+        let date = selected_invoice_data.invoice_date;
+        let new_edit_date_format = new Date(date.split("/").reverse().join("-"));
+        set_edit_invoice_date(new_edit_date_format);
+
+
         set_edit_invoice_data(edit_invoice_data);
         edit_invoice_data.invoice_id=selected_invoice_data.invoice_id;
         set_selected_edit_store_invoice({'label':selected_invoice_data.store_name,'value':selected_invoice_data.store_name,'store_id':selected_invoice_data.store_id});
         set_selected_edit_supplier_invoice({'label':selected_invoice_data.supplier_name,'value':selected_invoice_data.supplier_name,'store_id':selected_invoice_data.supplier_id});
+        set_is_open_edit_invoice_modal(true);
     }
 
     /* Update Invoice */
@@ -384,14 +391,23 @@ function Invoice () {
             if (result.value) {
                 axios.post(Global_services.delete_invoice,selected_invoice).then(
                     response => {
-                        Swal.fire({
-                            title: 'Deleted',
-                            text: 'Successfully Deleted',
-                            icon: 'success',
-                            showConfirmButton: false,
-                            timer: 1000
-                        })
-                        get_invoices();
+                        if(response.data== 'INVOICE_IS_ASSIGNED_TO_A_CHECK'){
+                            Swal.fire({
+                                title: 'La facture est affectée à un chèque',
+                                text: 'Impossible de supprimer la facture affectée à un chèque',
+                                icon: 'info',
+                                confirmButtonText: 'OK'
+                            })
+                        }else{
+                            Swal.fire({
+                                title: 'Deleted',
+                                text: 'Successfully Deleted',
+                                icon: 'success',
+                                showConfirmButton: false,
+                                timer: 1000
+                            })
+                            get_invoices();
+                        }
                     },error =>{
                         console.log(error);
                         Swal.fire({
@@ -463,11 +479,11 @@ function Invoice () {
         set_show_main_loader(true);
         axios.post(Global_services.search_invoice_number,search_invoice_number).then(
             response => {
-                if(response.data != 'NO_SEARCH_PARAM'){
+                // if(response.data.length > 0){
                     assign_response_to_invoice_list(response);
-                }else{
+                // }else{
                     set_show_main_loader(false);
-                }
+                // }
             },error =>{
                 console.log(error);
                 Swal.fire({
@@ -491,7 +507,7 @@ function Invoice () {
             <div>
                 {
                     all_stores.length > 0 ?
-                    <Common_filter view='invoice' response_data={assign_response_to_invoice_list} supplier_list={supplier_list} all_stores={all_stores}/>
+                    <Common_filter view='invoice' show_loader={set_show_main_loader} response_data={assign_response_to_invoice_list} supplier_list={supplier_list} all_stores={all_stores}/>
                     :
                     Global_services.show_spinner()
                 }
@@ -503,7 +519,7 @@ function Invoice () {
                 <Col className='search-invoice'>
                     <Row>
                         <Col>
-                            <input type='text' onChange={handle_search_invoice} name='invoice_number' className='form-control' placeholder='Check Number'/>
+                            <input type='text' onChange={handle_search_invoice} name='invoice_number' className='form-control' placeholder='Invoice Number'/>
                         </Col>
                         <Col>
                             <input type='submit' value='Chercher' onClick={submit_search_invoice} className='form-control btn btn-primary' />
@@ -613,11 +629,11 @@ function Invoice () {
                         <div className='form-group row'>
                             <div className="col-md-6">
                                 <label className='input-label'>Invoice Amount</label>
-                                <input name='edit_invoice_amount' onChange={handle_edit_invoice} value={edit_invoice_data.edit_invoice_amount} type="number" className="form-control" placeholder="Invoice Amount" />
+                                <input name='edit_invoice_amount' onChange={handle_edit_invoice} value={edit_invoice_data.edit_invoice_amount} type="number" className="form-control" placeholder="Invoice Amount" disabled />
                             </div>
                             <div className="col-md-6">
                                 <label className='input-label'>Invoice Date</label>
-                                <DatePicker dateFormat="dd/MM/yyyy" className='form-control' selected={invoice_date} onChange={date => set_edit_invoice_date(date)}/>
+                                <DatePicker dateFormat="dd/MM/yyyy" className='form-control' selected={edit_invoice_date} onChange={date => set_edit_invoice_date(date)}/>
                             </div>
                         </div>
                     </div>

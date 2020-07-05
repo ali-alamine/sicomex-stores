@@ -78,10 +78,11 @@ function Common_filter (props){
              
                     <Col></Col>
                     <Col></Col>
-                    <Col></Col>
                     <Col>
-                        <input type='submit' value='Chercher' onClick={submit_filter} className='form-control btn btn-default submit-filter-btn'/>
+                        <input type='submit' value='Recherche Avancée' onClick={submit_filter} className='form-control btn btn-default submit-filter-btn'/>
                     </Col>
+                    <Col></Col>
+                    <Col></Col>
                 </Row>
             </div>
         )
@@ -188,7 +189,7 @@ function Common_filter (props){
         }));
     };
     const submit_filter = () => {
-        
+        props.show_loader(true);
         search_data.order_by_amount=order_by_amount;
         search_data.order_by_date=order_by_date;
         search_data.is_paid=is_paid;
@@ -209,6 +210,7 @@ function Common_filter (props){
         if(props.view=='bank_check') filter_api=Global_services.advanced_search_bank_check;
         axios.post(filter_api,search_data).then(
             response => {
+                props.show_loader(true);
                 console.log(response.data)
                 if(response.data == 'EMPTY_RESULT'){
                     alert('No result')
@@ -275,7 +277,7 @@ function Common_filter (props){
     };
 
     return (
-        <div>
+        <div className='common-filter-container'>
             <Row>
                 <Col>
                     <div className='main-filter-box'>

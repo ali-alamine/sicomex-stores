@@ -19,7 +19,7 @@
 .date-range-filter{
     margin-top: 20px !important;
 }
-.react-datepicker{
+.common-filter-container .react-datepicker{
     display:none !important;
 }
 .filer-order{
