@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactSpinner from 'react-bootstrap-spinner';
 import './Global_services.css';
-alert(window.location.href)
 var is_prod=false;
 is_prod = window.location.href.includes('localhost') ? false: true;
 var base_url ='';
@@ -44,6 +43,8 @@ class Global_services extends React.Component {
     static add_new_supplier = base_url+'/supplier';
     static update_supplier = base_url+'/update_supplier';
     static delete_supplier = base_url+'/delete_supplier';
+    static search_supplier_by_name = base_url+'/search_supplier_by_name';
+    static advanced_search_suppliers = base_url+'/advanced_search_suppliers';
     
 
     static search_invoice_by_number = base_url+'/get_invoice_by_number';

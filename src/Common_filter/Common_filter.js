@@ -35,6 +35,7 @@ function Common_filter (props){
         order_by_amount:'',
         invoice_number:'',
         check_number:'',
+        supplier_ids:''
     });
     const handle_select_store = (store_id,store_amount) => {
         search_data.store_id=store_id;
@@ -133,41 +134,99 @@ function Common_filter (props){
         search_data[name]=value;
         set_search_data(search_data);
     };
+    var [suppliers_ids,set_suppliers_ids] = useState([]);
+    function handle_supplier_on_select (value,key){
+         /* Push invoice ids to temp array */
+         suppliers_ids.push(key.key);
+         set_suppliers_ids(suppliers_ids);
+    }
+    
+    function handle_supplier_on_deselect (value,key){
+         /* Pop invoice ids to temp array */
+         const index = suppliers_ids.indexOf(key.key);
+         suppliers_ids.splice(index,1);
+    }
+    const [loader,set_loader] = useState(false);
+    var [suppliers,set_suppliers] = useState([]);
+    function search_supplier_by_name(value) {
+        set_loader(true);
+        var data={'supplier_name':value};
+        axios.post(Global_services.search_supplier_by_name,data).then(
+            response => {
+                console.log(response.data)
+                if(response.data.length > 0){
+                    set_suppliers(response.data);
+                }else{
+                    set_suppliers([]);
+                }
+                
+                set_loader(false);
+            },error =>{
+                set_loader(false);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please Contact your software developer',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
+            }
+        )
+    }
     const supplier_filter = () =>{
         return (
             <div>
-                <Row>
-
+                <Row className='multi-select-supplier-filter'>
                     <Col>
                         <Select
-                        showSearch
-                        style={{ width: '100%',borderRadius:20}}
-                        placeholder="Sélectionnez un fournisseur"
-                        optionFilterProp="children"
-                        onChange={handle_select_supplier}
-                        filterOption={(input, option) =>
-                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }>
+                            mode="multiple"
+                            style={{ width: '100%' }}
+                            placeholder="Sélectionner Fournisseuses"
+                            optionLabelProp="label"
+                            onSearch={search_supplier_by_name}
+                            onSelect={handle_supplier_on_select}
+                            onDeselect={handle_supplier_on_deselect}
+                            loading={loader}
+                        >
                             {
-                                props.supplier_list.map((el,index) => {
-                                    return <Option key={el.supplier_amount} value={el.supplier_id}>{el.supplier_name}</Option>
+                                suppliers.map((el,index) => {
+                                    
+                                    return <Option key={el.supplier_id} value={el.supplier_name} />
                                 })
                             }
+                        </Select>           
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        {common_amount_fields()}
+                    </Col>
+                    <Col>
+                        <Select
+                            showSearch
+                            style={{ width: '100%',borderRadius:20}}
+                            placeholder="Statut de paiement"
+                            className=''
+                            optionFilterProp="children"
+                            onChange={handle_select_payment_type}
+                            filterOption={(input, option) =>
+                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                            }>
+
+                            <Option value='any'>Toute</Option>
+                            <Option value='paid'>Payé</Option>
+                            <Option value='unpaid'>Non payé</Option>
+
                         </Select>
                     </Col>
+                </Row>
+                <Row>
+                    <Col></Col>
+                    <Col></Col>
                     <Col>
-                        <input type='number' className='form-control' placeholder='Amount Greater Than'/>
+                        <input type='submit' value='Recherche Avancée' onClick={submit_filter} className='form-control btn btn-default submit-supplier-filter-btn'/>
                     </Col>
-                    <Col>
-                        <input type='number' className='form-control' placeholder='Amount less Than'/>
-                    </Col>
-                    <Col>
-                        <input type='checkbox' className='form-control'/>
-                    </Col>
-                    <Col>
-                        <input type='submit' value='Chercher' className='form-control btn btn-primary'/>
-                    </Col>
-
+                    <Col></Col>
+                    <Col></Col>
                 </Row>
             </div>
         )
@@ -193,7 +252,7 @@ function Common_filter (props){
         search_data.order_by_amount=order_by_amount;
         search_data.order_by_date=order_by_date;
         search_data.is_paid=is_paid;
-
+        search_data.supplier_ids=suppliers_ids;
         var temp_date_from=moment(new Date(date_from));
         temp_date_from=temp_date_from.format("YYYY-MM-DD");
         search_data.date_from=temp_date_from;
@@ -205,13 +264,14 @@ function Common_filter (props){
         set_search_data(search_data);
         console.log(' --------------------- search_data --------------------- ')
         console.log(search_data);
-        var filter_api=''
+        var filter_api='';
         if(props.view=='invoice') filter_api=Global_services.advanced_search_invoice;
         if(props.view=='bank_check') filter_api=Global_services.advanced_search_bank_check;
+        if(props.view=='sup') filter_api=Global_services.advanced_search_suppliers;
         axios.post(filter_api,search_data).then(
             response => {
                 props.show_loader(true);
-                console.log(response.data)
+                console.log(response.data);
                 if(response.data == 'EMPTY_RESULT'){
                     alert('No result')
                 }else{

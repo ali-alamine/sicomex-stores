@@ -22,6 +22,17 @@
 .common-filter-container .react-datepicker{
     display:none !important;
 }
+.common-filter-container .multi-select-supplier-filter{
+    margin-bottom: 10px !important;
+}
+.common-filter-container .multi-select-supplier-filter .ant-select-arrow{
+    font-weight: bold !important;
+    /* margin-right: 558px !important; */
+    margin-right: 55% !important;
+    margin-top: -17px !important;
+    font-size: 30px !important;
+    color:blue !important
+}
 .filer-order{
     font-size: 12px;
     font-weight: bold;
@@ -31,6 +42,15 @@
 }
 .payment-filter{
     margin-top: 20px !important;
+}
+.submit-supplier-filter-btn{
+    border: solid rgb(182, 179, 179) 1px !important;
+    margin-top: 10px;
+    background-color: rgb(230, 230, 230) !important;
+}
+.submit-supplier-filter-btn:hover{
+    background-color: rgb(187, 187, 187) !important;
+    color:rgb(66, 107, 121) !important
 }
 .submit-filter-btn{
     border: solid rgb(182, 179, 179) 1px !important;

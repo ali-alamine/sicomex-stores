@@ -31,9 +31,9 @@ function Supplier(){
     const get_suppliers= () => {
         axios.get(Global_services.get_suppliers).then(
             response => {
-                set_supplier_list(response.data);
-                console.log(response.data)
+                assign_response_to_supplier_list(response)
             },error =>{
+                set_show_main_loader(false);
                 console.log(error);
             }
         )
@@ -114,7 +114,6 @@ function Supplier(){
             })
         }
     }
-    
     /* Rest new Supplier Form */
     const reset_sup_state = () => {
         set_new_sup_data({
@@ -124,7 +123,6 @@ function Supplier(){
         
         console.log(new_sup_data)
     }
-
     /*  Open Edit Sup Modal */
     const [is_open_edit_sup_modal,set_is_open_edit_sup_modal] = useState(false);
     const open_edit_sup_modal = (selected_supplier) => {
@@ -198,7 +196,7 @@ function Supplier(){
     const [selected_row,set_selected_row] = useState({
         rowId:''
     })
-    var  setRowClassName = (record) => {
+    var setRowClassName = (record) => {
         return record.supplier_id === selected_row.rowId && record.sup_order=='0'? 'selected-row' : record.supplier_id === selected_row.rowId && record.sup_order=='1' ? 'selected-important-row' :record.sup_order=='1' ? 'important-row':'';
     }
     const onRow = record => ({
@@ -223,7 +221,6 @@ function Supplier(){
             });
         }
     });
-
     /* Popup Menu Methods */
     const delete_supplier = (supplier_data) =>{
         Swal.fire({
@@ -302,6 +299,13 @@ function Supplier(){
         )
     }
     const [submit_sup_loader,set_submit_sup_loader] =  useState(false);
+    /* Main table loader */
+    const [show_main_loader,set_show_main_loader] = useState(false);
+    /* Assign response to supplier list */
+    const assign_response_to_supplier_list = (response) => {
+        set_show_main_loader(false);
+        set_supplier_list(response.data);
+    }
     return(
         <div className='supplier-view'>
             {
@@ -313,13 +317,13 @@ function Supplier(){
             }
    
             <div>
-                <Common_filter view='sup' supplier_list={supplier_list}/>
+                <Common_filter view='sup' show_loader={set_show_main_loader} response_data={assign_response_to_supplier_list} supplier_list={supplier_list}/>
             </div>
             <div>
                 <input type='submit' onClick={open_sup_modal} value='New Supplier' className='btn btn-primary add-supp-btn' />
             </div>
             {
-                supplier_list.length > 0 ?
+                !show_main_loader ?
 
                 <div>
                     <Table bordered

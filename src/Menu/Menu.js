@@ -8,8 +8,8 @@ import Nav  from 'react-bootstrap/Nav';
 import Navbar  from 'react-bootstrap/Navbar';
 import './Menu.css';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import Global_services from '../Global_services/Global_services';
 function Menu(){
-
     return (
         <div className='header-menu'>
           <Router>

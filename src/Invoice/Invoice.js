@@ -190,6 +190,7 @@ function Invoice () {
             response => {
                 assign_response_to_invoice_list(response)
             },error =>{
+                set_show_main_loader(false);
                 console.log(error.data);
             }
         )
