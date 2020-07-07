@@ -377,9 +377,9 @@ function Common_filter (props){
         return (
             <div className='common-filter'>
                 <Row>
-                    {supplier_store_selection()}
-                </Row>
-                <Row>
+                    <Col>
+                        {supplier_store_selection()}
+                    </Col>
                     <Col>
                         {common_amount_fields()}
                     </Col>
