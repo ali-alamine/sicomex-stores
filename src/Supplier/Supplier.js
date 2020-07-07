@@ -29,9 +29,11 @@ function Supplier(){
     /* Get all suppliers */
     const [supplier_list,set_supplier_list] = useState([]);
     const get_suppliers= () => {
+        set_show_main_loader(true);
         axios.get(Global_services.get_suppliers).then(
             response => {
                 assign_response_to_supplier_list(response)
+                set_show_main_loader(false);
             },error =>{
                 set_show_main_loader(false);
                 console.log(error);
@@ -303,7 +305,6 @@ function Supplier(){
     const [show_main_loader,set_show_main_loader] = useState(false);
     /* Assign response to supplier list */
     const assign_response_to_supplier_list = (response) => {
-        set_show_main_loader(false);
         set_supplier_list(response.data);
     }
     return(
@@ -315,7 +316,6 @@ function Supplier(){
                 </div>
                 :''
             }
-   
             <div>
                 <Common_filter view='sup' show_loader={set_show_main_loader} response_data={assign_response_to_supplier_list} supplier_list={supplier_list}/>
             </div>

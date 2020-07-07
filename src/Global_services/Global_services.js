@@ -8,7 +8,7 @@ base_url= is_prod ? 'https://apiaws.petitprix.live' : 'http://localhost:4000';
 
 
 class Global_services extends React.Component {
-    /* Show Loader on response success*/
+    /* Show Loader on response success */
     static show_spinner = (type,size,color) => {
         return (
             <div className='loader'>
@@ -46,7 +46,6 @@ class Global_services extends React.Component {
     static search_supplier_by_name = base_url+'/search_supplier_by_name';
     static advanced_search_suppliers = base_url+'/advanced_search_suppliers';
     
-
     static search_invoice_by_number = base_url+'/get_invoice_by_number';
     static add_new_check = base_url+'/add_new_check';
 
