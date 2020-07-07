@@ -35,7 +35,8 @@ function Common_filter (props){
         order_by_amount:'',
         invoice_number:'',
         check_number:'',
-        supplier_ids:''
+        supplier_ids:'',
+        store_ids:''
     });
     const handle_select_store = (store_id,store_amount) => {
         search_data.store_id=store_id;
@@ -91,7 +92,48 @@ function Common_filter (props){
     const supplier_store_selection = () => {
         return(
             <Row>
-                <Col>
+                    <Col>
+                        <Select
+                            mode="multiple"
+                            style={{ width: '100%' }}
+                            placeholder="Sélectionner Fournisseuses"
+                            optionLabelProp="label"
+                            onSearch={search_supplier_by_name}
+                            onSelect={handle_supplier_on_select}
+                            onDeselect={handle_supplier_on_deselect}
+                            loading={loader}
+                        >
+                            {
+                                suppliers.map((el,index) => {
+                                    
+                                    return <Option key={el.supplier_id} value={el.supplier_name} />
+                                })
+                            }
+                        </Select>           
+                    </Col>
+                    <Col>
+                        <Select
+                            mode="multiple"
+                            style={{ width: '100%' }}
+                            placeholder="Sélectionnez un magasin"
+                            optionLabelProp="label"
+                            onSearch={search_store_by_name}
+                            onSelect={handle_store_on_select}
+                            onDeselect={handle_store_on_deselect}
+                            loading={loader}
+                        >
+                            {
+                                stores.map((el,index) => {
+                                    
+                                    return <Option key={el.store_id} value={el.store_name} />
+                                })
+                            }
+                        </Select>           
+                    </Col>
+
+                    {/* SINGLE SELECTION */}
+
+                    {/* <Col>
                     <Select
                         showSearch
                         style={{ width: '100%',borderRadius:20}}
@@ -124,7 +166,7 @@ function Common_filter (props){
                             })
                         }
                     </Select>
-                </Col>
+                </Col> */}
             </Row>
         )
     }
@@ -140,7 +182,6 @@ function Common_filter (props){
          suppliers_ids.push(key.key);
          set_suppliers_ids(suppliers_ids);
     }
-    
     function handle_supplier_on_deselect (value,key){
          /* Pop invoice ids to temp array */
          const index = suppliers_ids.indexOf(key.key);
@@ -172,6 +213,43 @@ function Common_filter (props){
             }
         )
     }
+    var [stores,set_stores] = useState([]);
+    function search_store_by_name(value) {
+        set_loader(true);
+        var data={'store_name':value};
+        axios.post(Global_services.search_store_by_name,data).then(
+            response => {
+                console.log(response.data)
+                if(response.data.length > 0){
+                    set_stores(response.data);
+                }else{
+                    set_stores([]);
+                }
+                
+                set_loader(false);
+            },error =>{
+                set_loader(false);
+                console.log(error)
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please Contact your software developer',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
+            }
+        )
+    }
+    var [stores_ids,set_stores_ids] = useState([]);
+    function handle_store_on_select (value,key){
+        /* Push invoice ids to temp array */
+        stores_ids.push(key.key);
+        set_stores_ids(stores_ids);
+   }
+   function handle_store_on_deselect (value,key){
+        /* Pop invoice ids to temp array */
+        const index = stores_ids.indexOf(key.key);
+        stores_ids.splice(index,1);
+   }
     const supplier_filter = () =>{
         return (
             <div>
@@ -253,6 +331,7 @@ function Common_filter (props){
         search_data.order_by_date=order_by_date;
         search_data.is_paid=is_paid;
         search_data.supplier_ids=suppliers_ids;
+        search_data.store_ids=stores_ids;
         var temp_date_from=moment(new Date(date_from));
         temp_date_from=temp_date_from.format("YYYY-MM-DD");
         search_data.date_from=temp_date_from;
@@ -298,9 +377,9 @@ function Common_filter (props){
         return (
             <div className='common-filter'>
                 <Row>
-                    <Col>
-                        {supplier_store_selection()}
-                    </Col>
+                    {supplier_store_selection()}
+                </Row>
+                <Row>
                     <Col>
                         {common_amount_fields()}
                     </Col>

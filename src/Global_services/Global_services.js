@@ -20,6 +20,7 @@ class Global_services extends React.Component {
     static add_new_store= base_url+'/store';
     static get_starting_amount= base_url+'/starting_amount';
     static add_new_store_entry= base_url+'/add_new_store_entry';
+    static search_store_by_name = base_url+'/search_store_by_name';
 
     static get_suppliers = base_url+'/supplier';
     static get_checks = base_url+'/get_checks';
