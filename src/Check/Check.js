@@ -163,12 +163,15 @@ function Check (){
         }
     });
     const set_check_paid = (record) => {
+        set_table_action_loader(true);
         axios.post(Global_services.set_check_paid,record).then(
             response => {
+                set_table_action_loader(false);
                 createNotification('success','le statut du chèque est passé à payér');
                 get_checks();
                 set_popup_menu({ popup: { visible: false } });
             },error =>{
+                set_table_action_loader(false);
                 console.log(error);
                 Swal.fire({
                     title: 'Error!',
@@ -180,12 +183,15 @@ function Check (){
         )
     }
     const set_check_unpaid = (record) => {
+        set_table_action_loader(true);
         axios.post(Global_services.set_check_unpaid,record).then(
             response => {
+                set_table_action_loader(false);
                 createNotification('success','le statut du chèque est passé à payér');
                 get_checks();
                 set_popup_menu({ popup: { visible: false } });
             },error =>{
+                set_table_action_loader(false);
                 console.log(error);
                 Swal.fire({
                     title: 'Error!',

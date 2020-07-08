@@ -166,9 +166,9 @@ Invoice.getInvoiceByNumber = function(invoice_data,result){
     var invoice_number=invoice_data.invoice_number;
     var sqlQuery = '';
     if(invoice_number == ''){
-        sqlQuery = 'SELECT invoice_id,invoice_number,invoice_amount from invoice where invoice_number like "% %" and check_id is not null';
+        sqlQuery = 'SELECT invoice_id,invoice_number,invoice_amount from invoice where invoice_number like "% %"';
     }else{
-        sqlQuery = 'SELECT invoice_id,invoice_number,invoice_amount from invoice where invoice_number like "%' +invoice_number+ '%" and check_id IS NOT NULL LIMIT 10';
+        sqlQuery = 'SELECT invoice_id,invoice_number,invoice_amount from invoice where invoice_number like "%' +invoice_number+ '%" and check_id IS NULL LIMIT 10';
     }
     console.log(sqlQuery)
     sql.query(sqlQuery,function(err,res){

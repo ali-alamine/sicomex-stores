@@ -188,7 +188,8 @@ function Add_new_check(props){
                         }
                         close_check();
                     }
-
+                    /* Empty invoice numbers from the multi select list */
+                    set_invoices([]);
                 },error =>{
                     set_show_loader(false);
                     Swal.fire({
