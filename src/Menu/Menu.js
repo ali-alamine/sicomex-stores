@@ -47,7 +47,7 @@ function Menu(){
                     </Route>
                     <Route path="/Report">
                         {/* <Report /> */}
-                    </Route> 
+                    </Route>   
                     <Route path="/Menu">
                         <Menu />
                     </Route>
