@@ -226,38 +226,47 @@ function Supplier(){
     /* Popup Menu Methods */
     const delete_supplier = (supplier_data) =>{
         Swal.fire({
-            title: 'Delete Supplier',
-            text: "Are you sure you want to delete supplier?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            set_popup_menu({ popup: { visible: false } });
-            if (result.value) {
-                axios.post(Global_services.delete_supplier,supplier_data).then(
-                    response => {
-                        Swal.fire({
-                            title: 'Deleted',
-                            text: 'Successfully Deleted',
-                            icon: 'success',
-                            showConfirmButton: false,
-                            timer: 1000
-                        })
-                        get_suppliers();
-                    },error =>{
-                        console.log(error);
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Please Contact your software developer',
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        })
-                    }
-                ) 
-            }  
+            title: 'Action Denied!',
+            text: 'Contact your software developer for this action',
+            icon: 'info',
+            showConfirmButton: true,
         })
+        // Swal.fire({
+        //     title: 'Delete Supplier',
+        //     text: "Are you sure you want to delete supplier?",
+        //     icon: 'warning',
+        //     showCancelButton: true,
+        //     confirmButtonColor: '#3085d6',
+        //     cancelButtonColor: '#d33',
+        //     confirmButtonText: 'Yes, delete it!'
+        // }).then((result) => {
+        //     set_show_main_loader(true);
+        //     set_popup_menu({ popup: { visible: false } });
+        //     if (result.value) {
+        //         axios.post(Global_services.delete_supplier,supplier_data).then(
+        //             response => {
+        //                 Swal.fire({
+        //                     title: 'Deleted',
+        //                     text: 'Successfully Deleted',
+        //                     icon: 'success',
+        //                     showConfirmButton: false,
+        //                     timer: 1000
+        //                 })
+        //                 get_suppliers();
+        //                 set_show_main_loader(false);
+        //             },error =>{
+        //                 set_show_main_loader(false);
+        //                 console.log(error);
+        //                 Swal.fire({
+        //                     title: 'Error!',
+        //                     text: 'Please Contact your software developer',
+        //                     icon: 'error',
+        //                     confirmButtonText: 'OK'
+        //                 })
+        //             }
+        //         ) 
+        //     }  
+        // })
     }
     const [pin_unpin_loader,set_pin_unpin_loader] = useState(false);
     const pin_supplier = (pin_supplier) => {

@@ -25,7 +25,7 @@
 .common-filter-container .multi-select-supplier-filter{
     margin-bottom: 10px !important;
 }
-.common-filter-container .multi-select-supplier-filter .ant-select-arrow{
+.common-filter-container .multiple-selection .ant-select-arrow{
     font-weight: bold !important;
     /* margin-right: 558px !important; */
     margin-right: 55% !important;

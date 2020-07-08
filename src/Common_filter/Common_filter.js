@@ -23,6 +23,9 @@ function Common_filter (props){
     const { Option } = Select;
     const [date_from,set_date_from] = useState('');
     const [date_to,set_date_to] = useState('');
+    const [loader,set_loader] = useState(false);
+    const [store_select_loader,set_store_select_loader] = useState(false);
+    const [supplier_select_loader,set_supplier_select_loader] = useState(false);
     const [search_data,set_search_data] = React.useState({
         supplier_id:'',
         store_id:'',
@@ -92,7 +95,7 @@ function Common_filter (props){
     const supplier_store_selection = () => {
         return(
             <Row>
-                    <Col>
+                    <Col className='multiple-selection'>
                         <Select
                             mode="multiple"
                             style={{ width: '100%' }}
@@ -101,7 +104,7 @@ function Common_filter (props){
                             onSearch={search_supplier_by_name}
                             onSelect={handle_supplier_on_select}
                             onDeselect={handle_supplier_on_deselect}
-                            loading={loader}
+                            loading={supplier_select_loader}
                         >
                             {
                                 suppliers.map((el,index) => {
@@ -111,7 +114,7 @@ function Common_filter (props){
                             }
                         </Select>           
                     </Col>
-                    <Col>
+                    <Col className='multiple-selection'>
                         <Select
                             mode="multiple"
                             style={{ width: '100%' }}
@@ -120,7 +123,7 @@ function Common_filter (props){
                             onSearch={search_store_by_name}
                             onSelect={handle_store_on_select}
                             onDeselect={handle_store_on_deselect}
-                            loading={loader}
+                            loading={store_select_loader}
                         >
                             {
                                 stores.map((el,index) => {
@@ -187,10 +190,9 @@ function Common_filter (props){
          const index = suppliers_ids.indexOf(key.key);
          suppliers_ids.splice(index,1);
     }
-    const [loader,set_loader] = useState(false);
     var [suppliers,set_suppliers] = useState([]);
     function search_supplier_by_name(value) {
-        set_loader(true);
+        set_supplier_select_loader(true);
         var data={'supplier_name':value};
         axios.post(Global_services.search_supplier_by_name,data).then(
             response => {
@@ -201,9 +203,9 @@ function Common_filter (props){
                     set_suppliers([]);
                 }
                 
-                set_loader(false);
+                set_supplier_select_loader(false);
             },error =>{
-                set_loader(false);
+                set_supplier_select_loader(false);
                 Swal.fire({
                     title: 'Error!',
                     text: 'Please Contact your software developer',
@@ -215,7 +217,7 @@ function Common_filter (props){
     }
     var [stores,set_stores] = useState([]);
     function search_store_by_name(value) {
-        set_loader(true);
+        set_store_select_loader(true);
         var data={'store_name':value};
         axios.post(Global_services.search_store_by_name,data).then(
             response => {
@@ -226,9 +228,9 @@ function Common_filter (props){
                     set_stores([]);
                 }
                 
-                set_loader(false);
+                set_store_select_loader(false);
             },error =>{
-                set_loader(false);
+                set_store_select_loader(false);
                 console.log(error)
                 Swal.fire({
                     title: 'Error!',
@@ -253,7 +255,7 @@ function Common_filter (props){
     const supplier_filter = () =>{
         return (
             <div>
-                <Row className='multi-select-supplier-filter'>
+                <Row className='multiple-selection multi-select-supplier-filter'>
                     <Col>
                         <Select
                             mode="multiple"
@@ -349,14 +351,16 @@ function Common_filter (props){
         if(props.view=='sup') filter_api=Global_services.advanced_search_suppliers;
         axios.post(filter_api,search_data).then(
             response => {
-                props.show_loader(true);
+                props.show_loader(false);
                 console.log(response.data);
                 if(response.data == 'EMPTY_RESULT'){
                     alert('No result')
+                    props.response_data(response)
                 }else{
                     props.response_data(response)
                 }
             },error =>{
+                props.show_loader(false);
                 console.log(error);
             }
         )

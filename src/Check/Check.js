@@ -22,12 +22,11 @@ import { Table } from "antd";
 import 'react-notifications/lib/notifications.css';
 import Global_services from '../Global_services/Global_services'
 function Check (){
-    
+    const [table_action_loader,set_table_action_loader] = useState(false);
     const [all_stores,set_all_stores]= useState([]);
-    
     const [supplier_list,set_supplier_list] = useState([]);
     const [is_open_edit_check_modal,set_is_open_edit_check_modal] = useState(false);
-
+    const [button_action_loader,set_button_action_loader] = useState(false);
     const close_edit_check_modal = () => {
         set_is_open_edit_check_modal(false);
         set_edit_check_date(new Date())
@@ -41,14 +40,18 @@ function Check (){
     const [show_main_loader,set_show_main_loader] = useState(false);
     /* Assign response to invoice list */
     const assign_response_to_list = (response) => {
-        let checks=response.data;
-        set_show_main_loader(false);
-        checks.map(el => {
-            let date = moment(new Date(el.check_date));
-            el.check_date = date.format("DD/MM/YYYY");
-            el.is_for_sup == 1 ? el.is_for_sup='Supplier':el.is_for_sup==0? el.is_for_sup='Expense':el.is_for_sup='Not specified'
-        })
-        set_check_list(response.data);
+        if(response.data=='EMPTY_RESULT'){
+            set_check_list([])
+        }else{
+
+            let checks=response.data;
+            checks.map(el => {
+                let date = moment(new Date(el.check_date));
+                el.check_date = date.format("DD/MM/YYYY");
+                el.is_for_sup == 1 ? el.is_for_sup='Supplier':el.is_for_sup==0? el.is_for_sup='Expense':el.is_for_sup='Not specified'
+            })
+            set_check_list(response.data);
+        }
     }
     const get_all_stores= () => {
         axios.get(Global_services.get_stores).then(
@@ -81,10 +84,19 @@ function Check (){
     /* Get Checks */
     const [check_list, set_check_list] = useState([]);
     const get_checks = () => {
+        set_show_main_loader(true);
         axios.get(Global_services.get_checks).then(
             response => {
                 assign_response_to_list(response);
+                set_show_main_loader(false);
             },error =>{
+                set_show_main_loader(false);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please Contact your software developer',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
                 console.log(error);
             }
         )
@@ -228,16 +240,19 @@ function Check (){
         set_edit_check_data({ ...edit_check_data, [e.target.name]: e.target.value });
     }
     const update_check_data = () => {
+        set_button_action_loader(true);
         var temp_check_date=moment(new Date(edit_check_date));
         temp_check_date=temp_check_date.format("YYYY-MM-DD");
         edit_check_data.check_date=temp_check_date;
         set_edit_check_data(edit_check_data);
         axios.post(Global_services.update_check,edit_check_data).then(
             response => {
+                set_button_action_loader(false);
                 createNotification('success','Updated');
                 get_checks();
                 close_edit_check_modal();
             },error =>{
+                set_button_action_loader(false);
                 console.log(error);
                 Swal.fire({
                     title: 'Error!',
@@ -249,12 +264,15 @@ function Check (){
         )
     }
     const pin_check = (pin_check) => {
+        set_table_action_loader(true);
         axios.post(Global_services.pin_check,pin_check).then(
             response => {
+                set_table_action_loader(false);
                 createNotification('success','Pinned');
                 get_checks();
                 set_popup_menu({ popup: { visible: false } });
             },error =>{
+                set_table_action_loader(false);
                 console.log(error);
                 Swal.fire({
                     title: 'Error!',
@@ -266,12 +284,15 @@ function Check (){
         )
     }
     const un_pin_check = (un_pin_check) =>{
+        set_table_action_loader(true);
         axios.post(Global_services.un_pin_check,un_pin_check).then(
             response => {
                 createNotification('success','Unpinned');
                 get_checks();
                 set_popup_menu({ popup: { visible: false } });
+                set_table_action_loader(false);
             },error =>{
+                set_table_action_loader(false);
                 console.log(error);
                 Swal.fire({
                     title: 'Error!',
@@ -311,6 +332,13 @@ function Check (){
     
     return (
         <div className='check-view'>
+            {
+                table_action_loader?
+                <div class='table-col-loader'>
+                    {Global_services.show_spinner('border',8,'primary')}
+                </div>
+                :''
+            }
             <div>
                 <Common_filter view='bank_check' show_loader={set_show_main_loader} response_data={assign_response_to_list} all_stores={all_stores} supplier_list={supplier_list}/>
             </div>
@@ -371,7 +399,13 @@ function Check (){
                     </div>
                 </ModalBody>
                 <ModalFooter>
-                    <button type="submit" onClick={update_check_data} className="btn btn-success">Soumettre</button>
+                {
+                        button_action_loader? 
+                        Global_services.show_spinner('grow',3,'success')
+                        : 
+                        <button type="submit" onClick={update_check_data} className="btn btn-success">Soumettre</button>
+                    }
+                    
                     <button type="button" className="btn btn-danger">Annuler</button>
                 </ModalFooter>
             </Modal>

@@ -175,19 +175,26 @@ function Invoice () {
 
     /* Assign response to invoice list */
     const assign_response_to_invoice_list = (response) => {
-        let invoices=response.data;
-        set_show_main_loader(false);
-        invoices.map(el => {
-            let date = moment(new Date(el.invoice_date));
-            el.invoice_date = date.format("DD/MM/YYYY")
-        })
-        set_invoices_list(invoices);
+        if(response.data=='EMPTY_RESULT'){
+            set_invoices_list([])
+        }else{
+
+            let invoices=response.data;
+            set_show_main_loader(false);
+            invoices.map(el => {
+                let date = moment(new Date(el.invoice_date));
+                el.invoice_date = date.format("DD/MM/YYYY")
+            })
+            set_invoices_list(invoices);
+        }
     }
     /* Get Invoices */
     const [invoices_list,set_invoices_list] =useState([]);
     const get_invoices = function(){
+        set_show_main_loader(true);
         axios.get(Global_services.get_invoices).then(
             response => {
+                set_show_main_loader(false);
                 assign_response_to_invoice_list(response)
             },error =>{
                 set_show_main_loader(false);
@@ -388,6 +395,7 @@ function Invoice () {
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
+            set_show_main_loader(true);
             set_popup_menu({ popup: { visible: false } });
             if (result.value) {
                 axios.post(Global_services.delete_invoice,selected_invoice).then(
@@ -409,8 +417,10 @@ function Invoice () {
                             })
                             get_invoices();
                         }
+                        set_show_main_loader(false);
                     },error =>{
                         console.log(error);
+                        set_show_main_loader(false);
                         Swal.fire({
                             title: 'Error!',
                             text: 'Please Contact your software developer',
@@ -507,10 +517,10 @@ function Invoice () {
             }
             <div>
                 {
-                    all_stores.length > 0 ?
+                    // all_stores.length > 0 ?
                     <Common_filter view='invoice' show_loader={set_show_main_loader} response_data={assign_response_to_invoice_list} supplier_list={supplier_list} all_stores={all_stores}/>
-                    :
-                    Global_services.show_spinner()
+                    // :
+                    // Global_services.show_spinner('border',8,'primary')
                 }
             </div>
             <Row>
