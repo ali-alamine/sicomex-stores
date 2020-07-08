@@ -20,7 +20,10 @@ import "antd/dist/antd.css";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import { Table } from "antd";
 import 'react-notifications/lib/notifications.css';
-import Global_services from '../Global_services/Global_services'
+import Global_services from '../Global_services/Global_services';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 function Check (){
     const [table_action_loader,set_table_action_loader] = useState(false);
     const [all_stores,set_all_stores]= useState([]);
@@ -350,7 +353,36 @@ function Check (){
             }
         })
     }
-    
+    const [search_check_number,set_search_check_number] = useState({
+        check_number:''
+    });
+    const handle_search_check= (e) => {
+        let value= e.target.value;
+        let name= e.target.name;
+        search_check_number[name]=value;
+        set_search_check_number(search_check_number);
+    }
+    const submit_search_check = () =>{
+        set_show_main_loader(true);
+        axios.post(Global_services.search_check_number,search_check_number).then(
+            response => {
+                // if(response.data.length > 0){
+                    assign_response_to_list(response);
+                // }else{
+                    set_show_main_loader(false);
+                // }
+            },error =>{
+                set_show_main_loader(false);
+                console.log(error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please Contact your software developer',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
+            }
+        )
+    }
     return (
         <div className='check-view'>
             {
@@ -363,11 +395,21 @@ function Check (){
             <div>
                 <Common_filter view='bank_check' show_loader={set_show_main_loader} response_data={assign_response_to_list} all_stores={all_stores} supplier_list={supplier_list}/>
             </div>
-            <div>
-                <div>
+            <Row>
+                <Col>
                     <Add_new_check get_checks={get_checks} all_stores={all_stores} supplier_list={supplier_list} check_type='sup'/>
-                </div>
-            </div>
+                </Col>
+                <Col className='search-invoice'>
+                    <Row>
+                        <Col>
+                            <input type='text' onChange={handle_search_check} name='check_number' className='form-control' placeholder='Numéro de facture'/>
+                        </Col>
+                        <Col>
+                            <input type='submit' value='Chercher' onClick={submit_search_check} className='form-control btn btn-primary' />
+                        </Col>
+                    </Row>
+                </Col>
+            </Row>
             {
                show_main_loader != true ?
                 <div>

@@ -30,6 +30,7 @@ class Global_services extends React.Component {
     static pin_check = base_url+'/pin_check';
     static un_pin_check = base_url+'/un_pin_check';
     static delete_check = base_url+'/delete_check';
+    static search_check_number = base_url+'/search_check';
 
     static update_invoice = base_url+'/update_invoice';
     static delete_invoice = base_url+'/delete_invoice';

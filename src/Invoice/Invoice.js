@@ -496,6 +496,7 @@ function Invoice () {
                     set_show_main_loader(false);
                 // }
             },error =>{
+                set_show_main_loader(false);
                 console.log(error);
                 Swal.fire({
                     title: 'Error!',
@@ -530,7 +531,7 @@ function Invoice () {
                 <Col className='search-invoice'>
                     <Row>
                         <Col>
-                            <input type='text' onChange={handle_search_invoice} name='invoice_number' className='form-control' placeholder='Invoice Number'/>
+                            <input type='text' onChange={handle_search_invoice} name='invoice_number' className='form-control' placeholder='Numéro de facture'/>
                         </Col>
                         <Col>
                             <input type='submit' value='Chercher' onClick={submit_search_invoice} className='form-control btn btn-primary' />

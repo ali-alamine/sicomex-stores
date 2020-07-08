@@ -195,7 +195,7 @@ Invoice.updateInvoiceCheckID =  function(data,result){
 Invoice.searchInvoice =  function(data,result){
 
     if(data.invoice_number != ''){
-        var sqlQuery = 'SELECT inv.*,sup.*,st.* FROM invoice as inv left join supplier as sup on inv.supplier_id = sup.supplier_id left join store as st on inv.store_id = st.store_id where invoice_number = ' + data.invoice_number + ' ORDER BY inv.invoice_order DESC , inv.invoice_id DESC limit 50';
+        var sqlQuery = 'SELECT inv.*,sup.*,st.* FROM invoice as inv left join supplier as sup on inv.supplier_id = sup.supplier_id left join store as st on inv.store_id = st.store_id where invoice_number like' +"'%" + data.invoice_number +"%'" + ' ORDER BY inv.invoice_order DESC , inv.invoice_id DESC limit 50';
         console.log(sqlQuery);
         sql.query(sqlQuery,function(err,res){
             if(err){
@@ -207,7 +207,7 @@ Invoice.searchInvoice =  function(data,result){
             }
         });
     }else{
-        Invoice.getInvoices(result)
+        result(null,[]);
     }
 }
 Invoice.advancedSearchInvoice = function(data,result){
