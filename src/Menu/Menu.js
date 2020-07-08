@@ -38,9 +38,9 @@ function Menu(){
                     <div className='logout-div'><PowerSettingsNewIcon className='logout-icon'/></div>
                 </Navbar.Collapse>
                 </Navbar>
-                {/* <Route path='/'>
+                <Route path='/'>
                     <Redirect to="/Home" />
-                </Route> */}
+                </Route>
                 <Switch>
                     <Route path="/Home">
                         <Report_entries />

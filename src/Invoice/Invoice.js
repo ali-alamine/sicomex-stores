@@ -387,8 +387,8 @@ function Invoice () {
     /* DELETE Invoice */
     const delete_invoice = (selected_invoice) => {
         Swal.fire({
-            title: 'Delete Invoice',
-            text: "Are you sure you want to delete image?",
+            title: 'Supprimer la facture',
+            text: "Voulez-vous vraiment supprimer la facture?",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',

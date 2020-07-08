@@ -310,30 +310,45 @@ function Check (){
         )
     }
     const delete_check = (check_data) =>{
-        axios.post(Global_services.delete_check,check_data).then(
-            response => {
-                if(response.data !=='CANT_DELETE_PAID_CHECK'){
-                    createNotification('success','Effacé');
-                    get_checks();
-                    set_popup_menu({ popup: { visible: false } });
-                }else{
-                    Swal.fire({
-                        title: 'Info!',
-                        text: 'Impossible de supprimer un chèque payé',
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    })
-                }
-            },error =>{
-                console.log(error);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Please Contact your software developer',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                })
+        Swal.fire({
+            title: 'Supprimer le chèque',
+            text: "Voulez-vous vraiment supprimer le chèque?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.value) {
+                set_table_action_loader(true);
+                axios.post(Global_services.delete_check,check_data).then(
+                    response => {
+                        set_table_action_loader(false);
+                        if(response.data !=='CANT_DELETE_PAID_CHECK'){
+                            createNotification('success','Effacé');
+                            get_checks();
+                            set_popup_menu({ popup: { visible: false } });
+                        }else{
+                            Swal.fire({
+                                title: 'Info!',
+                                text: 'Impossible de supprimer un chèque payé',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            })
+                        }
+                    },error =>{
+                        set_table_action_loader(false);
+                        console.log(error);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Please Contact your software developer',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        })
+                    }
+                )
             }
-        )
+        })
     }
     
     return (
