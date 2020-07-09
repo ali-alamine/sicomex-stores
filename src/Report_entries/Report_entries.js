@@ -275,7 +275,7 @@ function Report_entries(){
                         all_stores.length > 0 ?
                         <div>   
                             <Select
-                                placeholder='Select Store'
+                                placeholder='Sélectionnez un magasin'
                                 value={selected_store_entry}
                                 onChange={handle_select_store}
                                 options={all_stores}
@@ -315,7 +315,7 @@ function Report_entries(){
                             Global_services.show_spinner('grow',2,'success')
                             : 
                             <div>
-                                <input onClick={submit_store_entry} type='submit' className='btn btn-success'/>
+                                <input onClick={submit_store_entry} type='submit' value='Soumettre' className='btn btn-success'/>
                             </div>
                         }
                     </div>

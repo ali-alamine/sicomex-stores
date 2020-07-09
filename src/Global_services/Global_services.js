@@ -47,6 +47,7 @@ class Global_services extends React.Component {
     static delete_supplier = base_url+'/delete_supplier';
     static search_supplier_by_name = base_url+'/search_supplier_by_name';
     static advanced_search_suppliers = base_url+'/advanced_search_suppliers';
+    static get_supplier_account = base_url+'/get_supplier_account';
     
     static search_invoice_by_number = base_url+'/get_invoice_by_number';
     static add_new_check = base_url+'/add_new_check';

@@ -402,7 +402,7 @@ function Check (){
                 <Col className='search-invoice'>
                     <Row>
                         <Col>
-                            <input type='text' onChange={handle_search_check} name='check_number' className='form-control' placeholder='Numéro de facture'/>
+                            <input type='text' onChange={handle_search_check} name='check_number' className='form-control' placeholder='Numéro du chèque'/>
                         </Col>
                         <Col>
                             <input type='submit' value='Chercher' onClick={submit_search_check} className='form-control btn btn-primary' />
@@ -437,7 +437,7 @@ function Check (){
                                 <label className='input-label'>Store Name</label>
                                 <input type="text" onChange={handle_edit_check_data} className="form-control" value={edit_check_data.store_name} disabled/>
                             </div>
-                            <div className="col-md-12">
+                            <div Style={edit_check_data.check_type == 'sup' ? 'display:block' : 'display:none'} className="col-md-12">
                                 <label className='input-label'>Supplier Name</label>
                                 <input type="text" onChange={handle_edit_check_data} className="form-control" value={edit_check_data.supplier_name} disabled/>
                             </div>

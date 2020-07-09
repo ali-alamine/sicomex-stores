@@ -213,11 +213,11 @@ function Add_new_check(props){
     return (
         <div className='col-md-8' >
             <div Style={props.check_type=='sup' ? 'display:block':'display:none'}>
-                <input onClick={open_new_check} type='submit' value='New Check' className='btn btn-primary add-check-sup-btn' />
+                <input onClick={open_new_check} type='submit' value='Nouveau chèque' className='btn btn-primary add-check-sup-btn' />
             </div>
             <div Style={props.check_type=='exp' ? 'display:block':'display:none'} className='bank-check'>
                 <div className='add-check bordered' onClick={open_new_check}>
-                <span className='add-check-label'>Add New CHECK</span>
+                <span className='add-check-label'>Nouveau Chèque</span>
                     <svg width="170" height="170">
                     <circle cx="120" cy="120" r="40" stroke="green" strokeWidth="4" fill="white" />
                     <text fill="#000000" fontSize="50"

@@ -435,6 +435,8 @@ function Invoice () {
     const [pin_unpin_loader,set_pin_unpin_loader] = useState(false);
     /* Pin Invoice */
     const pin_invoice = (pin_invoice) => {
+        console.log('pin_invoice')
+        console.log(pin_invoice)
         set_pin_unpin_loader(true);
         axios.post(Global_services.pin_invoice,pin_invoice).then(
             response => {
@@ -526,7 +528,7 @@ function Invoice () {
             </div>
             <Row>
                 <Col>
-                    <input onClick={open_new_inv_modal} type='submit' value='New Invoice' className='btn btn-primary add-supp-btn' />
+                    <input onClick={open_new_inv_modal} type='submit' value='Nouvelle facture' className='btn btn-primary add-supp-btn' />
                 </Col>
                 <Col className='search-invoice'>
                     <Row>

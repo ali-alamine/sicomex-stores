@@ -19,7 +19,7 @@ function Menu(){
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="mr-auto">
                         <Link className='nav-link' to="/Home">Entrée de rapport</Link>
-                        <Link className='nav-link' to="/Supplier">fournisseuses</Link>
+                        <Link className='nav-link' to="/Supplier">Fournisseuses</Link>
                         <Link className='nav-link' to="/Invoice">Factures</Link>
                         <Link className='nav-link' to="/Check">Chèques</Link>
                         <Link className='nav-link' to="/Store Account">Compte bancaire</Link>
