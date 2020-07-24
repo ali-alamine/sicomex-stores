@@ -1,0 +1,26 @@
+.store-bank-acc-container .select-store-name{
+
+    margin-top: 20px;
+}
+.store-bank-acc-container .submit-search{
+    margin-top: 20px;
+}
+.store-bank-acc-container table{
+    line-height: 4px !important;
+}
+.store-bank-acc-container table thead{
+    background-color: black !important;
+    color: white !important;
+}
+.store-bank-acc-container{
+    text-align: center;
+}
+.table-hover > tbody > tr:hover {
+    background-color: #e7e7e7 !important;
+}
+.total-store-bank-account{
+    font-weight: bold;
+    width: 100%;
+    font-size: 40px;
+    margin-top: -19px;
+}

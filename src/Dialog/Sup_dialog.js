@@ -98,7 +98,7 @@ function Sup_dialog(props) {
               </Typography>
 
               <Typography variant="h6" className={classes.title}>
-              <div className='supplier-header-data'>{props.supplier_data.supplier_name} - <span className='supplier-amount'>{props.supplier_data.supplier_amount.toLocaleString()}</span></div>
+              <div className='supplier-header-data'>{props.supplier_data.supplier_name} | <span className='supplier-amount' Style={ (props.supplier_data.supplier_amount) < 0 ? 'color:red':''}>{props.supplier_data.supplier_amount.toLocaleString()}</span></div>
               </Typography>
             </Toolbar>
           </AppBar>
@@ -108,34 +108,52 @@ function Sup_dialog(props) {
               <Row>
                 <Col>
                 
-                  <table className='table table-bordered table-dark table-striped table-hover'>
-                    <tr>
-                      <th>Invoice Number</th>
-                      <th>Invoice Amount</th>
-                      <th>Invoice Date</th>
-                    </tr>
-                    {
-                      supplier_invoices.map((el,index) => {
-                        return <tr key={index}>
-                                <td>{el.invoice_number}</td>
-                                <td>{el.invoice_amount}</td>
-                                <td>{el.invoice_date}</td>
-                              </tr>
-                      })
-                    }
+                  <table className='table table-bordered table-striped table-hover text-center'>
+                    <thead>
+                      <tr>
+                        <th>Type</th>
+                        <th>Number</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+
+                      {
+                        supplier_invoices.map((el,index) => {
+                          return <tr key={index}>
+                                  <td>Facture</td>
+                                  <td>{el.invoice_number}</td>
+                                  <td>{el.invoice_amount}</td>
+                                  <td>{el.invoice_date}</td>
+                                </tr>
+                        })
+                      }
+                      {
+                        supplier_checks.map((el,index) => {
+                          return <tr Style={el.is_paid == 1 ? 'background-color:rgb(115, 238, 115)':''} key={index}>
+                                  <td>Cheque</td>
+                                  <td>{el.check_number}</td>
+                                  <td>{el.check_amount}</td>
+                                  <td>{el.check_date}</td>
+                                </tr>
+                        })
+                      }
+                    </tbody>
                   </table>
                 </Col>
       
-                <Col>
-                  <table className='table table-bordered table-striped table-hover'>
+                {/* <Col>
+                  <table className='table table-bordered table-striped table-hover text-center'>
                     <tr>
+                      <th>Cheque</th>
                       <th>Check Number</th>
                       <th>Check Amount</th>
                       <th>Check Date</th>
                     </tr>
                     {
                       supplier_checks.map((el,index) => {
-                        return <tr key={index}>
+                        return <tr Style={el.is_paid == 1 ? 'background-color:rgb(115, 238, 115)':''} key={index}>
                                 <td>{el.check_number}</td>
                                 <td>{el.check_amount}</td>
                                 <td>{el.check_date}</td>
@@ -143,7 +161,7 @@ function Sup_dialog(props) {
                       })
                     }
                   </table>
-                </Col>
+                </Col> */}
               </Row>
             </Container>
            : Global_services.show_spinner('grow',8,'success')

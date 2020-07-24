@@ -12,8 +12,9 @@ import MoneyOffIcon from '@material-ui/icons/MoneyOff';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
-const Popup = ({record, pin_check,un_pin_check,delete_check,open_edit_check_modal,set_check_paid,set_check_unpaid,open_check_description,visible, x, y}) => visible &&
+const Popup = ({record, pin_check,un_pin_check,delete_check,get_assigned_invoices,open_edit_check_modal,set_check_paid,set_check_unpaid,open_check_description,visible, x, y}) => visible &&
   <ul className="popup"  id='popupMenu' style={{left: `${x}px`, top: `${y}px`}}>
+    <li Style={record.is_for_sup =='Supplier' ? 'display:block':'display:none' } onClick={() =>get_assigned_invoices(record)}> <LaunchIcon /> See Invoices</li>
     <li Style={record.is_for_sup =='Expense' ? 'display:block':'display:none' } onClick={() =>open_check_description(record)}> <LaunchIcon /> Check Details</li>
     {record.is_paid==0? <li onClick={() =>open_edit_check_modal(record)}> <EditIcon /> Éditer</li>:''}
     { record.check_order==0 ? <li onClick={() => pin_check(record)} ><BookmarkIcon/> Épingle</li>: <li onClick={() => un_pin_check(record)} ><BookmarkBorderIcon/> Détacher</li> }

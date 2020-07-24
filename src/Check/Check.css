@@ -3,10 +3,13 @@
 }
 .is_paid-selected{
     background-color: rgb(115, 238, 115) !important;
+    font-weight: bold;
+    box-shadow: 0px 0px 5px  rgb(0, 0, 0);
 }
 .ant-table-tbody>.is_paid-selected:hover>td{
     background-color:rgb(115, 238, 115) !important;
-    color:white !important;
+    color:black !important;
+    
 }
 .ant-table-tbody>.is_paid:hover>td{
     background-color:rgb(115, 238, 115) !important;

@@ -81,6 +81,7 @@ function Add_new_check(props){
     const reset_check_form = () => {
         set_is_paid_check(false);
         set_check_amount(0);
+        set_invoice_ids([]);
         set_new_check_data({
             store_id:'',
             check_description:'',
@@ -166,6 +167,7 @@ function Add_new_check(props){
         
         if(new_check_data.store_id != '' && new_check_data.check_amount != '' && new_check_data.check_number != ' ' && new_check_data.check_date != ''){
             set_show_loader(true);
+            set_invoice_ids([]);
             console.log(new_check_data)
             axios.post(Global_services.add_new_check,new_check_data).then(
                 response => {
@@ -243,7 +245,7 @@ function Add_new_check(props){
                                         onChange={handle_select_store}
                                         filterOption={(input, option) =>
                                         option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                        }
+                                    }
                                         >
                                         {
                                             all_stores.map((el,index) => {

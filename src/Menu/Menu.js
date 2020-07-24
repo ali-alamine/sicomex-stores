@@ -9,6 +9,8 @@ import Navbar  from 'react-bootstrap/Navbar';
 import './Menu.css';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import Global_services from '../Global_services/Global_services';
+import Store_bank_acc from '../Store_bank_acc/Store_bank_acc';
+
 function Menu(){
     return (
         <div className='header-menu'>
@@ -22,7 +24,7 @@ function Menu(){
                         <Link className='nav-link' to="/Supplier">Fournisseuses</Link>
                         <Link className='nav-link' to="/Invoice">Factures</Link>
                         <Link className='nav-link' to="/Check">Chèques</Link>
-                        <Link className='nav-link' to="/Store Account">Compte bancaire</Link>
+                        <Link className='nav-link' to="/Store_acc">Compte bancaire</Link>
                         <li className="nav-item dropdown">
                             <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Rapports
@@ -60,8 +62,8 @@ function Menu(){
                     <Route path="/Check">
                         <Check />
                     </Route>
-                    <Route path="/Store Account">
-                        {/* <Store_bank_account /> */}
+                    <Route path="/Store_acc">
+                        <Store_bank_acc />
                     </Route>
                 </Switch>
             </Router>

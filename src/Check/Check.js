@@ -24,15 +24,21 @@ import Global_services from '../Global_services/Global_services';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+
 function Check (){
     const [table_action_loader,set_table_action_loader] = useState(false);
     const [all_stores,set_all_stores]= useState([]);
     const [supplier_list,set_supplier_list] = useState([]);
     const [is_open_edit_check_modal,set_is_open_edit_check_modal] = useState(false);
+    const [is_open_invoices_modal,set_is_open_invoices_modal] = useState(false);
     const [button_action_loader,set_button_action_loader] = useState(false);
+    
+    const close_invoices_modal = () =>{
+        set_is_open_invoices_modal(false);
+    }
     const close_edit_check_modal = () => {
         set_is_open_edit_check_modal(false);
-        set_edit_check_date(new Date())
+        set_edit_check_date(new Date());
     }
 
     useEffect(()=>{
@@ -153,6 +159,7 @@ function Check (){
                     pin_check,
                     un_pin_check,
                     delete_check,
+                    get_assigned_invoices,
                     open_edit_check_modal,
                     set_check_paid,
                     set_check_unpaid,
@@ -353,6 +360,32 @@ function Check (){
             }
         })
     }
+    const [assigned_invoices,set_assigned_invoices] = useState([]);
+    
+    const get_assigned_invoices = (check_data) =>{
+        set_table_action_loader(true);
+        axios.post(Global_services.get_assigned_invoices,check_data).then(
+            response => {
+                var res=response.data;
+                set_table_action_loader(false);
+                set_popup_menu({ popup: { visible: false } });
+                res.map(el => {
+                    let date = moment(new Date(el.invoice_date));
+                    el.invoice_date = date.format("DD/MM/YYYY")
+                  })
+                set_assigned_invoices(res);
+            },error =>{
+                set_table_action_loader(false);
+                console.log(error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please Contact your software developer',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                })
+            }
+        )
+    }
     const [search_check_number,set_search_check_number] = useState({
         check_number:''
     });
@@ -472,6 +505,33 @@ function Check (){
                     <button type="button" className="btn btn-danger">Annuler</button>
                 </ModalFooter>
             </Modal>
+            
+            {/* START - Edit Check MODAL */}
+            <Modal show={is_open_invoices_modal} onHide={close_invoices_modal }>
+            <ModalHeader>
+                <ModalTitle>Invoices</ModalTitle>
+            </ModalHeader>
+            <ModalBody>
+                <div className='assigned-invoices-list'>
+                    <table className='table table-bordered table-striped table-hover text-center'>
+                        <tr>
+                            <th>Invoice Number</th>
+                            <th>Invoice Amount</th>
+                            <th>Invoice Date</th>
+                        </tr>
+                        {
+                        assigned_invoices.map((el,index) => {
+                            return <tr Style={el.is_paid == 1 ? 'background-color:rgb(115, 238, 115)':''} key={index}>
+                                    <td>{el.invoice_number}</td>
+                                    <td>{el.invoice_amount}</td>
+                                    <td>{el.invoice_date}</td>
+                                </tr>
+                        })
+                        }
+                    </table>
+                </div>
+            </ModalBody>
+        </Modal>
             {/* ********************** END - MODALS ******************************************** */}
             <NotificationContainer/>
         </div>

@@ -10,14 +10,18 @@
     user-select: none;
 }
 .selected-row{
-    background-color: rgb(119, 119, 119);
-    color:white !important;
+    box-shadow: 0px 0px 5px  rgb(0, 0, 0);
+    /* background-color: rgb(119, 119, 119);
+    color:white !important; */
+    font-weight: bold;
 }
 .ant-table-tbody>.selected-row:hover>td{
-    background-color: rgb(119, 119, 119) !important;
-    color:white !important;
+    background-color: rgb(209, 209, 209) !important;
+    /* color:white !important; */
 }
 .selected-important-row{
+    font-weight: bold;
+    box-shadow: 0px 0px 5px  rgb(0, 0, 0);
     background-color: rgb(251, 186, 66);
     color:white !important;
 }

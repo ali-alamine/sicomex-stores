@@ -14,3 +14,14 @@
 .supp-acc-container{
     margin-top: 10px;
 }
+
+.supp-acc-container table thead{
+    background-color: black !important;
+    color: white !important;
+}
+.supp-acc-container table{
+    line-height: 4px !important;
+}
+.table-hover > tbody > tr:hover {
+    background-color: #e7e7e7 !important;
+}
