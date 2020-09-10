@@ -19,6 +19,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+
 function Report_entries(){
     const [show_loader,set_show_loader] = useState(false);
     const [all_stores,set_all_stores]= useState([]);
@@ -198,8 +199,6 @@ function Report_entries(){
     const [show_submit_loader,set_show_submit_loader] = useState(false);
     const submit_store_entry = () => {
         if(entry_report_data.sales_amount != '' && entry_report_data.bank_deposit != '' && entry_report_data.store_id != ''){
-            console.log('entry_report_data')
-            console.log(entry_report_data)
             entry_report_data.cash_supply_details=cash_supply_details_arr;
             entry_report_data.cash_supply_amount=supply_total_amount;
             entry_report_data.cash_expense_details=cash_expense_details_arr;
@@ -209,8 +208,6 @@ function Report_entries(){
             temp_entry_date=temp_entry_date.format("YYYY-MM-DD")
             entry_report_data.entry_report_date=temp_entry_date;
             set_entry_report_data(entry_report_data);
-            console.log('entry_report_data');
-            console.log(entry_report_data);
             set_show_submit_loader(true);
             return axios.post(Global_services.add_new_store_entry,entry_report_data).then(
                 response=>{
