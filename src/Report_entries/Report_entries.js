@@ -296,7 +296,7 @@ function Report_entries(){
                         <span className='add-details'><Dialog refresh={refreshDialog} calc={calc_remain_amount} get_supply_total_amount={get_supply_total_amount} view='supply' action_name='Cash Supply' cash_supply_details={cash_supply_details}/></span>
                     </div>
                     <div className='entry cash'>
-                        <span>Dépenses en espèces</span> <input type='number' value={expense_total_amount} disabled className='entry-input-sub'/> 
+                        <span>Dépenses espèces</span> <input type='number' value={expense_total_amount} disabled className='entry-input-sub'/> 
                         <span className='add-details'><Dialog refresh={refreshDialog} calc={calc_remain_amount}  get_expense_total_amount={get_expense_total_amount}  view='expense' action_name='Cash Expenses' cash_expense_details={cash_expense_details}/></span>
                     </div>
                     <div className='entry'>
