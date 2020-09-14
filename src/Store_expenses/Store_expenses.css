@@ -1,0 +1,26 @@
+.store-bank-expenses .select-store-name{
+
+    margin-top: 20px;
+}
+.store-bank-expenses .submit-search{
+    margin-top: 20px;
+}
+.store-bank-expenses table{
+    line-height: 4px !important;
+}
+.store-bank-expenses table thead{
+    background-color: black !important;
+    color: white !important;
+}
+.store-bank-expenses{
+    text-align: center;
+}
+.table-hover > tbody > tr:hover {
+    background-color: #e7e7e7 !important;
+}
+.total-store-expenses{
+    font-weight: bold;
+    width: 100%;
+    font-size: 40px;
+    margin-top: -19px;
+}

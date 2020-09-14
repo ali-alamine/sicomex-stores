@@ -4,7 +4,7 @@ import './Global_services.css';
 var is_prod=false;
 is_prod = window.location.href.includes('localhost') ? false: true;
 var base_url ='';
-base_url= is_prod ? 'https://apiaws.petitprix.live' : 'http://localhost:4000';
+base_url= is_prod ? 'https://api.petitprix.live' : 'http://localhost:4000';
 
 
 class Global_services extends React.Component {
@@ -56,6 +56,8 @@ class Global_services extends React.Component {
 
     static advanced_search_invoice = base_url+'/advanced_search_invoice';
     static advanced_search_bank_check = base_url+'/advanced_search_bank_check';
+    
+    static get_store_expenses = base_url+'/get_store_expenses';
     
 }
 

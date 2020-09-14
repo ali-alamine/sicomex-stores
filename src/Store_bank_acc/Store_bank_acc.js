@@ -17,8 +17,6 @@ function Store_bank_acc (){
     const [date_from,set_date_from] = useState('');
     const [date_to,set_date_to] = useState('');
     const [show_main_loader,set_show_main_loader] = useState(false);
-    // const [store_checks,set_store_checks] = useState([]);
-    // const [store_bank_deposits,set_store_bank_deposits] = useState([]);
 
     const [store_bank_report_data,set_store_bank_report_data] = useState([]);
 
@@ -35,8 +33,6 @@ function Store_bank_acc (){
         console.log(store_amount.key)
         set_selected_store_amount(store_amount.key);
         set_sotre_bank_acc_data(sotre_bank_acc_data);
-        // set_store_checks([]);
-        // set_store_bank_deposits([]);
         set_store_bank_report_data([]);
 
     }
@@ -100,7 +96,6 @@ function Store_bank_acc (){
         <div className='store-bank-acc-container'>
             <Row>
                 <Col className='select-store-name'>
-                    {/* <div className='select-store-name'> */}
                         <Select
                             showSearch
                             style={{ width: '100%',borderRadius:20}}
@@ -117,7 +112,6 @@ function Store_bank_acc (){
                                 })
                             }
                         </Select>
-                    {/* </div> */}
                 </Col>
                 <Col><DatePicker placeholderText="partir de la date" dateFormat="dd/MM/yyyy" className='form-control date-filter' selected={date_from} onChange={date => set_date_from(date)}/></Col>
                 <Col><DatePicker placeholderText="à ce jour"  dateFormat="dd/MM/yyyy" className='form-control date-filter' selected={date_to} onChange={date => set_date_to(date)}/></Col>

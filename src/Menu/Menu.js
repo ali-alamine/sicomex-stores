@@ -4,6 +4,7 @@ import Report_entries from '../Report_entries/Report_entries';
 import Supplier from '../Supplier/Supplier';
 import Invoice from '../Invoice/Invoice';
 import Check from '../Check/Check';
+import Store_expenses from '../Store_expenses/Store_expenses';
 import Nav  from 'react-bootstrap/Nav';
 import Navbar  from 'react-bootstrap/Navbar';
 import './Menu.css';
@@ -30,7 +31,7 @@ function Menu(){
                             Rapports
                             </a>
                             <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                <a className="dropdown-item" href="#">Dépenses de magasin</a>
+                                <Link className="dropdown-item" to="/Store_expenses">Dépenses de magasin</Link>
                                 <a className="dropdown-item" href="#">La fourniture</a>
                                 <a className="dropdown-item" href="#">Dépôts de banque</a>
                             </div>
@@ -64,6 +65,9 @@ function Menu(){
                     </Route>
                     <Route path="/Store_acc">
                         <Store_bank_acc />
+                    </Route>
+                    <Route path="/Store_expenses">
+                        <Store_expenses />
                     </Route>
                 </Switch>
             </Router>

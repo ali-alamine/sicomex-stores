@@ -16,8 +16,6 @@ var Check =function(check){
     this.check_date=check.check_date;
 }
 Check.addNewCheck = function (check_data,result){
-    console.log(' ----------------------------------- request -----------------------------------')
-    console.log(check_data)
     sql.beginTransaction(function(err){
         sql.query('SELECT * FROM bank_check WHERE check_number = ' +check_data.check_number,function(err,res){
             if(err){
@@ -428,18 +426,16 @@ Check.searchCheck =  function(data,result){
 }
 Check.getAssignedInvoices =  function(data,result){
 
-  console.log('data')
-  console.log(data)
-        var sqlQuery = 'SELECT * FROM invoice WHERE check_id = ' +data.bank_check_id;
-        console.log(sqlQuery);
-        sql.query(sqlQuery,function(err,res){
-            if(err){
-                sql.rollback(function() {
-                    throw err;
-                });
-            }else{
-                result(null,res);
-            }
-        });
+    var sqlQuery = 'SELECT * FROM invoice WHERE check_id = ' +data.bank_check_id;
+    console.log(sqlQuery);
+    sql.query(sqlQuery,function(err,res){
+        if(err){
+            sql.rollback(function() {
+                throw err;
+            });
+        }else{
+            result(null,res);
+        }
+    });
 }
 module.exports = Check;

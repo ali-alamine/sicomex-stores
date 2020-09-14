@@ -25,6 +25,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 function Invoice () {
+    
     useEffect(()=>{
         get_suppliers();
         get_invoices();
