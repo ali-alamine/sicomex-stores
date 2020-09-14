@@ -17,8 +17,11 @@ function Store_bank_acc (){
     const [date_from,set_date_from] = useState('');
     const [date_to,set_date_to] = useState('');
     const [show_main_loader,set_show_main_loader] = useState(false);
-    const [store_checks,set_store_checks] = useState([]);
-    const [store_bank_deposits,set_store_bank_deposits] = useState([]);
+    // const [store_checks,set_store_checks] = useState([]);
+    // const [store_bank_deposits,set_store_bank_deposits] = useState([]);
+
+    const [store_bank_report_data,set_store_bank_report_data] = useState([]);
+
     const { Option } = Select;
     /* Handle Stores */
     const [all_stores,set_all_stores] = useState([]);
@@ -32,8 +35,9 @@ function Store_bank_acc (){
         console.log(store_amount.key)
         set_selected_store_amount(store_amount.key);
         set_sotre_bank_acc_data(sotre_bank_acc_data);
-        set_store_checks([]);
-        set_store_bank_deposits([]);
+        // set_store_checks([]);
+        // set_store_bank_deposits([]);
+        set_store_bank_report_data([]);
 
     }
     const [selected_store_amount,set_selected_store_amount] = useState(0);
@@ -72,21 +76,14 @@ function Store_bank_acc (){
                 console.log('******************************response.data');
                 console.log(response.data);
                 if(response.data.length > 0){
-                    let temp_store_checks=response.data[0];
-                    temp_store_checks.map(el => {
-                        let date = moment(new Date(el.check_date));
-                        el.check_date = date.format("DD/MM/YYYY");
+                    let res=response.data;
+                    res.map(el => {
+                        let date = moment(new Date(el.date));
+                        el.date = date.format("DD/MM/YYYY");
                     })
-                    set_store_checks(temp_store_checks);
-
-                    let temp_bank_deposit=response.data[1];
-                    temp_bank_deposit.map(el => {
-                        let date = moment(new Date(el.entry_report_date));
-                        el.entry_report_date = date.format("DD/MM/YYYY");
-                    })
-                    set_store_bank_deposits(temp_bank_deposit);
+                    set_store_bank_report_data(res);
                 }else{
-                    set_store_checks([]);
+                    set_store_bank_report_data([]);
                 }
             },error =>{
                 set_show_main_loader(false);
@@ -131,7 +128,7 @@ function Store_bank_acc (){
                 show_main_loader != true ?
             <Row>
                 <div className='total-store-bank-account'>
-                    <label>{selected_store_amount}</label>
+                    <label>{selected_store_amount.toLocaleString()}</label>
                 </div>
                 <table className='table table-bordered table-striped table-hover text-center'>
                     <thead>
@@ -144,23 +141,13 @@ function Store_bank_acc (){
                     </thead>
                     <tbody>
                         {
-                            store_checks.map((el,index) => {
+                            store_bank_report_data.map((el,index) => {
                                 return <tr key={index}>
-                                        <td>Check / {el.check_number}</td>
-                                        <td Style='color:red;font-weight:bold'>-</td>
-                                        <td Style='color:#973939;font-weight:bold'>{el.check_amount}</td>
-                                        <td>{el.check_date}</td>
-                                    </tr>
-                            })
-                        }
-                        {
-                            store_bank_deposits.map((el,index) => {
-                                return <tr key={index}>
-                                        <td> DEPOSIT </td>
-                                        <td Style='color:blue;font-weight:bold'>+</td>
-                                        <td Style='color:#382a5f;font-weight:bold'>{el.bank_deposit}</td>
-                                        <td>{el.entry_report_date}</td>
-                                    </tr>
+                                    {el.type=='check' ? <td>Cheque / {el.check_number}</td> :<td>Dépôt bancaire</td>}
+                                    <td Style={el.type=='check' ? 'color:red;font-weight:bold':'color:blue;font-weight:bold'}>{el.sign}</td>
+                                    <td Style={el.type=='check' ?'color:#973939;font-weight:bold':'color:blue;font-weight:bold'}>{el.amount}</td>
+                                    <td>{el.date}</td>
+                                </tr>
                             })
                         }
                     </tbody>
