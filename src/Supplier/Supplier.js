@@ -120,7 +120,7 @@ function Supplier(){
     const reset_sup_state = () => {
         set_new_sup_data({
             supplier_name:'',
-            supplier_amount:''
+            supplier_amount:0
         })
         
         console.log(new_sup_data)
@@ -329,7 +329,7 @@ function Supplier(){
                 <Common_filter view='sup' show_loader={set_show_main_loader} response_data={assign_response_to_supplier_list} supplier_list={supplier_list}/>
             </div>
             <div>
-                <input type='submit' onClick={open_sup_modal} value='New Supplier' className='btn btn-primary add-supp-btn' />
+                <input type='submit' onClick={open_sup_modal} value='Nouveau fournisseur' className='btn btn-primary add-supp-btn' />
             </div>
             {
                 !show_main_loader ?
@@ -349,16 +349,16 @@ function Supplier(){
             {/* *****************  START - MODALS *********************************  */}
             <Modal show={is_open_sup_modal} onHide={close_sup_modal}>
                 <ModalHeader>
-                    <ModalTitle>Add New Supplier</ModalTitle>
+                    <ModalTitle>Ajouter un nouveau fournisseur</ModalTitle>
                 </ModalHeader>
                 <ModalBody>
                     <div className='store-form'>
                         <div className="form-group">
-                            <label className='input-label'>Supplier Name</label>
+                            <label className='input-label'>Nom</label>
                             <input onChange={handle_new_sup_data} value={new_sup_data.supplier_name} name='supplier_name' type="text" className="form-control" placeholder="Name"/>
                         </div>
                         <div className="form-group">
-                            <label className='input-label'>Initial Amount</label>
+                            <label className='input-label'>Montant initial</label>
                             <input onChange={handle_new_sup_data} value={new_sup_data.supplier_amount} name='supplier_amount' type="text" className="form-control" placeholder="Amount"/>
                         </div>
                     </div>
@@ -376,16 +376,16 @@ function Supplier(){
             </Modal>
             <Modal show={is_open_edit_sup_modal} onHide={close_edit_sup_modal}>
                 <ModalHeader>
-                    <ModalTitle>Update Supplier</ModalTitle>
+                    <ModalTitle>Éditer</ModalTitle>
                 </ModalHeader>
                 <ModalBody>
                     <div className='store-form'>
                         <div className="form-group">
-                            <label className='input-label'>New Supplier Name</label>
+                            <label className='input-label'>Nom</label>
                             <input onChange={handle_edit_sup_data} value={edit_sup_data.edit_supplier_name} name='edit_supplier_name' type="text" className="form-control" placeholder="Name"/>
                         </div>
                         <div className="form-group">
-                            <label className='input-label'>Amount</label>
+                            <label className='input-label'>Montante</label>
                             <input onChange={handle_edit_sup_data} value={edit_sup_data.edit_supplier_amount} name='edit_supplier_amount' type="text" className="form-control" placeholder="Amount" disabled/>
                         </div>
                     </div>

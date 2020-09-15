@@ -11,10 +11,10 @@ import Swal from 'sweetalert2';
 
 const inv_popup = ({record, pin_invoice,un_pin_invoice,delete_invoice,open_invoice_details,open_edit_inv_modal, visible, x, y}) => visible &&
   <ul className="popup"  id='popupMenu' style={{left: `${x}px`, top: `${y}px`}}>
-    <li onClick={() =>open_invoice_details(record)}> <EditIcon />Open</li>
-    <li onClick={() =>open_edit_inv_modal(record)}> <EditIcon />Edit</li>
-    { record.invoice_order==0 ? <li onClick={() => pin_invoice(record)} ><BookmarkIcon/> Pin</li>: <li onClick={() => un_pin_invoice(record)} ><BookmarkBorderIcon/> unpin</li> }
-    <li onClick={() => delete_invoice(record)}> <DeleteIcon />Delete</li>
+    <li onClick={() =>open_invoice_details(record)}> <EditIcon />Ouverte</li>
+    <li onClick={() =>open_edit_inv_modal(record)}> <EditIcon />Éditer</li>
+    { record.invoice_order==0 ? <li onClick={() => pin_invoice(record)} ><BookmarkIcon/> Épingle</li>: <li onClick={() => un_pin_invoice(record)} ><BookmarkBorderIcon/> détacher</li> }
+    <li onClick={() => delete_invoice(record)}> <DeleteIcon />Supprimer</li>
   </ul>
 
 

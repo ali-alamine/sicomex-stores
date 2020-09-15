@@ -85,7 +85,7 @@ function Sup_dialog(props) {
 
     return (
       <div className='dialog-details'>
-        <span className='open-dialog' variant="outlined" color="primary" onClick={handleClickOpen}> <OpenInNewIcon /> Open </span>
+        <span className='open-dialog' variant="outlined" color="primary" onClick={handleClickOpen}> <OpenInNewIcon /> Ouverte </span>
         <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
           <AppBar className={classes.appBar}>
             <Toolbar>

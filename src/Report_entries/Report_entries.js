@@ -51,7 +51,7 @@ function Report_entries(){
     const close_store_modal = () => {set_is_open_new_store_modal(false)};
     const [new_store_data,set_new_store_data]= useState({
         new_store_name:'',
-        new_store_init_amount:''
+        new_store_init_amount:0
     });
     const handler_new_store = (e) => {
         let name=e.target.name;
@@ -73,7 +73,7 @@ function Report_entries(){
                     });
                     set_new_store_data({
                         new_store_name:'',
-                        new_store_init_amount:''
+                        new_store_init_amount:0
                     })
                     get_all_stores();
                     close_store_modal();
