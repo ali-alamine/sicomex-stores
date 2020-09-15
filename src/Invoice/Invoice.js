@@ -582,7 +582,7 @@ function Invoice () {
                         </div>
                         <div className="form-group">
                             <label className='input-label'>Invoice Number</label>
-                            <input name='invoice_number' onChange={handle_new_invoice} value={new_invoice_data.invoice_number} type="number" className="form-control" placeholder="Invoice Number" />
+                            <input name='invoice_number' autoComplete="off" onChange={handle_new_invoice} value={new_invoice_data.invoice_number} type="number" className="form-control" placeholder="Invoice Number" />
                         </div>
                         <div className='form-group row'>
                             <div className="col-md-6">

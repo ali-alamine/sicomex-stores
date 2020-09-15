@@ -255,7 +255,7 @@ function Add_new_check(props){
                                 </div>
                                 <div className="form-group">
                                     <label className='input-label'>Check Number</label>
-                                    <input name='check_number' onChange={handle_new_check_data} type="number" className="form-control" placeholder="Check Number" />
+                                    <input name='check_number' autoComplete="off" onChange={handle_new_check_data} type="number" className="form-control" placeholder="Check Number" />
                                 </div>
                                 
                                 <div Style={props.check_type == 'exp' ? 'display:block' : 'display:none'} className="form-group">
@@ -316,10 +316,10 @@ function Add_new_check(props){
                                         <DatePicker dateFormat="dd/MM/yyyy" className='form-control' selected={check_new_date} onChange={date => set_check_new_date(date)}/>
                                     </div>
                                 </div>
-                                <div className="form-group check-status">
+                                {/* <div className="form-group check-status">
                                     <label className='input-label'>Paid</label>
                                     <input checked={is_paid_check}  onChange={toggle_payment} type="checkbox" className="form-control"/>
-                                </div>
+                                </div> */}
                             </div>
                     </ModalBody>
                     <ModalFooter>
