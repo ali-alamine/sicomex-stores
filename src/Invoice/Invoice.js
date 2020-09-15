@@ -118,7 +118,7 @@ function Invoice () {
         if(new_invoice_data.supplier_id != '' && new_invoice_data.store_id != '' && new_invoice_data.invoice_amount != '' && new_invoice_data.invoice_number != ''){
             set_show_submit_invoice_loader(true);
             var temp_invoice_date=moment(new Date(invoice_date));
-            temp_invoice_date=temp_invoice_date.format("dd/MM/yyyy, h:mm:ss a");
+            temp_invoice_date=temp_invoice_date.format("YYYY-MM-DD");
             new_invoice_data.invoice_date=invoice_date;
             axios.post(Global_services.add_new_invoice,new_invoice_data).then(
                 response => {
