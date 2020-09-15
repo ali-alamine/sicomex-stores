@@ -62,14 +62,22 @@ Check.addNewCheck = function (check_data,result){
                                                                 throw err;
                                                             })
                                                         }else{
-                                                            sql.commit(function(err) {
-                                                                if (err) { 
-                                                                    sql.rollback(function() {
+                                                            invoiceModel.toggleInvoicePayment(1,check_data.invoice_ids,function(err,res){
+                                                                if(err){
+                                                                    sql.rollback(function(){
                                                                         throw err;
+                                                                    })
+                                                                }else{
+                                                                    sql.commit(function(err) {
+                                                                        if (err) { 
+                                                                            sql.rollback(function() {
+                                                                                throw err;
+                                                                            });
+                                                                        }
+                                                                        result(null,res);
                                                                     });
                                                                 }
-                                                                result(null,res);
-                                                            });
+                                                            })
                                                         }
                                                     })
 
@@ -182,7 +190,8 @@ Check.unPinCheck = function (check_data,result){
     });
 }
 Check.setCheckPaid = function (request,result){
-    
+    console.log(' SET CHECK TO PAID')
+    console.log(request.invoice_ids)
     sql.beginTransaction(function(err){
 
         sql.query('UPDATE bank_check SET is_paid = 1 WHERE bank_check_id= '+ request.bank_check_id,function(err,res){
@@ -208,14 +217,22 @@ Check.setCheckPaid = function (request,result){
                                         throw err;
                                     })
                                 }else{
-                                    sql.commit(function(err) {
-                                        if (err) { 
-                                            sql.rollback(function() {
+                                    invoiceModel.toggleInvoicePayment(1,request.invoice_ids,function(err,res){
+                                        if(err){
+                                            sql.rollback(function(){
                                                 throw err;
+                                            })
+                                        }else{
+                                            sql.commit(function(err) {
+                                                if (err) { 
+                                                    sql.rollback(function() {
+                                                        throw err;
+                                                    });
+                                                }
+                                                result(null,res);
                                             });
                                         }
-                                        result(null,res);
-                                    });
+                                    })
                                 }
                             })
 
@@ -272,14 +289,22 @@ Check.setCheckUnPaid = function (request,result){
                                         throw err;
                                     })
                                 }else{
-                                    sql.commit(function(err) {
-                                        if (err) { 
-                                            sql.rollback(function() {
+                                    invoiceModel.toggleInvoicePayment(0,request.invoice_ids,function(err,res){
+                                        if(err){
+                                            sql.rollback(function(){
                                                 throw err;
+                                            })
+                                        }else{
+                                            sql.commit(function(err) {
+                                                if (err) { 
+                                                    sql.rollback(function() {
+                                                        throw err;
+                                                    });
+                                                }
+                                                result(null,res);
                                             });
                                         }
-                                        result(null,res);
-                                    });
+                                    })
                                 }
                             })
 

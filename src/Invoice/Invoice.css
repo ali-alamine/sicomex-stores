@@ -7,3 +7,18 @@
 .search-invoice{
     margin-top: 10px;
 }
+.is_paid-invoice{
+    background-color: rgb(115, 238, 115) !important;
+}
+.is_paid-invoice-selected{
+    box-shadow: 0px 0px 5px  rgb(0, 0, 0);
+    background-color: rgb(84, 174, 84) !important;
+    font-weight: bold;
+}
+.ant-table-tbody>.is_paid-invoice-selected:hover>td{
+    background-color: rgb(84, 174, 84) !important;
+}
+.ant-table-tbody>.is_paid-invoice:hover>td{
+    background-color: rgb(84, 174, 84) !important;
+}
+

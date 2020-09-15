@@ -25,7 +25,6 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 function Invoice () {
-    
     useEffect(()=>{
         get_suppliers();
         get_invoices();
@@ -356,9 +355,8 @@ function Invoice () {
     });
     /* Highllight selected row  */
     var setRowClassName = (record) => {
-        return record.invoice_id === selected_row.rowId && record.invoice_order=='0'? 'selected-row' : record.supplier_id === selected_row.rowId && record.invoice_order=='1' ? 'selected-important-row' :record.invoice_order=='1' ? 'important-row':'';
+        return record.invoice_id === selected_row.rowId && record.is_paid == 1 && record.invoice_order == 0 ? 'is_paid-invoice-selected':record.invoice_id === selected_row.rowId && record.invoice_order=='0'? 'selected-row' : record.supplier_id === selected_row.rowId && record.invoice_order=='1' ? 'selected-important-row' :record.invoice_order=='1' ? 'important-row':record.is_paid == 1 && record.invoice_order == 0 ? 'is_paid-invoice':'';
     };
-
     /* Context - Menu */
     const onRow = record => ({
         onClick: () => {
