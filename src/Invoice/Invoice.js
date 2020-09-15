@@ -119,7 +119,7 @@ function Invoice () {
             set_show_submit_invoice_loader(true);
             var temp_invoice_date=moment(new Date(invoice_date));
             temp_invoice_date=temp_invoice_date.format("YYYY-MM-DD");
-            new_invoice_data.invoice_date=invoice_date;
+            new_invoice_data.invoice_date=temp_invoice_date;
             axios.post(Global_services.add_new_invoice,new_invoice_data).then(
                 response => {
                     set_show_submit_invoice_loader(false);
