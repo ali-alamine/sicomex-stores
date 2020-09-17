@@ -36,7 +36,7 @@ const login_handler =(e) =>{
                     </div>
 
                     <input type="text" id="login" onChange={login_handler} className="fadeIn second" name="username" placeholder="Nom d'utilisateur" />
-                    <input type="text" id="password" onChange={login_handler} className="fadeIn third" name="password" placeholder="Mot de passe" />
+                    <input type="password" id="password" onChange={login_handler} className="fadeIn third" name="password" placeholder="Mot de passe" />
                     <input type="submit" onClick={() => props.check_login(login_data)} className="fadeIn fourth" value="Connexion" />
                     
                     {/*<div id="formFooter">
