@@ -16,7 +16,7 @@ function Menu(){
     useEffect(() => {
     },[])
     const user_logout= () => {
-        window.location.href ='/Login';
+        window.location.href ='/';
     }
     return (
         <div className='header-menu'>
