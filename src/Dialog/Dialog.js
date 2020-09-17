@@ -106,7 +106,6 @@ function FullScreenDialog(props) {
     const [total_amount,set_total_amount]=React.useState(0);
 
     const refresh = () => {
-      
       set_details_data([{'text':'','amount':0}]);
     }
     useEffect(() => {

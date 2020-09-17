@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router,Switch,Route,Link,Redirect  } from "react-router-dom";
 import Report_entries from '../Report_entries/Report_entries';
 import Supplier from '../Supplier/Supplier';
@@ -13,6 +13,11 @@ import Global_services from '../Global_services/Global_services';
 import Store_bank_acc from '../Store_bank_acc/Store_bank_acc';
 
 function Menu(){
+    useEffect(() => {
+    },[])
+    const user_logout= () => {
+        window.location.href =Global_services.PUBLIC_URL;
+    }
     return (
         <div className='header-menu'>
           <Router>
@@ -38,7 +43,7 @@ function Menu(){
                         </li>
                 
                     </Nav>
-                    <div className='logout-div'><PowerSettingsNewIcon className='logout-icon'/></div>
+                    <div onClick={user_logout} className='logout-div'><PowerSettingsNewIcon className='logout-icon'/></div>
                 </Navbar.Collapse>
                 </Navbar>
                 <Route path='/'>
