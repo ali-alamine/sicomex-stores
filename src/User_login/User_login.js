@@ -39,9 +39,15 @@ const login_handler =(e) =>{
                     <input type="password" id="password" onChange={login_handler} className="fadeIn third" name="password" placeholder="Mot de passe" />
                     <input type="submit" onClick={() => props.check_login(login_data)} className="fadeIn fourth" value="Connexion" />
                     
-                    {/*<div id="formFooter">
-                        <a className="underlineHover" href="#">Forgot Password?</a>
-                    </div> */}
+                    {
+                        props.is_valid_user ?
+                        <div id="faild_login">
+                            <h4 Style='color:#af4e4e'>Nom d'utilisateur / Mot de passe incorrect</h4>
+                        </div>
+                        :
+                        ''
+                    }
+                    
 
                 </div>
             </div>
