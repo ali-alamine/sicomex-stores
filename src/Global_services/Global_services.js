@@ -5,7 +5,7 @@ var is_prod=false;
 is_prod = window.location.href.includes('localhost') ? false: true;
 var base_url ='';
 base_url= is_prod ? 'https://api.petitprix.live' : 'http://localhost:4000';
-var domain_url= is_prod ? 'petitprix.live' : '/Login';
+
 
 class Global_services extends React.Component {
     /* Show Loader on response success */
@@ -16,7 +16,6 @@ class Global_services extends React.Component {
             </div>
         )
     }
-    static PUBLIC_URL= domain_url;
     static get_stores= base_url+'/store';
     static add_new_store= base_url+'/store';
     static get_starting_amount= base_url+'/starting_amount';

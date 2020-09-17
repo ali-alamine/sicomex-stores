@@ -16,7 +16,7 @@ function Menu(){
     useEffect(() => {
     },[])
     const user_logout= () => {
-        window.location.href =Global_services.PUBLIC_URL;
+        window.location.href ='/Login';
     }
     return (
         <div className='header-menu'>
