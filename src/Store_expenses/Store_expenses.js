@@ -18,7 +18,7 @@ function Report_entries(){
     const { Option } = Select;
     const [show_main_loader,set_show_main_loader] = useState(false);
     const [res_store_expense_report_data,set_res_store_expense_report_data] = useState([]);
-    const [display_total_store_expenses,set_display_total_store_expenses] = useState(0);
+    const [store_total_expense,set_store_total_expense] = useState([]);
     const [all_stores,set_all_stores] = useState([]);
 
     const [date_from,set_date_from] = useState('');
@@ -53,6 +53,7 @@ function Report_entries(){
         store_expense_report_filter.store_id=store_id;
         set_store_expense_report_filter(store_expense_report_filter);
         set_res_store_expense_report_data([]);
+        set_store_total_expense(0);
 
     }
     const get_store_expense_details = () =>{
@@ -67,16 +68,19 @@ function Report_entries(){
         axios.post(Global_services.get_store_expenses,store_expense_report_filter).then(
             response => {
                 set_show_main_loader(false);
-                if(response.data.length > 0){
-                    let res=response.data;
+                if(response.data[0].length > 0){
+                    let res=response.data[0];
                     res.map(el => {
-                        let date = moment(new Date(el.date));
-                        el.date = date.format("DD/MM/YYYY");
+                        let date = moment(new Date(el.entry_report_date));
+                        el.entry_report_date = date.format("DD/MM/YYYY");
                     })
                     set_res_store_expense_report_data(res);
-                    console.log(res)
+                    let total_store_exp_res=response.data[1];
+                    set_store_total_expense(total_store_exp_res[0].total_store_expense)
+                    console.log(response.data[1])
                 }else{
-                    res_store_expense_report_data([]);
+                    set_res_store_expense_report_data([]);
+                    set_store_total_expense(0);
                 }
             },error =>{
                 set_show_main_loader(false);
@@ -92,6 +96,11 @@ function Report_entries(){
 
     return (
         <div className='store-bank-expenses'>
+            <Row className='page-title'>
+                <Col></Col>
+                <Col className='col2'><h3>Dépenses de magasin</h3></Col>
+                <Col></Col>
+            </Row>
             <Row>
                 <Col className='select-store-name'>
                     <Select
@@ -106,7 +115,7 @@ function Report_entries(){
                         >
                         {
                             all_stores.map((el,index) => {
-                                return <Option key={el.store_amount} value={el.store_id}>{el.label}</Option>
+                                return <Option key={el.store_id} value={el.store_id}>{el.label}</Option>
                             })
                         }
                     </Select>
@@ -115,31 +124,32 @@ function Report_entries(){
                 <Col><DatePicker placeholderText="à ce jour"  dateFormat="dd/MM/yyyy" className='form-control date-filter' selected={date_to} onChange={date => set_date_to(date)}/></Col>
                 <Col><input type='submit' value='Recherche' className='btn btn-success submit-search' onClick={get_store_expense_details}/></Col>
             </Row>
+
             <hr />
             {
                 show_main_loader != true ?
             <Row>
                 <div className='total-store-expenses'>
-                    <label>{display_total_store_expenses.toLocaleString()}</label>
+                    <label>{store_total_expense.toLocaleString()}</label>
                 </div>
                 <table className='table table-bordered table-striped table-hover text-center'>
                     <thead>
                         <tr>
-                            <th>Store Name</th>
+                            <th>ID</th>
                             <th>Amount</th>
+                            <th>Date</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {/* {
-                            store_bank_report_data.map((el,index) => {
+                        {
+                            res_store_expense_report_data.map((el,index) => {
                                 return <tr key={index}>
-                                    {el.type=='check' ? <td>Cheque / {el.check_number}</td> :<td>Dépôt bancaire</td>}
-                                    <td Style={el.type=='check' ? 'color:red;font-weight:bold':'color:blue;font-weight:bold'}>{el.sign}</td>
-                                    <td Style={el.type=='check' ?'color:#973939;font-weight:bold':'color:blue;font-weight:bold'}>{el.amount}</td>
-                                    <td>{el.date}</td>
+                                    <td>{el.store_entry_id}</td>
+                                    <td>{el.total_expense}</td>
+                                    <td>{el.entry_report_date}</td>
                                 </tr>
                             })
-                        } */}
+                        }
                     </tbody>
                   </table>
             </Row>

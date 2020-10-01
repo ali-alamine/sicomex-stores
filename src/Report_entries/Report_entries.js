@@ -288,7 +288,7 @@ function Report_entries(){
                         <span>Ventes</span> <input value={entry_report_data.sales_amount} onChange={handle_entry_report} name='sales_amount' type='number' className='entry-input-add'/>
                     </div>
                     <div className='entry supply'>
-                        <span>Trésorerie</span> <input type='number' value={supply_total_amount} disabled className='entry-input-sub'/>
+                        <span>Forniussure Cash</span> <input type='number' value={supply_total_amount} disabled className='entry-input-sub'/>
                         <span className='add-details'><Dialog refresh={refreshDialog} calc={calc_remain_amount} get_supply_total_amount={get_supply_total_amount} view='supply' action_name='Cash Supply' cash_supply_details={cash_supply_details}/></span>
                     </div>
                     <div className='entry cash'>

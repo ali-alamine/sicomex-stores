@@ -2,22 +2,13 @@
 
 var mysql = require('mysql');
 //local mysql db connection
-var is_prod = false;
-if(is_prod){
-  var connection = mysql.createConnection({
-      host     : 'sicomex-stores-new.czgv9lejumuk.us-east-1.rds.amazonaws.com',
-      user     : 'root',
-      password : 'sicomex_stores',
-      database : 'sicomex_stores_new'
-  });
-}else{
-  var connection = mysql.createConnection({
+
+var connection = mysql.createConnection({
       host     : 'localhost',
       user     : 'root',
-      password : '', //91j3funfidiuayfihun243unf78J@
+      password : '91j3funfidiuayfihun243unf78J@',
       database : 'sicomex-stores-new'
-  });
-}
+});
 
 connection.connect(function(err) {
   if (err) {

@@ -31,6 +31,9 @@ const login_handler =(e) =>{
             <div className="wrapper fadeInDown">
                 <div id="formContent">
 
+                    {/* <div class="fadeIn first">
+                    <img src="http://danielzawadzki.com/codepen/01/icon.svg" id="icon" alt="User Icon" />
+                    </div> */}
                     <div className="fadeIn first">
                         <h4>Petit Prix</h4>
                     </div>

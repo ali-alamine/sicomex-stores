@@ -15,3 +15,17 @@
     background-color:rgb(115, 238, 115) !important;
     color:white !important;
 }
+.total-checks-amount .col2{
+    margin-top: 10px;
+    background-color: rgb(240, 240, 240);
+}
+.total-checks-amount .col2 span{
+    font-size: 20px;
+    font-weight: bold;
+}
+.total-checks-amount .col2 .total-amount{
+    font-size: 20px;
+    font-weight: bold;
+    color: green;
+    margin-left: 10px;
+}

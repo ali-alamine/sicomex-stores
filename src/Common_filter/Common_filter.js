@@ -352,9 +352,8 @@ function Common_filter (props){
         axios.post(filter_api,search_data).then(
             response => {
                 props.show_loader(false);
-                console.log(response.data);
                 if(response.data == 'EMPTY_RESULT'){
-                    alert('No result')
+                    alert('Pas de résultat')
                     props.response_data(response)
                 }else{
                     props.response_data(response)

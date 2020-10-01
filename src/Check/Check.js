@@ -32,7 +32,7 @@ function Check (){
     const [is_open_edit_check_modal,set_is_open_edit_check_modal] = useState(false);
     const [is_open_invoices_modal,set_is_open_invoices_modal] = useState(false);
     const [button_action_loader,set_button_action_loader] = useState(false);
-    
+    const [total_check_sum,set_total_check_sum]= useState(0);
     const close_invoices_modal = () =>{
         set_is_open_invoices_modal(false);
     }
@@ -47,19 +47,25 @@ function Check (){
         get_checks();
     },[]);
     const [show_main_loader,set_show_main_loader] = useState(false);
-    /* Assign response to invoice list */
+    /* Assign response to check list */
     const assign_response_to_list = (response) => {
-        if(response.data=='EMPTY_RESULT'){
+        var res;
+        if(response.data[0]=='FROM_ADVANCED_SEARCH'){
+            res=response.data[1];
+            set_total_check_sum(response.data[2][0].total_sum)
+        }else{
+            res=response.data;
+        }
+        if(res=='EMPTY_RESULT'){
             set_check_list([])
         }else{
-
-            let checks=response.data;
+            let checks=res;
             checks.map(el => {
                 let date = moment(new Date(el.check_date));
                 el.check_date = date.format("DD/MM/YYYY");
                 el.is_for_sup == 1 ? el.is_for_sup='Supplier':el.is_for_sup==0? el.is_for_sup='Expense':el.is_for_sup='Not specified'
             })
-            set_check_list(response.data);
+            set_check_list(res);
         }
     }
     const get_all_stores= () => {
@@ -428,21 +434,30 @@ function Check (){
             <div>
                 <Common_filter view='bank_check' show_loader={set_show_main_loader} response_data={assign_response_to_list} all_stores={all_stores} supplier_list={supplier_list}/>
             </div>
-            <Row>
-                <Col>
-                    <Add_new_check get_checks={get_checks} all_stores={all_stores} supplier_list={supplier_list} check_type='sup'/>
-                </Col>
-                <Col className='search-invoice'>
-                    <Row>
-                        <Col>
-                            <input type='text' onChange={handle_search_check} name='check_number' className='form-control' placeholder='Numéro du chèque'/>
-                        </Col>
-                        <Col>
-                            <input type='submit' value='Chercher' onClick={submit_search_check} className='form-control btn btn-primary' />
-                        </Col>
+                <Row>
+                    <Col>
+                        <Add_new_check get_checks={get_checks} all_stores={all_stores} supplier_list={supplier_list} check_type='sup'/>
+                    </Col>
+                    <Col className='search-invoice'>
+                        <Row>
+                            <Col>
+                                <input type='text' onChange={handle_search_check} name='check_number' className='form-control' placeholder='Numéro du chèque'/>
+                            </Col>
+                            <Col>
+                                <input type='submit' value='Chercher' onClick={submit_search_check} className='form-control btn btn-primary' />
+                            </Col>
+                        </Row>
+                    </Col>
+                </Row>
+                {
+                    total_check_sum > 0?
+                    <Row className='total-checks-amount'>
+                        <Col></Col>
+                        <Col className='col2'><span>Montant Total: <span className='total-amount'>{total_check_sum.toLocaleString()}</span> </span></Col>
+                        <Col></Col>
                     </Row>
-                </Col>
-            </Row>
+                    :''
+                }
             {
                show_main_loader != true ?
                 <div>
