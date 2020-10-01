@@ -119,11 +119,18 @@ function Store_bank_acc (){
             </Row>
             <hr />
             {
+                sotre_bank_acc_data.store_id != ''?
+                <Row className='total-store-bank-account'>
+                    <Col></Col>
+                    <Col className='col2'><span className='total-amount'>{parseInt(selected_store_amount).toLocaleString()} </span></Col>
+                    <Col></Col>
+                </Row>
+                :''
+            }
+            {
                 show_main_loader != true ?
             <Row>
-                <div className='total-store-bank-account'>
-                    <label>{selected_store_amount.toLocaleString()}</label>
-                </div>
+
                 <table className='table table-bordered table-striped table-hover text-center'>
                     <thead>
                         <tr>

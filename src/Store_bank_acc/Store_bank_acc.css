@@ -18,9 +18,17 @@
 .table-hover > tbody > tr:hover {
     background-color: #e7e7e7 !important;
 }
-.total-store-bank-account{
+.total-store-bank-account .col2{
+    margin-bottom: 10px;
+    background-color: rgb(240, 240, 240);
+}
+.total-store-bank-account .col2 span{
+    font-size: 20px;
     font-weight: bold;
-    width: 100%;
-    font-size: 40px;
-    margin-top: -19px;
+}
+.total-store-bank-account .col2 .total-amount{
+    font-size: 20px;
+    font-weight: bold;
+    color: green;
+    margin-left: 10px;
 }
