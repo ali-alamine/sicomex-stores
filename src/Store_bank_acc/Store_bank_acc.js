@@ -57,6 +57,15 @@ function Store_bank_acc (){
         )
     };
     const get_store_bank_acc = () =>{
+        if(sotre_bank_acc_data.store_id == ''){
+            Swal.fire({
+                title: 'Doit sélectionner un nom de magasin',
+                text: 'Please Contact your software developer',
+                icon: 'info',
+                confirmButtonText: 'OK'
+            })
+            return '';
+        }
         set_show_main_loader(true);
         var temp_date_from=moment(new Date(date_from));
         temp_date_from=temp_date_from.format("YYYY-MM-DD");
@@ -144,7 +153,7 @@ function Store_bank_acc (){
                         {
                             store_bank_report_data.map((el,index) => {
                                 return <tr key={index}>
-                                    {el.type=='check' ? <td>Cheque / {el.check_number}</td> :<td>Dépôt bancaire</td>}
+                                    {el.type=='check' ? <td>Cheque #{el.check_number} | <mark> {el.supplier_name}</mark></td> :<td>Dépôt bancaire</td>}
                                     <td Style={el.type=='check' ? 'color:red;font-weight:bold':'color:blue;font-weight:bold'}>{el.sign}</td>
                                     <td Style={el.type=='check' ?'color:#973939;font-weight:bold':'color:blue;font-weight:bold'}>{el.amount}</td>
                                     <td>{el.date}</td>

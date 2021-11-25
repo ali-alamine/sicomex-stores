@@ -33,7 +33,7 @@ function Menu(){
                         <Link className='nav-link' to="/Store_acc">Compte bancaire</Link>
                         <li className="nav-item dropdown">
                             <a className="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Rapports
+                                Rapports
                             </a>
                             <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                 <Link className="dropdown-item" to="/Store_expenses">Dépenses de magasin</Link>
