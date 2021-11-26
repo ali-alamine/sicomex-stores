@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactSpinner from 'react-bootstrap-spinner';
 import './Global_services.css';
-var is_prod=true;
+var is_prod=false;
 is_prod = window.location.href.includes('localhost') ? false: true;
 var base_url ='';
-base_url= is_prod ? 'https://ec2-13-245-80-185.af-south-1.compute.amazonaws.com' : 'http://localhost:4000';
+base_url= is_prod ? 'https://ec2-13-245-80-185.af-south-1.compute.amazonaws.com/' : 'http://localhost:4000';
 
 
 class Global_services extends React.Component {

@@ -128,7 +128,7 @@ function Add_new_check(props){
     }
 
     function search_invoice_by_number(value) {
-        var data={'invoice_number':value};
+        var data={'invoice_number':value,'supplier_id':new_check_data.supplier_id};
         axios.post(Global_services.search_invoice_by_number,data).then(
             response => {
                 if(response.data.length > 0){
