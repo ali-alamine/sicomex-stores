@@ -23,7 +23,7 @@ function Menu(){
         <div className='header-menu'>
           <Router>
             <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-                <Navbar.Brand>Petit Prix</Navbar.Brand>
+                <Navbar.Brand>Petite Monnaie</Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="mr-auto">

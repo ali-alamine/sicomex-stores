@@ -35,7 +35,7 @@ const login_handler =(e) =>{
                     <img src="http://danielzawadzki.com/codepen/01/icon.svg" id="icon" alt="User Icon" />
                     </div> */}
                     <div className="fadeIn first">
-                        <h4>Petit Prix</h4>
+                        <h4>Petite monnaie</h4>
                     </div>
 
                     <input type="text" id="login" onChange={login_handler} className="fadeIn second" name="username" placeholder="Nom d'utilisateur" />
