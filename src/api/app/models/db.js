@@ -4,10 +4,10 @@ var mysql = require('mysql');
 //local mysql db connection
 
 var connection = mysql.createConnection({
-      host     : 'localhost',// 'database-2.chrjj6sace1q.af-south-1.rds.amazonaws.com',
+      host     : 'localhost',
       user     : 'petitem',
       password : 'U<U[{Bc+C!3sdRn2{{2t}?#m',
-      database : 'sicomex-stores-new'//'sicomex_stores_new'
+      database : 'sicomex-stores-new'
 });
 
 connection.connect(function(err) {
