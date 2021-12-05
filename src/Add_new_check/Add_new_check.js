@@ -230,16 +230,16 @@ function Add_new_check(props){
             {/* ********************** START - MODALS ****************************************** */}
                 <Modal className='new-check-modal' show={is_open_new_check} onHide={close_check }>
                     <ModalHeader>
-                        <ModalTitle>Create New Check</ModalTitle>
+                        <ModalTitle>Créer un nouveau chèque</ModalTitle>
                     </ModalHeader>
                     <ModalBody>
                             <div className='check-form'>
                                 <div className="form-group">
-                                    <label className='input-label'>Store Name</label>
+                                    <label className='input-label'>Sélectionnez le magasin</label>
                                       <Select
                                         showSearch
                                         style={{ width: '100%',borderRadius:20}}
-                                        placeholder="Select Store"
+                                        placeholder="Sélectionnez le magasin"
                                         optionFilterProp="children"
                                         onChange={handle_select_store}
                                         filterOption={(input, option) =>
@@ -254,21 +254,21 @@ function Add_new_check(props){
                                         </Select>
                                 </div>
                                 <div className="form-group">
-                                    <label className='input-label'>Check Number</label>
-                                    <input name='check_number' autoComplete="off" onChange={handle_new_check_data} type="number" className="form-control" placeholder="Check Number" />
+                                    <label className='input-label'>Numéro de chèque</label>
+                                    <input name='check_number' autoComplete="off" onChange={handle_new_check_data} type="number" className="form-control" placeholder="Numéro de chèque" />
                                 </div>
                                 
                                 <div Style={props.check_type == 'exp' ? 'display:block' : 'display:none'} className="form-group">
-                                    <label className='input-label'>Details</label>
-                                    <textarea name='check_description' onChange={handle_new_check_data} id="check-description" className="form-control" placeholder="Write Text Here..." />
+                                    <label className='input-label'>Des détails</label>
+                                    <textarea name='check_description' onChange={handle_new_check_data} id="check-description" className="form-control" placeholder="Écrivez du texte ici..." />
                                 </div>
 
                                 <div Style={props.check_type == 'sup' ? 'display:block' : 'display:none'} className="form-group">
-                                    <label className='input-label'>Supplier Name</label> 
+                                    <label className='input-label'>Sélectionnez le fournisseur</label> 
                                       <Select
                                         showSearch
                                         style={{ width: '100%',borderRadius:20}}
-                                        placeholder="Select supplier"
+                                        placeholder="Sélectionnez le fournisseur"
                                         optionFilterProp="children"
                                         onChange={handle_select_supplier}
                                         filterOption={(input, option) =>
@@ -284,11 +284,11 @@ function Add_new_check(props){
                                 </div>
                                 <div>
                                     <div Style={props.check_type == 'sup' ? 'display:block' : 'display:none'}>
-                                        <label className='input-label'>Select Invoices</label>  
+                                        <label className='input-label'>Sélectionnez Factures</label>  
                                         <Select
                                             mode="multiple"
                                             style={{ width: '100%' }}
-                                            placeholder="Select Invoices"
+                                            placeholder="Sélectionnez Factures"
                                             // onChange={handle_select_invoices}
                                             optionLabelProp="label"
                                             onSearch={search_invoice_by_number}
@@ -307,12 +307,12 @@ function Add_new_check(props){
 
                                 <div className='form-group row'>
                                     <div className="col-md-6">
-                                        <label className='input-label'>Check Amount</label>
-                                        <input Style={props.check_type=='sup'? 'display:block':'display:none'} name='check_amount' value={check_amount} onChange={handle_new_check_data} type="text" className="form-control" placeholder="Check Amount" disabled/>
-                                        <input Style={props.check_type=='exp'? 'display:block':'display:none'} name='check_amount' onChange={handle_new_check_data} type="text" className="form-control" placeholder="Check Amount"/>
+                                        <label className='input-label'>Montant du chèque</label>
+                                        <input Style={props.check_type=='sup'? 'display:block':'display:none'} name='check_amount' value={check_amount} onChange={handle_new_check_data} type="text" className="form-control" placeholder="Montant du chèque" disabled/>
+                                        <input Style={props.check_type=='exp'? 'display:block':'display:none'} name='check_amount' onChange={handle_new_check_data} type="text" className="form-control" placeholder="Montant du chèque"/>
                                     </div>
                                     <div className="col-md-6">
-                                        <label className='input-label'>Check Date</label>
+                                        <label className='input-label'>Date du chèque</label>
                                         <DatePicker dateFormat="dd/MM/yyyy" className='form-control' selected={check_new_date} onChange={date => set_check_new_date(date)}/>
                                     </div>
                                 </div>

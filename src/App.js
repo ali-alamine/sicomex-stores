@@ -28,13 +28,12 @@ function App() {
 }
 
   return (
-    <div className='container'>
+    <div className='container-fluid'>
       {
-        !is_valid_user?
+         !is_valid_user?
         <User_login check_login={check_login} is_valid_user={display_faild_login_msg}/>
         :
         <Menu />
-      
       }
       
     </div>

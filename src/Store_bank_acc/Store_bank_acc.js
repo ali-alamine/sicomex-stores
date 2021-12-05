@@ -143,9 +143,9 @@ function Store_bank_acc (){
                 <table className='table table-bordered table-striped table-hover text-center'>
                     <thead>
                         <tr>
-                            <th>Type</th>
-                            <th>Sign</th>
-                            <th>Amount</th>
+                            <th>Taper</th>
+                            <th>Signe</th>
+                            <th>Montant</th>
                             <th>Date</th>
                         </tr>
                     </thead>

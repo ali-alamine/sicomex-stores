@@ -72,10 +72,10 @@ function Menu(){
                         <Store_bank_acc />
                     </Route>
                     <Route path="/Store_expenses">
-                        <Store_expenses />
+                        {/* <Store_expenses /> */}
                     </Route>
                     <Route path="/Store_entries_report">
-                        <Store_entries_report />
+                        {/* <Store_entries_report /> */}
                     </Route>
                 </Switch>
             </Router>

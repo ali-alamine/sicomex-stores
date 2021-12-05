@@ -380,6 +380,21 @@ function Check (){
                     el.invoice_date = date.format("DD/MM/YYYY")
                   })
                 set_assigned_invoices(res);
+                let test = '';
+                res.forEach(element => {
+                    test = test +' <b> Facture numéro: </b>' + element.invoice_number + ' |<b> Facture montant: </b>' +element.invoice_amount + ' | <b>Facture date: </b>' + element.invoice_date + '<hr>' 
+                });
+                Swal.fire({
+                    title: 'Factures',
+                    html:test,
+                    width: 800,
+                    showClass: {
+                      popup: 'animate__animated animate__fadeInDown'
+                    },
+                    hideClass: {
+                      popup: 'animate__animated animate__fadeOutUp'
+                    }
+                  })
             },error =>{
                 set_table_action_loader(false);
                 console.log(error);
@@ -476,33 +491,33 @@ function Check (){
             {/* START - Edit Check MODAL */}
             <Modal show={is_open_edit_check_modal} onHide={close_edit_check_modal }>
                 <ModalHeader>
-                    <ModalTitle>Edit Check</ModalTitle>
+                    <ModalTitle>Modifier le chèque</ModalTitle>
                 </ModalHeader>
                 <ModalBody>
                     <div className='check-form'>
                         <div className='form-group row' >
                             <div className="col-md-12">
-                                <label className='input-label'>Store Name</label>
+                                <label className='input-label'>Nom du magasin</label>
                                 <input type="text" onChange={handle_edit_check_data} className="form-control" value={edit_check_data.store_name} disabled/>
                             </div>
                             <div Style={edit_check_data.check_type == 'sup' ? 'display:block' : 'display:none'} className="col-md-12">
-                                <label className='input-label'>Supplier Name</label>
+                                <label className='input-label'>Nom du fournisseur</label>
                                 <input type="text" onChange={handle_edit_check_data} className="form-control" value={edit_check_data.supplier_name} disabled/>
                             </div>
                             <div Style={edit_check_data.check_type == 'exp' ? 'display:block' : 'display:none'} className="col-md-12">
-                                <label className='input-label'>Details</label>
+                                <label className='input-label'>Des détails</label>
                                 <textarea onChange={handle_edit_check_data} name='check_description' value={edit_check_data.check_description} id="check-description" className="form-control" placeholder="Write Text Here..." />
                             </div>
                             <div className="col-md-12">
-                                <label className='input-label'>Check Amount</label>
+                                <label className='input-label'>Montant du chèque</label>
                                 <input onChange={handle_edit_check_data} type="text" name='check_amount' value={edit_check_data.check_amount} className="form-control" placeholder="Check Amount" />
                             </div>
                             <div className="col-md-12">
-                                <label className='input-label'>Check Number</label>
+                                <label className='input-label'>Numéro de chèque</label>
                                 <input onChange={handle_edit_check_data} type="text" name='check_number' value={edit_check_data.check_number} className="form-control" placeholder="Check Number" />
                             </div>
                             <div className="col-md-6">
-                                <label className='input-label'>Check Date</label>
+                                <label className='input-label'>Date du chèque</label>
                                 {/* <input onChange={handle_edit_check_data} type="text" name='check_date' value={edit_check_data.check_date} className="form-control" placeholder="Check date" /> */}
                                 <DatePicker dateFormat="dd/MM/yyyy" className='form-control' selected={edit_check_date} onChange={date => set_edit_check_date(date)}/>
                             </div>

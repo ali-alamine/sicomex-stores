@@ -41,6 +41,7 @@ class Global_services extends React.Component {
     static pin_invoice = base_url+'/pin_invoice';
     static un_pin_invoice = base_url+'/un_pin_invoice';
     static search_invoice_number = base_url+'/search_invoice';
+    static pay_invoice = base_url+'/pay_invoice';
 
     static pin_supplier = base_url+'/pin_supplier';
     static un_pin_supplier = base_url+'/un_pin_supplier';

@@ -22,8 +22,6 @@ const login_handler =(e) =>{
     let value = e.target.value;
     login_data[name]=value;
     set_login_data(login_data);
-    console.log('FROM HANDLER')
-    console.log(login_data)
 }
     return (
         <div className='user-login-component'>
