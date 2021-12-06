@@ -213,8 +213,7 @@ function Invoice() {
 
     /* Open Invoice Details */
     const pay_invoice = (record) => {
-        let data = {"invoice_id":record.invoice_id,"supplier_amount":record.supplier_amount,"invoice_amount":record.invoice_amount,}
-        axios.post(Global_services.pay_invoice,data).then(
+        axios.post(Global_services.pay_invoice,record).then(
             response => {
                 set_show_main_loader(false);
                 get_invoices();
