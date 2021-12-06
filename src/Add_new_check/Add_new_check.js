@@ -165,7 +165,7 @@ function Add_new_check(props){
 
         set_new_check_data(new_check_data);
         
-        if(new_check_data.store_id != '' && new_check_data.check_amount != '' && new_check_data.check_number != ' ' && new_check_data.check_date != ''){
+        if(new_check_data.store_id != '' && new_check_data.check_amount != '' && new_check_data.check_number != '' && new_check_data.check_date != ''){
             set_show_loader(true);
             set_invoice_ids([]);
             axios.post(Global_services.add_new_check,new_check_data).then(
