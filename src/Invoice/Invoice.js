@@ -687,11 +687,11 @@ function Invoice() {
                             </div>
 
                             <div>
-                                <input
+                                {/* <input
                                     type="checkbox"
                                     checked={edit_paid_invoice}
                                     onChange={e => edit_invoice_to_paid_state(e.target.checked)}
-                                />
+                                /> */}
                             </div>
 
                         </div>
