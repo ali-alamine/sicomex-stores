@@ -423,9 +423,9 @@ function Invoice() {
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
-            set_show_main_loader(true);
-            set_popup_menu({ popup: { visible: false } });
             if (result.value) {
+                set_show_main_loader(true);
+                set_popup_menu({ popup: { visible: false } });
                 axios.post(Global_services.delete_invoice, selected_invoice).then(
                     response => {
                         if (response.data == 'INVOICE_IS_ASSIGNED_TO_A_CHECK') {
