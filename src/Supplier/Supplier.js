@@ -386,7 +386,7 @@ function Supplier(){
                         </div>
                         <div className="form-group">
                             <label className='input-label'>Montante</label>
-                            <input onChange={handle_edit_sup_data} value={edit_sup_data.edit_supplier_amount} name='edit_supplier_amount' type="text" className="form-control" placeholder="Amount" disabled/>
+                            <input onChange={handle_edit_sup_data} value={edit_sup_data.edit_supplier_amount} name='edit_supplier_amount' type="text" className="form-control" placeholder="Amount"/>
                         </div>
                     </div>
                 </ModalBody>
