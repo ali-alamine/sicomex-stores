@@ -213,7 +213,7 @@ function Invoice() {
 
     /* Open Invoice Details */
     const pay_invoice = (record) => {
-        axios.post(Global_services.pay_invoice,record).then(
+        axios.post(Global_services.pay_invoice, record).then(
             response => {
                 set_show_main_loader(false);
                 get_invoices();
@@ -403,6 +403,7 @@ function Invoice() {
                     delete_invoice,
                     open_edit_inv_modal,
                     pay_invoice,
+                    pay_partial_invoice_amount,
                     visible: true,
                     x: event.clientX,
                     y: event.clientY
@@ -411,6 +412,36 @@ function Invoice() {
         }
     });
     /* END - Popup Menu functionalities */
+
+    /* Pay a partial amount from the invoice */
+    const pay_partial_invoice_amount = (selected_invoice) => {
+        Swal.fire({
+            title: 'Montant',
+            input: 'number',
+            showCancelButton: true,
+            confirmButtonText: 'Payez maintenant',
+            showLoaderOnConfirm: true,
+            preConfirm: (amount_to_pay) => {
+                if(amount_to_pay >=  selected_invoice.invoice_amount){
+                    alert('Select a lower value')
+                }else{
+                    selected_invoice.amount_to_pay = amount_to_pay
+                    // axios.post(Global_services.pay_partial_invoice_amount, selected_invoice)
+                    // .then(response => {
+                    //     Swal.fire({
+                    //         title: 'Succeeded',
+                    //       })
+                    // },
+                    // error =>{
+                    //     Swal.fire({
+                    //         title: 'Please contact your software developer',
+                    //       })
+                    // })
+                }
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+          })
+    }
 
     /* DELETE Invoice */
     const delete_invoice = (selected_invoice) => {

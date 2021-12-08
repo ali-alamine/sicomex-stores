@@ -8,12 +8,12 @@ import ModalBody from "react-bootstrap/ModalBody";
 import ModalHeader from "react-bootstrap/ModalHeader";
 import ModalFooter from "react-bootstrap/ModalFooter";
 import ModalTitle from "react-bootstrap/ModalTitle";
-import Select from 'react-select';
+// import Select from 'react-select';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import $ from 'jquery';
-import moment from 'moment';
-import DatePicker from "react-datepicker";
+// import $ from 'jquery';
+// import moment from 'moment';
+// import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "antd/dist/antd.css";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
@@ -199,7 +199,7 @@ function Supplier(){
         rowId:''
     })
     var setRowClassName = (record) => {
-        return record.supplier_id === selected_row.rowId && record.sup_order=='0'? 'selected-row' : record.supplier_id === selected_row.rowId && record.sup_order=='1' ? 'selected-important-row' :record.sup_order=='1' ? 'important-row':'';
+        return record.supplier_id === selected_row.rowId && record.sup_order === '0'? 'selected-row' : record.supplier_id === selected_row.rowId && record.sup_order ==='1' ? 'selected-important-row' :record.sup_order ==='1' ? 'important-row':'';
     }
     const onRow = record => ({
         onClick: () => {
@@ -320,7 +320,7 @@ function Supplier(){
         <div className='supplier-view'>
             {
                 pin_unpin_loader?
-                <div class='table-col-loader'>
+                <div className='table-col-loader'>
                     {Global_services.show_spinner('border',8,'primary')}
                 </div>
                 :''
@@ -355,11 +355,11 @@ function Supplier(){
                     <div className='store-form'>
                         <div className="form-group">
                             <label className='input-label'>Nom</label>
-                            <input onChange={handle_new_sup_data} value={new_sup_data.supplier_name} name='supplier_name' type="text" className="form-control" placeholder="Name"/>
+                            <input onChange={handle_new_sup_data} value={new_sup_data.supplier_name} name='supplier_name' type="text" className="form-control" placeholder="Nom"/>
                         </div>
                         <div className="form-group">
                             <label className='input-label'>Montant initial</label>
-                            <input onChange={handle_new_sup_data} value={new_sup_data.supplier_amount} name='supplier_amount' type="text" className="form-control" placeholder="Amount"/>
+                            <input onChange={handle_new_sup_data} value={new_sup_data.supplier_amount} name='supplier_amount' type="text" className="form-control" placeholder="Montant initial"/>
                         </div>
                     </div>
                 </ModalBody>

@@ -164,6 +164,11 @@
 .on-submit-loader{
     margin-right: 15px !important;
 }
+.starting-amount-spinner{
+    position: absolute;
+    margin-left: 67px;
+    margin-top: -4px;
+}
 /* @media (min-width: 1200px){
     .add-details{
         margin-left: 300px;

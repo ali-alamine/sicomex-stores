@@ -33,6 +33,7 @@ class Global_services extends React.Component {
     static delete_check = base_url+'/delete_check';
     static search_check_number = base_url+'/search_check';
     static get_assigned_invoices = base_url+'/get_assigned_invoices';
+    static pay_partial_invoice_amount = base_url+'/pay_partial_invoice_amount';
 
     static update_invoice = base_url+'/update_invoice';
     static delete_invoice = base_url+'/delete_invoice';

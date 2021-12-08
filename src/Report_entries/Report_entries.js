@@ -111,7 +111,9 @@ function Report_entries(){
         }));
         entry_report_data.store_amount=_selectedOption.store_amount;
     };
+    var [starting_amount_spinner,set_starting_amount_spinner] = useState(false);
     const get_starting_amount= (selected_store) => {
+        set_starting_amount_spinner(true);
         axios.post(Global_services.get_starting_amount,selected_store).then(
             response=>{
                 var responseData=response.data;
@@ -126,7 +128,10 @@ function Report_entries(){
                         starting_amount: responseData[0].starting_amount
                      }));
                 }
+                
+                set_starting_amount_spinner(false);
                 calc_remain_amount();
+                
             },error =>{
                 console.log('error')
             }
@@ -141,14 +146,16 @@ function Report_entries(){
         cash_supply_details:[],
         cash_expense_amount:'',
         cash_expense_details:[],
-        bank_deposit:'',
+        bank_deposit:0,
         remain_amount:'',
         entry_report_date:''
     });
+
     const calc_remain_amount = () => {
         var sum_in_values = 0;
         $('.entry-input-add').each(function(){
             if(parseInt(this.value)){
+                this.value= this.value.split(',').join('');
                 sum_in_values += parseInt(this.value);
             }else{
                 sum_in_values += 0;
@@ -157,6 +164,7 @@ function Report_entries(){
         var sum_out_values = 0;
         $('.entry-input-sub').each(function(){
             if(parseInt(this.value)){
+                this.value= this.value.split(',').join('');
                 sum_out_values += parseInt(this.value);
             }else{
                 sum_out_values += 0;
@@ -197,7 +205,7 @@ function Report_entries(){
     };
     const [show_submit_loader,set_show_submit_loader] = useState(false);
     const submit_store_entry = () => {
-        if(entry_report_data.sales_amount != '' && entry_report_data.bank_deposit != '' && entry_report_data.store_id != ''){
+        if(entry_report_data.sales_amount != '' && entry_report_data.store_id != ''){
             entry_report_data.cash_supply_details=cash_supply_details_arr;
             entry_report_data.cash_supply_amount=supply_total_amount;
             entry_report_data.cash_expense_details=cash_expense_details_arr;
@@ -220,7 +228,7 @@ function Report_entries(){
                         cash_supply_details:[],
                         cash_expense_amount:'',
                         cash_expense_details:[],
-                        bank_deposit:'',
+                        bank_deposit:0,
                         remain_amount:'',
                         entry_report_date:''
                     });
@@ -259,6 +267,9 @@ function Report_entries(){
     };
     const [refreshDialog, doRefreshDialog] = useState(false);
     const [entry_date, set_entry_date] = useState(new Date());
+    var parse_starting_amount = (val) =>{
+       return val = val.toLocaleString();
+    }
     /* END - CASH  DETAILS */
 
     return (
@@ -282,7 +293,7 @@ function Report_entries(){
                     }
                     </div>
                     <div className='entry'>
-                        <span>Montant de départ</span> <input value={entry_report_data.starting_amount} name='starting_amount' type='number' className='entry-input-add' disabled/>
+                        <span>Montant de départ</span> {  starting_amount_spinner?<span className="starting-amount-spinner">{Global_services.show_spinner('border',2,'primary')}</span> : <input value={parse_starting_amount(entry_report_data.starting_amount)} name='starting_amount' type='text' className='entry-input-add' disabled/> }
                     </div>
                     <div className='entry'>
                         <span>Ventes</span> <input value={entry_report_data.sales_amount} onChange={handle_entry_report} name='sales_amount' type='number' className='entry-input-add'/>
@@ -299,7 +310,7 @@ function Report_entries(){
                         <span>Dépôt bancaire</span> <input value={entry_report_data.bank_deposit} name='bank_deposit' onChange={handle_entry_report} type='number' className='entry-input-sub'/>
                     </div>
                     <div className='entry'>
-                        <span>Rester: </span> <input type='text' value={remain} disabled />
+                        <span>Rester: </span> <input type='text' value={parse_starting_amount(remain)} disabled />
                     </div>
                     <div className='entry'>
                         <span>Date: </span> <div className='entry-date'> <DatePicker dateFormat="dd/MM/yyyy" selected={entry_date} onChange={date => set_entry_date(date)} /> </div> 
@@ -329,12 +340,12 @@ function Report_entries(){
                 <ModalBody>
                     <div className='store-form'>
                         <div className="form-group">
-                            <label className='input-label'>Store Name</label>
-                            <input onChange={handler_new_store} name='new_store_name' type="text" className="form-control" placeholder="Store Name"/>
+                            <label className='input-label'>Nom du magasin</label>
+                            <input onChange={handler_new_store} name='new_store_name' type="text" className="form-control" placeholder="Nom du magasin"/>
                         </div>
                         <div className="form-group">
-                            <label className='input-label'>Initial Amount</label>
-                            <input onChange={handler_new_store} name='new_store_init_amount' type="text" className="form-control" placeholder="Manager Name"/>
+                            <label className='input-label'>Montant initial</label>
+                            <input onChange={handler_new_store} name='new_store_init_amount' type="text" className="form-control" placeholder="Montant initial"/>
                         </div>
                     </div>
                 </ModalBody>

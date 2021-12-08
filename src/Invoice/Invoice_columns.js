@@ -1,12 +1,13 @@
 
 export const columns = [
     { title: `ID`, dataIndex: `invoice_id`},
+    { title: `Date de création`, dataIndex: `invoice_date`},
     { title: `Numéro de facture`, dataIndex: `invoice_number` },
-    { title: `Montant`, dataIndex: `invoice_amount`},
+    { title: `Numéro de chèque`, dataIndex: `check_number`},
     { title: `Nom du magasin`, dataIndex: `store_name`},
     { title: `Nom du fournisseur`, dataIndex: `supplier_name`},
-    { title: `Numéro de chèque`, dataIndex: `check_number`},
-    { title: `Date de création`, dataIndex: `invoice_date`}
+    { title: `Montant`, dataIndex: `invoice_amount`},
+    { title: `Le montant payé`, dataIndex: `amount_paid`},
   ]
   
   // export const data = [
