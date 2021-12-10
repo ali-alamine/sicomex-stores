@@ -149,12 +149,12 @@ function Store_entries_report() {
                                 {
                                     res_store_entries_report_data.map((el, index) => {
                                         return <tr key={index}>
-                                            <td>{el.starting_amount}</td>
-                                            <td>{el.sales_amount}</td>
-                                            <td>{el.cash_supply_amount}</td>
-                                            <td>{el.cash_expense_amount}</td>
-                                            <td>{el.bank_deposit}</td>
-                                            <td>{el.remain_amount}</td>
+                                            <td>{(el.starting_amount).toLocaleString()}</td>
+                                            <td>{(el.sales_amount).toLocaleString()}</td>
+                                            <td>{(el.cash_supply_amount).toLocaleString()}</td>
+                                            <td>{(el.cash_expense_amount).toLocaleString()}</td>
+                                            <td>{(el.bank_deposit).toLocaleString()}</td>
+                                            <td>{(el.remain_amount).toLocaleString()}</td>
                                             <td>{el.entry_report_date}</td>
                                         </tr>
                                     })
