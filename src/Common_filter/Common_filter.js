@@ -208,7 +208,7 @@ function Common_filter (props){
                 set_supplier_select_loader(false);
                 Swal.fire({
                     title: 'Error!',
-                    text: 'Please Contact your software developer',
+                    text: 'Veuillez contacter votre développeur de logiciel',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 })
@@ -234,7 +234,7 @@ function Common_filter (props){
                 console.log(error)
                 Swal.fire({
                     title: 'Error!',
-                    text: 'Please Contact your software developer',
+                    text: 'Veuillez contacter votre développeur de logiciel',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 })

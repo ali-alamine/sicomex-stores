@@ -60,7 +60,7 @@ function Store_bank_acc (){
         if(sotre_bank_acc_data.store_id == ''){
             Swal.fire({
                 title: 'Doit sélectionner un nom de magasin',
-                text: 'Please Contact your software developer',
+                text: 'Veuillez contacter votre développeur de logiciel',
                 icon: 'info',
                 confirmButtonText: 'OK'
             })
@@ -94,7 +94,7 @@ function Store_bank_acc (){
                 set_show_main_loader(false);
                 Swal.fire({
                     title: 'Error!',
-                    text: 'Please Contact your software developer',
+                    text: 'Veuillez contacter votre développeur de logiciel',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 })

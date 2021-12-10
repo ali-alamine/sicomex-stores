@@ -75,7 +75,7 @@ function Sup_dialog(props) {
             console.log(error);
             Swal.fire({
                 title: 'Error!',
-                text: 'Please Contact your software developer',
+                text: 'Veuillez contacter votre développeur de logiciel',
                 icon: 'error',
                 confirmButtonText: 'OK'
             })

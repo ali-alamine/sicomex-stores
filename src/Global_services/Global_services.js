@@ -59,7 +59,9 @@ class Global_services extends React.Component {
     static advanced_search_invoice = base_url+'/advanced_search_invoice';
     static advanced_search_bank_check = base_url+'/advanced_search_bank_check';
     
+    /* Reports */
     static get_store_expenses = base_url+'/get_store_expenses';
+    static get_entry_reports = base_url+'/get_entry_reports';
 
     /* Login */
     static check_login = base_url+'/check_login';

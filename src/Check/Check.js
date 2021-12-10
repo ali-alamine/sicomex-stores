@@ -108,7 +108,7 @@ function Check (){
                 set_show_main_loader(false);
                 Swal.fire({
                     title: 'Error!',
-                    text: 'Please Contact your software developer',
+                    text: 'Veuillez contacter votre développeur de logiciel',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 })
@@ -130,7 +130,7 @@ function Check (){
             break;
             case 'error':
             NotificationManager.error('Error', message, 1500, () => {
-                alert('Please Contact your software developer!');
+                alert('Veuillez contacter votre développeur de logiciel');
             });
             break;
         }
@@ -191,7 +191,7 @@ function Check (){
                 console.log(error);
                 Swal.fire({
                     title: 'Error!',
-                    text: 'Please Contact your software developer',
+                    text: 'Veuillez contacter votre développeur de logiciel',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 })
@@ -211,7 +211,7 @@ function Check (){
                 console.log(error);
                 Swal.fire({
                     title: 'Error!',
-                    text: 'Please Contact your software developer',
+                    text: 'Veuillez contacter votre développeur de logiciel',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 })
@@ -278,7 +278,7 @@ function Check (){
                 console.log(error);
                 Swal.fire({
                     title: 'Error!',
-                    text: 'Please Contact your software developer',
+                    text: 'Veuillez contacter votre développeur de logiciel',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 })
@@ -298,7 +298,7 @@ function Check (){
                 console.log(error);
                 Swal.fire({
                     title: 'Error!',
-                    text: 'Please Contact your software developer',
+                    text: 'Veuillez contacter votre développeur de logiciel',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 })
@@ -318,7 +318,7 @@ function Check (){
                 console.log(error);
                 Swal.fire({
                     title: 'Error!',
-                    text: 'Please Contact your software developer',
+                    text: 'Veuillez contacter votre développeur de logiciel',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 })
@@ -357,7 +357,7 @@ function Check (){
                         console.log(error);
                         Swal.fire({
                             title: 'Error!',
-                            text: 'Please Contact your software developer',
+                            text: 'Veuillez contacter votre développeur de logiciel',
                             icon: 'error',
                             confirmButtonText: 'OK'
                         })
@@ -400,7 +400,7 @@ function Check (){
                 console.log(error);
                 Swal.fire({
                     title: 'Error!',
-                    text: 'Please Contact your software developer',
+                    text: 'Veuillez contacter votre développeur de logiciel',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 })
@@ -430,7 +430,7 @@ function Check (){
                 console.log(error);
                 Swal.fire({
                     title: 'Error!',
-                    text: 'Please Contact your software developer',
+                    text: 'Veuillez contacter votre développeur de logiciel',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 })

@@ -139,7 +139,7 @@ function Add_new_check(props){
             },error =>{
                 Swal.fire({
                     title: 'Error!',
-                    text: 'Please Contact your software developer',
+                    text: 'Veuillez contacter votre développeur de logiciel',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 })
@@ -195,7 +195,7 @@ function Add_new_check(props){
                     set_show_loader(false);
                     Swal.fire({
                         title: 'Error!',
-                        text: 'Please Contact your software developer',
+                        text: 'Veuillez contacter votre développeur de logiciel',
                         icon: 'error',
                         confirmButtonText: 'OK'
                     })

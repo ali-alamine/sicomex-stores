@@ -17,7 +17,7 @@ const inv_popup = ({record, pin_invoice,un_pin_invoice,delete_invoice,pay_invoic
     <li onClick={() =>open_edit_inv_modal(record)}> <EditIcon />Éditer</li>
     { record.invoice_order==0 ? <li onClick={() => pin_invoice(record)} ><BookmarkIcon/> Épingle</li>: <li onClick={() => un_pin_invoice(record)} ><BookmarkBorderIcon/> détacher</li> }
     <li onClick={() => delete_invoice(record)}> <DeleteIcon />Supprimer</li>
-    <li onClick={() => pay_partial_invoice_amount(record)}> <CreditScoreIcon />Paiement partiel</li>
+    { record.is_paid ==0 && record.check_id == null? <li onClick={() => pay_partial_invoice_amount(record)}> <CreditScoreIcon />Paiement partiel</li>:''}
   </ul>
 
 

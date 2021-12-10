@@ -134,7 +134,7 @@ function Invoice() {
                         Swal.fire({
                             icon: 'info',
                             title: new_invoice_data.invoice_number,
-                            text: 'Duplication invoice number',
+                            text: 'Le numéro de facture est utilisé dans une autre facture',
                             showConfirmButton: true,
                             // timer: 1000
                         });
@@ -150,7 +150,7 @@ function Invoice() {
                     console.log(error);
                     Swal.fire({
                         title: 'Error!',
-                        text: 'Please Contact your software developer',
+                        text: 'Veuillez contacter votre développeur de logiciel',
                         icon: 'error',
                         confirmButtonText: 'OK'
                     })
@@ -253,7 +253,7 @@ function Invoice() {
                 break;
             case 'error':
                 NotificationManager.error('Error', message, 1500, () => {
-                    alert('Please Contact your software developer!');
+                    alert('Veuillez contacter votre développeur de logiciel');
                 });
                 break;
         }
@@ -335,7 +335,7 @@ function Invoice() {
     }
 
     /* Update Invoice */
-    const update_invoice = () => {
+    const update_invoice = (selected_row) => {
         var temp_edit_invoice_date = moment(new Date(edit_invoice_date));
         temp_edit_invoice_date = temp_edit_invoice_date.format("dd/MM/yyyy, h:mm:ss a");
         edit_invoice_data.edit_invoice_date = edit_invoice_date;
@@ -351,17 +351,28 @@ function Invoice() {
             set_show_submit_invoice_loader(true);
             axios.post(Global_services.update_invoice, edit_invoice_data).then(
                 response => {
+                    if (response.data == 'DUPLICATE_INV_NUM') {
+                        Swal.fire({
+                            icon: 'info',
+                            title: new_invoice_data.invoice_number,
+                            text: 'Le numéro de facture est utilisé dans une autre facture',
+                            showConfirmButton: true,
+                            // timer: 1000
+                        });
+                    } else {
+                        createNotification('success', 'updated');
+                        close_edit_invoice_modal();
+                        get_invoices();
+                        set_popup_menu({ popup: { visible: false } });
+                    }
+
                     set_show_submit_invoice_loader(false);
-                    createNotification('success', 'updated');
-                    close_edit_invoice_modal();
-                    get_invoices();
-                    set_popup_menu({ popup: { visible: false } });
                 }, error => {
                     set_show_submit_invoice_loader(false);
                     console.log(error);
                     Swal.fire({
                         title: 'Error!',
-                        text: 'Please Contact your software developer',
+                        text: 'Veuillez contacter votre développeur de logiciel',
                         icon: 'error',
                         confirmButtonText: 'OK'
                     })
@@ -415,32 +426,69 @@ function Invoice() {
 
     /* Pay a partial amount from the invoice */
     const pay_partial_invoice_amount = (selected_invoice) => {
+
         Swal.fire({
-            title: 'Montant',
-            input: 'number',
-            showCancelButton: true,
-            confirmButtonText: 'Payez maintenant',
-            showLoaderOnConfirm: true,
-            preConfirm: (amount_to_pay) => {
-                if(amount_to_pay >=  selected_invoice.invoice_amount){
-                    alert('Select a lower value')
-                }else{
-                    selected_invoice.amount_to_pay = amount_to_pay
-                    // axios.post(Global_services.pay_partial_invoice_amount, selected_invoice)
-                    // .then(response => {
-                    //     Swal.fire({
-                    //         title: 'Succeeded',
-                    //       })
-                    // },
-                    // error =>{
-                    //     Swal.fire({
-                    //         title: 'Please contact your software developer',
-                    //       })
-                    // })
-                }
-            },
-            allowOutsideClick: () => !Swal.isLoading()
+            title: 'Multiple inputs',
+            html:
+              '<input id="swal-input1" type="number" class="form-control"> <br>' +
+              '<input id="swal-input2" type="date" class="form-control">',
+            focusConfirm: false,
+            preConfirm: () => {
+              return [
+                  selected_invoice.amount_to_pay = document.getElementById('swal-input1').value,
+                  selected_invoice.payment_date = document.getElementById('swal-input2').value,
+                  
+              ]
+              
+            }
           })
+
+        if (selected_invoice.amount_to_pay >= selected_invoice.invoice_amount) {
+            alert('Sélectionnez une valeur inférieure')
+        } else {
+            axios.post(Global_services.pay_partial_invoice_amount, selected_invoice)
+            .then(response => {
+                Swal.fire({
+                    title: 'Réussi',
+                })
+                get_invoices();
+            },
+            error => {
+                Swal.fire({
+                    title: 'Veuillez contacter votre développeur de logiciel',
+                })
+            })
+        }
+          
+      
+
+        // Swal.fire({
+        //     title: 'Montant',
+        //     input: 'number',
+        //     showCancelButton: true,
+        //     confirmButtonText: 'Payez maintenant',
+        //     showLoaderOnConfirm: true,
+        //     preConfirm: (amount_to_pay) => {
+        //         if (amount_to_pay >= selected_invoice.invoice_amount) {
+        //             alert('Sélectionnez une valeur inférieure')
+        //         } else {
+        //             selected_invoice.amount_to_pay = amount_to_pay
+        //             axios.post(Global_services.pay_partial_invoice_amount, selected_invoice)
+        //                 .then(response => {
+        //                     Swal.fire({
+        //                         title: 'Réussi',
+        //                     })
+        //                     get_invoices();
+        //                 },
+        //                 error => {
+        //                     Swal.fire({
+        //                         title: 'Veuillez contacter votre développeur de logiciel',
+        //                     })
+        //                 })
+        //         }
+        //     },
+        //     allowOutsideClick: () => !Swal.isLoading()
+        // })
     }
 
     /* DELETE Invoice */
@@ -455,39 +503,58 @@ function Invoice() {
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.value) {
-                set_show_main_loader(true);
                 set_popup_menu({ popup: { visible: false } });
-                axios.post(Global_services.delete_invoice, selected_invoice).then(
-                    response => {
-                        if (response.data == 'INVOICE_IS_ASSIGNED_TO_A_CHECK') {
+                if (selected_invoice.check_id != null || selected_invoice.amount_paid > 0) {
+                    let title= '';
+                    let msg='';
+                    if(selected_invoice.check_id != null){
+                        title='La facture est affectée à un chèque';
+                        msg='Impossible de supprimer la facture affectée à un chèque';
+                    }
+                    if(selected_invoice.amount_paid > 0){
+                        title='Une partie de la facture est payée';
+                        msg='Impossible de supprimer une facture partiellement payée';
+                    }
+                    Swal.fire({
+                        title: title,
+                        text: msg,
+                        icon: 'info',
+                        confirmButtonText: 'OK'
+                    })
+                } else {
+                    set_show_main_loader(true);
+                    axios.post(Global_services.delete_invoice, selected_invoice).then(
+                        response => {
+                            if (response.data == 'INVOICE_IS_ASSIGNED_TO_A_CHECK') {
+                                Swal.fire({
+                                    title: 'La facture est affectée à un chèque',
+                                    text: 'Impossible de supprimer la facture affectée à un chèque',
+                                    icon: 'info',
+                                    confirmButtonText: 'OK'
+                                })
+                            } else {
+                                Swal.fire({
+                                    title: 'Supprimé',
+                                    text: 'Supprimé avec succès',
+                                    icon: 'success',
+                                    showConfirmButton: false,
+                                    timer: 1000
+                                })
+                                get_invoices();
+                            }
+                            set_show_main_loader(false);
+                        }, error => {
+                            console.log(error);
+                            set_show_main_loader(false);
                             Swal.fire({
-                                title: 'La facture est affectée à un chèque',
-                                text: 'Impossible de supprimer la facture affectée à un chèque',
-                                icon: 'info',
+                                title: 'Error!',
+                                text: 'Veuillez contacter votre développeur de logiciel',
+                                icon: 'error',
                                 confirmButtonText: 'OK'
                             })
-                        } else {
-                            Swal.fire({
-                                title: 'Deleted',
-                                text: 'Successfully Deleted',
-                                icon: 'success',
-                                showConfirmButton: false,
-                                timer: 1000
-                            })
-                            get_invoices();
                         }
-                        set_show_main_loader(false);
-                    }, error => {
-                        console.log(error);
-                        set_show_main_loader(false);
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Please Contact your software developer',
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        })
-                    }
-                )
+                    )
+                }
             }
         })
     }
@@ -508,7 +575,7 @@ function Invoice() {
                 console.log(error);
                 Swal.fire({
                     title: 'Error!',
-                    text: 'Please Contact your software developer',
+                    text: 'Veuillez contacter votre développeur de logiciel',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 })
@@ -529,7 +596,7 @@ function Invoice() {
                 console.log(error);
                 Swal.fire({
                     title: 'Error!',
-                    text: 'Please Contact your software developer',
+                    text: 'Veuillez contacter votre développeur de logiciel',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 })
@@ -561,7 +628,7 @@ function Invoice() {
                 console.log(error);
                 Swal.fire({
                     title: 'Error!',
-                    text: 'Please Contact your software developer',
+                    text: 'Veuillez contacter votre développeur de logiciel',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 })

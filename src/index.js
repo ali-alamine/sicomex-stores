@@ -12,7 +12,7 @@ import Popper from 'popper.js';
 
 ReactDOM.render(
     <React.StrictMode>
-    <div className='container'>
+    <div className='container-fluid'>
       <App />
     </div>  
     </React.StrictMode>,
