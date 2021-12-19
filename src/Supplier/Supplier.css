@@ -72,7 +72,7 @@ tbody[class*="ant-table-tbody"] td:hover {
 .hidden-supplier-invoice-dialog {
   margin-top: 30px;
   width: 80%;
-  height: 60%;
+  height: 100%;
   /* border: black solid 1px !important; */
   border-radius: 10px;
   position: absolute;
