@@ -213,11 +213,13 @@ function Invoice() {
 
     /* Open Invoice Details */
     const pay_invoice = (record) => {
+        set_show_main_loader(true);
         axios.post(Global_services.pay_invoice, record).then(
             response => {
                 set_show_main_loader(false);
                 get_invoices();
                 set_popup_menu({ popup: { visible: false } });
+                set_show_main_loader(false);
             }, error => {
                 set_show_main_loader(false);
                 console.log(error.data);
@@ -426,42 +428,6 @@ function Invoice() {
 
     /* Pay a partial amount from the invoice */
     const pay_partial_invoice_amount = (selected_invoice) => {
-
-        // Swal.fire({
-        //     title: 'Multiple inputs',
-        //     html:
-        //       '<input id="swal-input1" type="number" class="form-control"> <br>' +
-        //       '<input id="swal-input2" type="date" class="form-control">',
-        //     focusConfirm: false,
-        //     preConfirm: () => {
-        //       return [
-        //           selected_invoice.amount_to_pay = document.getElementById('swal-input1').value,
-        //           selected_invoice.payment_date = document.getElementById('swal-input2').value,
-                  
-        //       ]
-              
-        //     }
-        //   })
-
-        // if (selected_invoice.amount_to_pay >= selected_invoice.invoice_amount) {
-        //     alert('Sélectionnez une valeur inférieure')
-        // } else {
-        //     axios.post(Global_services.pay_partial_invoice_amount, selected_invoice)
-        //     .then(response => {
-        //         Swal.fire({
-        //             title: 'Réussi',
-        //         })
-        //         get_invoices();
-        //     },
-        //     error => {
-        //         Swal.fire({
-        //             title: 'Veuillez contacter votre développeur de logiciel',
-        //         })
-        //     })
-        // }
-          
-      
-
         Swal.fire({
             title: 'Montant',
             input: 'number',
@@ -469,8 +435,14 @@ function Invoice() {
             confirmButtonText: 'Payez maintenant',
             showLoaderOnConfirm: true,
             preConfirm: (amount_to_pay) => {
-                if (amount_to_pay >= selected_invoice.invoice_amount) {
-                    alert('Sélectionnez une valeur inférieure')
+                set_show_main_loader(true);
+                let calc_total_invoice_amount = parseInt(amount_to_pay) + parseInt(selected_invoice.amount_paid);
+                amount_to_pay = parseInt(amount_to_pay)
+                if ((amount_to_pay >= selected_invoice.invoice_amount) || (calc_total_invoice_amount >= selected_invoice.invoice_amount)) {
+                    Swal.fire({
+                        title: 'Sélectionnez une valeur inférieure',
+                    })
+                    set_show_main_loader(false);
                 } else {
                     selected_invoice.amount_to_pay = amount_to_pay
                     axios.post(Global_services.pay_partial_invoice_amount, selected_invoice)
@@ -478,13 +450,16 @@ function Invoice() {
                             Swal.fire({
                                 title: 'Réussi',
                             })
+                            set_popup_menu({ popup: { visible: false } });
                             get_invoices();
+                            set_show_main_loader(false);
                         },
-                        error => {
-                            Swal.fire({
-                                title: 'Veuillez contacter votre développeur de logiciel',
+                            error => {
+                                set_show_main_loader(false);
+                                Swal.fire({
+                                    title: 'Veuillez contacter votre développeur de logiciel',
+                                })
                             })
-                        })
                 }
             },
             allowOutsideClick: () => !Swal.isLoading()
@@ -505,15 +480,15 @@ function Invoice() {
             if (result.value) {
                 set_popup_menu({ popup: { visible: false } });
                 if (selected_invoice.check_id != null || selected_invoice.amount_paid > 0) {
-                    let title= '';
-                    let msg='';
-                    if(selected_invoice.check_id != null){
-                        title='La facture est affectée à un chèque';
-                        msg='Impossible de supprimer la facture affectée à un chèque';
+                    let title = '';
+                    let msg = '';
+                    if (selected_invoice.check_id != null) {
+                        title = 'La facture est affectée à un chèque';
+                        msg = 'Impossible de supprimer la facture affectée à un chèque';
                     }
-                    if(selected_invoice.amount_paid > 0){
-                        title='Une partie de la facture est payée';
-                        msg='Impossible de supprimer une facture partiellement payée';
+                    if (selected_invoice.amount_paid > 0) {
+                        title = 'Une partie de la facture est payée';
+                        msg = 'Impossible de supprimer une facture partiellement payée';
                     }
                     Swal.fire({
                         title: title,

@@ -1,73 +1,100 @@
-.add-supp-btn{
-    margin-top: 10px;
+.add-supp-btn {
+  margin-top: 10px;
 }
-.supplier-view{
-
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -o-user-select: none;
-    user-select: none;
+.supplier-view {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
 }
-.selected-row{
-    box-shadow: 0px 0px 5px  rgb(0, 0, 0);
-    /* background-color: rgb(119, 119, 119);
+.selected-row {
+  box-shadow: 0px 0px 5px rgb(0, 0, 0);
+  /* background-color: rgb(119, 119, 119);
     color:white !important; */
-    font-weight: bold;
+  font-weight: bold;
 }
-.ant-table-tbody>.selected-row:hover>td{
-    background-color: rgb(209, 209, 209) !important;
-    /* color:white !important; */
+.ant-table-tbody > .selected-row:hover > td {
+  background-color: rgb(209, 209, 209) !important;
+  /* color:white !important; */
 }
-.selected-important-row{
-    font-weight: bold;
-    box-shadow: 0px 0px 5px  rgb(0, 0, 0);
-    background-color: rgb(251, 186, 66);
-    color:white !important;
+.selected-important-row {
+  font-weight: bold;
+  box-shadow: 0px 0px 5px rgb(0, 0, 0);
+  background-color: rgb(251, 186, 66);
+  color: white !important;
 }
 
-.ant-table-tbody>.selected-important-row:hover>td{
-    background-color: rgb(251, 186, 66) !important;
-    color:white !important;
+.ant-table-tbody > .selected-important-row:hover > td {
+  background-color: rgb(251, 186, 66) !important;
+  color: white !important;
 }
-.ant-table-thead tr th{
-    text-align: center !important;
-    font-weight: bold;
-    color: white !important;
-    height: 10px !important;
+.ant-table-thead tr th {
+  text-align: center !important;
+  font-weight: bold;
+  color: white !important;
+  height: 10px !important;
 }
-.ant-table-tbody tr td{
-    text-align: center !important;
+.ant-table-tbody tr td {
+  text-align: center !important;
+  cursor: pointer;
+  color: black;
+}
+.ant-table-wrapper {
+  margin-top: 20px;
+}
+thead[class*="ant-table-thead"] th {
+  background-color: black !important;
+}
+tbody[class*="ant-table-tbody"] td:hover {
+  color: black !important;
+}
+.ant-table {
+  line-height: 9px !important;
+}
+.important-row {
+  background-color: rgb(255, 198, 92) !important;
+}
+.ant-table-tbody > .important-row:hover > td {
+  background-color: rgb(251, 186, 66) !important;
+  color: white !important;
+}
+.ant-table-tbody > :hover > td {
+  background-color: rgb(224, 224, 224) !important;
+  color: black !important;
+}
+.table-col-loader {
+  position: absolute;
+  margin-left: 38%;
+  margin-top: 20%;
+  z-index: 99;
+}
+.hidden-supplier-invoice-dialog {
+  margin-top: 30px;
+  width: 80%;
+  height: 60%;
+  /* border: black solid 1px !important; */
+  border-radius: 10px;
+  position: absolute;
+  margin-left: 7%;
+  z-index: 999;
+  background-color: white;
+  box-shadow: #7d7d7d 0px 2px 11px 9px; 
+}
+.payable-invoices-spinner {
+  position: absolute;
+  margin-left: 42%;
+}
+.close-payable-invoice-popup{
+    right: 0px;
+    box-shadow: blue 0px 0px 5px 1px;
     cursor: pointer;
-    color: black;
-}
-.ant-table-wrapper{
-    margin-top: 20px;
-}
-thead[class*="ant-table-thead"] th{ 
-    background-color: black !important
-}
-tbody[class*="ant-table-tbody"] td:hover{ 
-    color:black !important;
-}
-.ant-table{
-    line-height:9px !important
-}
-.important-row{
-    background-color: rgb(255, 198, 92) !important;
-}
-.ant-table-tbody>.important-row:hover>td{
-    background-color:rgb(251, 186, 66) !important;
-    color:white !important;
-}
-.ant-table-tbody>:hover>td{
-    background-color:rgb(224, 224, 224) !important;
-    color:black !important;
-}
-.table-col-loader{
+    border-radius: 9px;
     position: absolute;
-    margin-left: 38%;
-    margin-top: 20%;
-    z-index: 99;
 }
-  
+.no-payable-invoices{
+    position: absolute;
+    left: 42%;
+    font-weight: bold;
+    font-size: 26px;
+}

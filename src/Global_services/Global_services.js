@@ -16,6 +16,14 @@ class Global_services extends React.Component {
             </div>
         )
     }
+    /* Show sub main loader*/
+    static show_sub_spinner = (type,size,color) => {
+        return (
+            <div className='loader'>
+                <ReactSpinner type={type} color={color} size={size} />
+            </div>
+        )
+    }
     static get_stores= base_url+'/store';
     static add_new_store= base_url+'/store';
     static get_starting_amount= base_url+'/starting_amount';
@@ -34,6 +42,7 @@ class Global_services extends React.Component {
     static search_check_number = base_url+'/search_check';
     static get_assigned_invoices = base_url+'/get_assigned_invoices';
     static pay_partial_invoice_amount = base_url+'/pay_partial_invoice_amount';
+    static pay_partial_invoice_amount_from_supplier = base_url+'/pay_partial_invoice_amount_from_supplier';
 
     static update_invoice = base_url+'/update_invoice';
     static delete_invoice = base_url+'/delete_invoice';
@@ -43,6 +52,7 @@ class Global_services extends React.Component {
     static un_pin_invoice = base_url+'/un_pin_invoice';
     static search_invoice_number = base_url+'/search_invoice';
     static pay_invoice = base_url+'/pay_invoice';
+    static get_available_invoice_to_pay = base_url+'/get_available_invoice_to_pay';
 
     static pin_supplier = base_url+'/pin_supplier';
     static un_pin_supplier = base_url+'/un_pin_supplier';

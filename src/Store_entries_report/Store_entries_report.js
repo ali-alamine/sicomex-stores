@@ -18,7 +18,7 @@ function Store_entries_report() {
     const { Option } = Select;
     const [show_main_loader, set_show_main_loader] = useState(false);
     const [res_store_entries_report_data, set_res_store_entries_report_data] = useState([]);
-    const [store_total_expense, set_store_total_expense] = useState([]);
+    const [store_drawer_amount, set_store_drawer_amount] = useState([]);
     const [all_stores, set_all_stores] = useState([]);
 
     const [date_from, set_date_from] = useState('');
@@ -40,7 +40,7 @@ function Store_entries_report() {
                         'value': response.data[i].store_name,
                         'label': response.data[i].store_name,
                         'store_id': response.data[i].store_id,
-                        'store_amount': response.data[i].amount,
+                        'store_drawer_amount': response.data[i].drawer_amount,
                     })
                 }
                 set_all_stores(temp_all_stores);
@@ -53,7 +53,7 @@ function Store_entries_report() {
         store_expense_report_filter.store_id = store_id;
         set_store_expense_report_filter(store_expense_report_filter);
         set_res_store_entries_report_data([]);
-        set_store_total_expense(0);
+        set_store_drawer_amount(0);
 
     }
 
@@ -77,11 +77,11 @@ function Store_entries_report() {
                     })
                     set_res_store_entries_report_data(res);
                     let total_store_exp_res = 0;//response.data[1];
-                    // set_store_total_expense(total_store_exp_res[0].total_store_expense)
+                    // set_store_drawer_amount(total_store_exp_res[0].total_store_expense)
                     // console.log(response.data[1])
                 } else {
                     set_res_store_entries_report_data([]);
-                    set_store_total_expense(0);
+                    set_store_drawer_amount(0);
                 }
             }, error => {
                 set_show_main_loader(false);
@@ -131,32 +131,32 @@ function Store_entries_report() {
                 show_main_loader != true ?
                     <Row>
                         <div className='total-store-expenses'>
-                            {/* <label>{store_total_expense.toLocaleString()}</label> */}
+                            {/* <label>{store_drawer_amount.toLocaleString()}</label> */}
                         </div>
                         <table className='table table-bordered table-striped table-hover text-center'>
                             <thead>
                                 <tr>
-                                    <th>Montant de départ</th>
+                                    <th>Date d'entrée</th>
+                                    <th>Montant du tiroir</th>
                                     <th>Ventes</th>
                                     <th>Forniussure Cash</th>
                                     <th>Dépenses espèces</th>
                                     <th>Dépôt bancaire</th>
                                     <th>Rester</th>
-                                    <th>Date d'entrée</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {
                                     res_store_entries_report_data.map((el, index) => {
                                         return <tr key={index}>
-                                            <td>{(el.starting_amount).toLocaleString()}</td>
-                                            <td>{(el.sales_amount).toLocaleString()}</td>
-                                            <td>{(el.cash_supply_amount).toLocaleString()}</td>
-                                            <td>{(el.cash_expense_amount).toLocaleString()}</td>
-                                            <td>{(el.bank_deposit).toLocaleString()}</td>
-                                            <td>{(el.remain_amount).toLocaleString()}</td>
-                                            <td>{el.entry_report_date}</td>
-                                        </tr>
+                                                <td>{el.entry_report_date}</td>
+                                                <td>{(el.starting_amount).toLocaleString()}</td>
+                                                <td>{(el.sales_amount).toLocaleString()}</td>
+                                                <td>{(el.cash_supply_amount).toLocaleString()}</td>
+                                                <td>{(el.cash_expense_amount).toLocaleString()}</td>
+                                                <td>{(el.bank_deposit).toLocaleString()}</td>
+                                                <td>{(el.remain_amount).toLocaleString()}</td>
+                                            </tr>
                                     })
                                 }
                             </tbody>
