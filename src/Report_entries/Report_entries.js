@@ -297,7 +297,7 @@ function Report_entries() {
                         <span>Dépôt bancaire</span> <input value={entry_report_data.bank_deposit} name='bank_deposit' onChange={handle_entry_report} type='number' className='entry-input-sub' />
                     </div>
                     <div className='entry'>
-                        <span>Rester: </span> <input type='text' value={parse_to_number(remain)} disabled />
+                        <span>Rester: </span> <input type='text' value={remain} disabled />
                     </div>
                     <div className='entry'>
                         <span>Date: </span> <div className='entry-date'> <DatePicker dateFormat="dd/MM/yyyy" selected={entry_date} onChange={date => set_entry_date(date)} /> </div>
