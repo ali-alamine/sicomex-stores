@@ -142,7 +142,6 @@ function Report_entries() {
         $('.entry-input-add').each(function () {
             if (parseInt(this.value)) {
                 // this.value = this.value.split(',').join('');
-                // this.value = this.value.split(' ').join('');
                 sum_in_values += parseInt(this.value);
             } else {
                 sum_in_values += 0;
@@ -152,7 +151,6 @@ function Report_entries() {
         $('.entry-input-sub').each(function () {
             if (parseInt(this.value)) {
                 // this.value = this.value.split(',').join('');
-                // this.value = this.value.split(' ').join('');
                 sum_out_values += parseInt(this.value);
             } else {
                 sum_out_values += 0;
@@ -257,8 +255,7 @@ function Report_entries() {
     const [refreshDialog, doRefreshDialog] = useState(false);
     const [entry_date, set_entry_date] = useState(new Date());
     var parse_to_number = (val) => {
-        // return val = val.toLocaleString();
-        return val;
+        return val; //= val.toLocaleString();
     }
     /* END - CASH  DETAILS */
 
@@ -300,7 +297,7 @@ function Report_entries() {
                         <span>Dépôt bancaire</span> <input value={entry_report_data.bank_deposit} name='bank_deposit' onChange={handle_entry_report} type='number' className='entry-input-sub' />
                     </div>
                     <div className='entry'>
-                        <span>Rester: </span> <input Style='color:black !important' type='number' value={parse_to_number(remain)} disabled />
+                        <span>Rester: </span> <input Style='color:black !important' type='number' value={remain} disabled />
                     </div>
                     <div className='entry'>
                         <span>Date: </span> <div className='entry-date'> <DatePicker dateFormat="dd/MM/yyyy" selected={entry_date} onChange={date => set_entry_date(date)} /> </div>

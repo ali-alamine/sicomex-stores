@@ -213,18 +213,33 @@ function Invoice() {
 
     /* Open Invoice Details */
     const pay_invoice = (record) => {
-        set_show_main_loader(true);
-        axios.post(Global_services.pay_invoice, record).then(
-            response => {
-                set_show_main_loader(false);
-                get_invoices();
+        Swal.fire({
+            title: 'Payer la facture',
+            text: "Êtes-vous sûr de vouloir payer la facture ?",
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'oui, payer'
+        }).then((result) => {
+            if (result.value) {
+                set_show_main_loader(true);
+                axios.post(Global_services.pay_invoice, record).then(
+                    response => {
+                        set_show_main_loader(false);
+                        get_invoices();
+                        set_popup_menu({ popup: { visible: false } });
+                        set_show_main_loader(false);
+                    }, error => {
+                        set_show_main_loader(false);
+                        console.log(error.data);
+                    }
+                )
+            } else {
+
                 set_popup_menu({ popup: { visible: false } });
-                set_show_main_loader(false);
-            }, error => {
-                set_show_main_loader(false);
-                console.log(error.data);
             }
-        )
+        })
     }
 
     /*Edit Invoice Date */
