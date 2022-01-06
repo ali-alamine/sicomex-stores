@@ -402,6 +402,7 @@ function Supplier() {
                             get_suppliers();
                             get_payable_invoices(record);
                             set_popup_menu({ popup: { visible: false } });
+                            close_payable_invoice_popup();
                         }, error => {
                             set_popup_menu({ popup: { visible: false } });
                             console.log(error);
