@@ -26,6 +26,7 @@ function Supplier() {
 
     useEffect(() => {
         get_suppliers();
+        get_all_stores();
     }, []);
 
     /* Get all suppliers */
@@ -43,6 +44,24 @@ function Supplier() {
         )
     };
 
+    /* Get all store to display for partial payment on supplier */
+    const [all_stores, set_all_stores] = useState({});
+    const [all_stores_arr, set_all_stores_arr] = useState({});
+    const get_all_stores = () => {
+        axios.get(Global_services.get_stores).then(
+            response => {
+                let temp_all_stores = {};
+                set_all_stores_arr(response.data)
+                for (let i = 0; i < response.data.length; i++) {
+                    temp_all_stores[response.data[i].store_id] = response.data[i].store_name + ' | ' + response.data[i].drawer_amount;
+                }
+                set_all_stores(temp_all_stores);
+            }, error => {
+                console.log(error);
+            }
+        )
+    };
+
     /* Get payable invoices for the payment */
     const [payable_invoices, set_payable_invoices] = useState([]);
     var [show_payable_invoices_spinner, set_show_payable_invoices_spinner] = useState(false);
@@ -50,7 +69,9 @@ function Supplier() {
     const get_payable_invoices = (record) => {
         set_default_state_of_payable_invoices_table(true);
         set_show_payable_invoices_spinner(true);
-        axios.post(Global_services.get_available_invoice_to_pay, record).then(
+        set_popup_menu({ popup: { visible: false } });
+        record.store_id = sup_partial_payment_data.store_id;
+        axios.post(Global_services.get_unpaid_invoices, record).then(
             response => {
                 set_payable_invoices(response.data)
                 set_show_payable_invoices_spinner(false);
@@ -62,7 +83,7 @@ function Supplier() {
         )
     };
 
-    /* Slide Notification */
+    /* Side Notification */
     function createNotification(type, message) {
         switch (type) {
             case 'info':
@@ -168,9 +189,11 @@ function Supplier() {
         edit_supplier_amount: '',
         supplier_id: ''
     })
+
     const handle_edit_sup_data = (e) => {
         set_edit_sup_data({ ...edit_sup_data, [e.target.name]: e.target.value });
     }
+
     /* Submit Edit supplier data */
     const update_supplier_data = () => {
         set_submit_sup_loader(true);
@@ -210,6 +233,7 @@ function Supplier() {
             })
         }
     }
+
     /* Popup Menu functionalities */
     const [popup_menu, set_popup_menu] = useState({
         popup: {
@@ -218,44 +242,12 @@ function Supplier() {
             y: 0
         }
     });
+
     const [selected_row, set_selected_row] = useState({
         rowId: ''
     })
     var setRowClassName = (record) => {
         return record.supplier_id === selected_row.rowId && record.sup_order === '0' ? 'selected-row' : record.supplier_id === selected_row.rowId && record.sup_order === '1' ? 'selected-important-row' : record.sup_order === '1' ? 'important-row' : '';
-    }
-
-    var pay_partial_invoice = (record) => {
-        Swal.fire({
-            title: 'Montant',
-            input: 'number',
-            showCancelButton: true,
-            confirmButtonText: 'Payez maintenant',
-            showLoaderOnConfirm: true,
-            preConfirm: (amount_to_pay) => {
-                // set_show_main_loader(true);
-                set_amount_to_pay(amount_to_pay);
-                record.amount_to_pay = amount_to_pay;
-                get_payable_invoices(record);
-                // axios.post(Global_services.get_available_invoice_to_pay, record)
-                //     .then(response => {
-                //         Swal.fire({
-                //             title: 'Réussi',    
-                //         })
-                //         get_suppliers();
-                //         set_popup_menu({ popup: { visible: false } });
-                //         set_show_main_loader(false);
-                //     },
-                //         error => {
-                //             Swal.fire({
-                //                 title: 'Veuillez contacter votre développeur de logiciel',
-                //             })
-                //             set_popup_menu({ popup: { visible: false } });
-                //             set_show_main_loader(false);
-                //         })
-            },
-            allowOutsideClick: () => !Swal.isLoading()
-        })
     }
 
     const onRow = record => ({
@@ -273,7 +265,7 @@ function Supplier() {
                     un_pin_supplier,
                     delete_supplier,
                     open_edit_sup_modal,
-                    pay_partial_invoice,
+                    setup_partial_amount_payment,
                     visible: true,
                     x: event.clientX,
                     y: event.clientY
@@ -374,8 +366,10 @@ function Supplier() {
     const assign_response_to_supplier_list = (response) => {
         set_supplier_list(response.data);
     }
+
+    /* START -  Pay on select - NOT USED - Feature changed to multiple selections */
     const [selected_payable_invoice_row, set_selected_payable_invoice_row] = useState(null);
-    var handleSelectInvoices = (record) => {
+    var handleSelectInvoice = (record) => {
         set_selected_payable_invoice_row(record.invoice_id);
         record.amount_to_pay = amount_to_pay;
         setTimeout(() => {
@@ -418,12 +412,162 @@ function Supplier() {
             })
         }, 100);
     }
+    /* END -  Pay on select - NOT USED - Feature changed to multiple selections */
+
+
     const [amount_to_pay, set_amount_to_pay] = useState(0);
+    /* Select store to make the partial payment */
+
+    var setup_partial_amount_payment = (record) => {
+        Swal.fire({
+            title: 'Montant',
+            input: 'number',
+            showCancelButton: true,
+            confirmButtonText: 'Payez maintenant',
+            showLoaderOnConfirm: true,
+            preConfirm: (amount_to_pay) => {
+                // set_show_main_loader(true);
+                set_amount_to_pay(amount_to_pay);
+
+                /* SELECT STORE */
+                Swal.fire({
+                    input: 'select',
+                    inputOptions: all_stores,
+                    inputPlaceholder: 'Sélectionnez un magasin',
+                    showCancelButton: true,
+                    confirmButtonText: 'Payez maintenant',
+                    showLoaderOnConfirm: true,
+                    inputValidator: (selected_store_id) => {
+                        return new Promise((resolve) => {
+                            if (selected_store_id != '') {
+                                sup_partial_payment_data.store_id = selected_store_id;
+                                for (let i = 0; i < all_stores_arr.length; i++) {
+                                    if (all_stores_arr[i].store_id == selected_store_id) {
+
+                                        sup_partial_payment_data.drawer_amount = all_stores_arr[i].drawer_amount;
+
+                                    }
+                                }
+                                get_payable_invoices(record);
+                                resolve()
+                            } else {
+                                resolve('Veuillez sélectionner un magasin')
+                            }
+                        })
+                    },
+                    allowOutsideClick: () => !Swal.isLoading()
+                })
+            },
+            allowOutsideClick: () => !Swal.isLoading()
+        })
+
+    }
+
+    /* select /  deselect an invoice  */
+    const removeFromArray = (arr, num) => arr.filter(el => el !== num);
+    /* Handle payment for multiple invoices selections */
+    var [selected_payable_invoices_ids, set_selected_payable_invoices_ids] = useState([]);
+    var [total_selected_invoices_amount, set_total_selected_invoices_amount] = useState(0);
+    var [sup_partial_payment_data, set_sup_partial_payment_data] = useState(
+        {
+            "invoice_ids": "",
+            "partially_paid_invoice_id": -1,
+            "supplier_amount": '',
+            "total_invoices_amount": '',
+            "supplier_id": '',
+            "store_id": '',
+            "drawer_amount": ''
+        });
+
+    var handle_multiple_invoices_selections = (record) => {
+
+        if (!selected_payable_invoices_ids.includes(record.invoice_id)) {
+
+            /* if selected invoice has partial payment then add the remain amount only to the total_selected_invoices_amount */
+            if (record.amount_paid > 0) {
+                // let remain_selected_invoice_amount = record.invoice_amount - record.amount_paid;
+                // if (total_selected_invoices_amount + remain_selected_invoice_amount > amount_to_pay) {
+                //     sup_partial_payment_data.partially_paid_invoice_id = record.invoice_id;
+                    
+
+                // } else {
+                //     total_selected_invoices_amount = total_selected_invoices_amount + (record.invoice_amount - record.amount_paid);
+                // }
+                total_selected_invoices_amount = total_selected_invoices_amount + (record.invoice_amount - record.amount_paid);
+            } else {
+                total_selected_invoices_amount = total_selected_invoices_amount + record.invoice_amount;
+            }
+            selected_payable_invoices_ids.push(record.invoice_id);
+
+        } else {
+            if (record.amount_paid > 0) {
+                total_selected_invoices_amount = total_selected_invoices_amount - (record.invoice_amount - record.amount_paid);
+            } else {
+
+                total_selected_invoices_amount = total_selected_invoices_amount - record.invoice_amount;
+            }
+            selected_payable_invoices_ids = removeFromArray(selected_payable_invoices_ids, record.invoice_id);
+        }
+        sup_partial_payment_data.supplier_amount = record.supplier_amount;
+        sup_partial_payment_data.supplier_id = record.supplier_id;
+
+        set_selected_payable_invoices_ids(selected_payable_invoices_ids);
+        set_total_selected_invoices_amount(total_selected_invoices_amount)
+    }
+
+    const pay_selected_invoices = () => {
+        sup_partial_payment_data.invoice_ids = selected_payable_invoices_ids;
+        sup_partial_payment_data.total_invoices_amount = total_selected_invoices_amount;
+        set_sup_partial_payment_data(sup_partial_payment_data);
+        setTimeout(() => {
+            Swal.fire({
+                title: 'Es-tu sûr?',
+                text: "Vous paierez " + total_selected_invoices_amount + ' du montant de la facture ' + sup_partial_payment_data.supplier_amount,
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Oui, payer'
+            }).then((result) => {
+                set_popup_menu({ popup: { visible: false } });
+                if (result.value) {
+                    axios.post(Global_services.pay_selected_sup_invoices, sup_partial_payment_data).then(
+                        response => {
+                            Swal.fire({
+                                title: 'Succès',
+                                text: '',
+                                icon: 'success',
+                                showConfirmButton: false,
+                                timer: 1000
+                            })
+                            get_suppliers();
+                            get_all_stores()
+                            close_payable_invoice_popup();
+                        }, error => {
+                            set_popup_menu({ popup: { visible: false } });
+                            console.log(error);
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'Veuillez contacter votre développeur de logiciel',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            })
+                        }
+                    )
+                }
+            })
+        }, 100);
+    }
+
     const close_payable_invoice_popup = () => {
         set_default_state_of_payable_invoices_table(false);
-        set_amount_to_pay(0)
-        set_payable_invoices([]);
+        set_selected_payable_invoices_ids([]);
+        set_total_selected_invoices_amount(0)
         set_popup_menu({ popup: { visible: false } });
+        setTimeout(() => {
+
+            set_sup_partial_payment_data(({ "invoice_ids": "", "partially_paid_invoice_id": -1, "supplier_amount": '', "total_invoices_amount": '', "supplier_id": '', "store_id": '', "drawer_amount": '' }))
+        }, 300);
     }
 
     return (
@@ -431,6 +575,7 @@ function Supplier() {
             {
                 default_state_of_payable_invoices_table == true ?
                     <div className='hidden-supplier-invoice-dialog'>
+                        <div className='sup-total-selected-invoices-amount'> {amount_to_pay} / Montant:  <span className='pay-selected-invoices btn btn-success' onClick={pay_selected_invoices}>{total_selected_invoices_amount}  </span></div>
                         <div onClick={close_payable_invoice_popup} className='close-payable-invoice-popup'><CloseIcon></CloseIcon></div>
                         <table className='table table-bordered table-striped text-center'>
                             <thead>
@@ -451,7 +596,7 @@ function Supplier() {
                                     <tbody>
                                         {
                                             payable_invoices.map((el, index) => {
-                                                return <tr onClick={() => handleSelectInvoices(el)} key={el.invoice_id} Style={selected_payable_invoice_row == el.invoice_id ? 'background-color:lightgreen;color:black;box-shadow: black 0px 0px 10px 0px;' : 'color:black'} >
+                                                return <tr onClick={() => handle_multiple_invoices_selections(el)} key={el.invoice_id} Style={selected_payable_invoices_ids.includes(el.invoice_id) ? 'background-color:lightblue;color:black;box-shadow: black 0px 0px 10px 0px;' : 'color:black'} >
                                                     <td>{el.invoice_id}</td>
                                                     <td>{el.invoice_date}</td>
                                                     <td>{el.invoice_number}</td>
@@ -461,10 +606,10 @@ function Supplier() {
                                             })
                                         }
                                         {
-                                             payable_invoices.length === 0? 
-                                             <span className='no-payable-invoices'> Pas de données </span>
-                                             :
-                                             ''
+                                            payable_invoices.length === 0 ?
+                                                <span className='no-payable-invoices'> Pas de données </span>
+                                                :
+                                                ''
                                         }
                                     </tbody>
                             }

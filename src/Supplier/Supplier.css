@@ -70,9 +70,10 @@ tbody[class*="ant-table-tbody"] td:hover {
   z-index: 99;
 }
 .hidden-supplier-invoice-dialog {
+  min-height: 180px;
   margin-top: 30px;
   width: 80%;
-  height: 100%;
+  height: auto;
   /* border: black solid 1px !important; */
   border-radius: 10px;
   position: absolute;
@@ -81,13 +82,21 @@ tbody[class*="ant-table-tbody"] td:hover {
   background-color: white;
   box-shadow: #7d7d7d 0px 2px 11px 9px; 
 }
+.sup-total-selected-invoices-amount{
+  text-align: center;
+  font-weight: bold;
+}
+.pay-selected-invoices{
+  margin: 6px;
+}
 .payable-invoices-spinner {
   position: absolute;
   margin-left: 42%;
 }
 .close-payable-invoice-popup{
     right: 0px;
-    box-shadow: blue 0px 0px 5px 1px;
+    top: 0px;
+    box-shadow: black 0px 0px 5px 1px;
     cursor: pointer;
     border-radius: 9px;
     position: absolute;
