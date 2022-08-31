@@ -20,7 +20,7 @@
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
     "jquery-datepicker": "^1.12.3",
-    "moment-timezone": "^0.5.28",
+    "moment-timezone": "^0.5.35",
     "popper.js": "^1.16.1",
     "react": "^17.0.2",
     "react-bootstrap": "^1.0.0",
